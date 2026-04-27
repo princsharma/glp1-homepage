@@ -34,6 +34,11 @@
   --color-success: #52b788;
   --color-warning: #f4a261;
   --color-error: #d62828;
+    --color-warm: #ee8a4f;
+  --color-warm-deep: #d97441;
+  --color-warm-soft: #f4a978;
+  --color-warm-glow: rgba(255, 255, 255, 0.12);
+  --gradient-purple: linear-gradient(#b39ffe, #725ebd);
 }
  
 /* ============================================

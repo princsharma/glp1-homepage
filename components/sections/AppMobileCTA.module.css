@@ -1,80 +1,69 @@
 /* ============================================
-   SECTION — full bleed background
+   SECTION — outer wrapper with side padding
    ============================================ */
 .section {
-  position: relative;
   width: 100%;
-  min-height: 600px;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background-color: var(--color-primary-dark);
-}
-
-/* Background layer */
-.background {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.backgroundImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: right center;
-  display: block;
-}
-
-/* Sage-tinted gradient overlay — fades from solid (left) to transparent (right) */
-.backgroundOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    var(--color-primary-dark) 0%,
-    rgba(27, 67, 50, 0.85) 30%,
-    rgba(27, 67, 50, 0.4) 55%,
-    transparent 80%
-  );
+  background-color: var(--color-bg);
+  padding: 3rem 1.5rem;
 }
 
 /* ============================================
-   CONTENT CONTAINER
+   CANVAS — orange rounded card
    ============================================ */
-.container {
+.canvas {
   position: relative;
-  z-index: 1;
-  max-width: 1200px;
+ 
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: var(--color-warm);
+  /* Subtle gradient adds dimension */
+  background-image: linear-gradient(
+    135deg,
+    var(--color-warm) 0%,
+    var(--color-warm-deep) 100%
+  );
+
+}
+.canvas_inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  min-height: 420px;
+   max-width: 1280px;
   margin: 0 auto;
-  padding: 5rem 1.5rem;
+}
+/* ============================================
+   DECORATIVE SHAPES — sit behind everything
+   ============================================ */
+.decorShapes {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
 
+/* ============================================
+   CONTENT — left column
+   ============================================ */
 .content {
-  max-width: 540px;
+  position: relative;
+  z-index: 2;
+  padding: 4rem 3rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   color: var(--color-surface);
-}
-
-/* ============================================
-   COPY
-   ============================================ */
-.eyebrow {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-primary-light);
+  max-width: 520px;
+  justify-self: center;
 }
 
 .heading {
-  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: var(--color-surface);
   margin: 0;
 }
@@ -82,149 +71,80 @@
 .headingItalic {
   font-style: italic;
   font-family: Georgia, "Times New Roman", serif;
-  color: var(--color-accent);
+  color: var(--color-surface);
   font-weight: 500;
+  /* Slight transparency separates italic from bold */
+  opacity: 0.95;
 }
 
 .subcopy {
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  max-width: 440px;
+  max-width: 360px;
+  font-weight: 500;
 }
 
 /* ============================================
-   FORM
+   CTA — white pill on warm canvas
    ============================================ */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-}
-
-.field {
-  position: relative;
-}
-
-.input {
-  width: 100%;
+.ctaButton {
+  align-self: flex-start;
   background-color: var(--color-surface);
-  border: 2px solid transparent;
-  border-radius: 9999px;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
-  font-family: inherit;
   color: var(--color-text);
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.input::placeholder {
-  color: var(--color-text-soft);
-}
-
-.input:focus {
-  border-color: var(--color-primary-light);
-  box-shadow: 0 0 0 4px rgba(116, 198, 157, 0.2);
-}
-
-.input[aria-invalid="true"] {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(231, 111, 81, 0.2);
-}
-
-.input:disabled {
-  background-color: rgba(255, 255, 255, 0.7);
-  cursor: not-allowed;
-}
-
-.submitBtn {
-  background-color: var(--color-text);
-  color: var(--color-surface);
+  padding: 0.875rem 2.25rem;
   border: none;
   border-radius: 9999px;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.submitBtn:hover:not(:disabled) {
-  background-color: #2a2a2a;
-  transform: translateY(-1px);
-}
-
-.submitBtn:disabled {
-  cursor: not-allowed;
-  opacity: 0.85;
-}
-
-.errorMsg {
-  font-size: 0.85rem;
-  color: var(--color-accent);
-  margin: 0;
-  font-weight: 500;
-}
-
-/* ============================================
-   TRUST STRIP
-   ============================================ */
-.trustStrip {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
   margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.trustDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--color-success);
-  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.25);
-  /* Subtle pulse to feel "live" */
-  animation: pulse 2s ease-in-out infinite;
+.ctaButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
-.trustText {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 500;
+.ctaButton:active {
+  transform: translateY(0);
 }
 
 /* ============================================
-   LEGAL MICROCOPY
+   IMAGE — right column, bleeds to edges
    ============================================ */
-.legal {
-  font-size: 0.75rem;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.55);
-  margin: 0.5rem 0 0;
-  max-width: 440px;
+.imageWrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  overflow: hidden;
 }
 
-.legalLink {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.legalLink:hover {
-  color: var(--color-surface);
+.heroImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* Soft fade on left edge so image blends with canvas */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 100px,
+    #000 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 100px,
+    #000 100%
+  );
 }
 
 /* ============================================
@@ -232,39 +152,46 @@
    ============================================ */
 @media (max-width: 900px) {
   .section {
+    padding: 2rem 1rem;
+  }
+
+  .canvas {
+    grid-template-columns: 1fr;
     min-height: auto;
-  }
-
-  /* Stronger overlay on mobile — image takes full background */
-  .backgroundOverlay {
-    background: linear-gradient(
-      180deg,
-      rgba(27, 67, 50, 0.85) 0%,
-      rgba(27, 67, 50, 0.85) 100%
-    );
-  }
-
-  .container {
-    padding: 4rem 1.25rem;
+    border-radius: 20px;
   }
 
   .content {
-    max-width: none;
+    padding: 2.5rem 1.5rem 1.5rem;
+  }
+
+  .imageWrap {
+    min-height: 320px;
+  }
+
+  .heroImage {
+    /* Drop the side mask on mobile — image is its own row */
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .decorShapes {
+    /* Scale shapes for mobile */
+    opacity: 0.6;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 3rem 1rem;
-  }
-
   .heading {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .trustDot {
-    animation: none;
+  .ctaButton {
+    width: 100%;
+    text-align: center;
+  }
+
+  .content {
+    padding: 2rem 1.25rem 1.25rem;
   }
 }

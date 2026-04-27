@@ -1,109 +1,61 @@
-"use client";
-
-import { useState, FormEvent } from "react";
 import styles from "./AppMobileCTA.module.css";
 
 export default function AppMobileCTA() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">(
-    "idle"
-  );
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!email || !email.includes("@")) {
-      setStatus("error");
-      return;
-    }
-    setStatus("submitting");
-    // Replace with your real API call
-    await new Promise((r) => setTimeout(r, 800));
-    setStatus("success");
-  };
-
   return (
     <section className={styles.section}>
-      {/* Background image — full bleed */}
-      <div className={styles.background}>
-        <img
-          src="/cta/guide-bg.jpg"
-          alt=""
-          className={styles.backgroundImage}
-        />
-        <div className={styles.backgroundOverlay} />
-      </div>
-
-      {/* Content overlaid on left */}
-      <div className={styles.container}>
+      <div className={styles.canvas}>
+        {/* Abstract decorative shapes in background */}
+        <svg
+          className={styles.decorShapes}
+          viewBox="0 0 1200 500"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          {/* Big rounded petal — center */}
+          <path
+            d="M 400,-50 Q 600,150 500,400 Q 350,550 200,400 Q 100,200 400,-50 Z"
+            fill="var(--color-warm-soft)"
+            opacity="0.45"
+          />
+          {/* Smaller petal — right */}
+          <path
+            d="M 1100,100 Q 1300,250 1150,450 Q 1000,500 950,350 Q 950,150 1100,100 Z"
+            fill="var(--color-warm-soft)"
+            opacity="0.4"
+          />
+          {/* Soft circle — top */}
+          <circle
+            cx="850"
+            cy="60"
+            r="120"
+            fill="var(--color-warm-soft)"
+            opacity="0.3"
+          />
+        </svg>
+ <div className={styles.canvas_inner}>
+        {/* Content */}
         <div className={styles.content}>
-          <span className={styles.eyebrow}>FREE GUIDE · NO COMMITMENT</span>
-
           <h2 className={styles.heading}>
-            Unlock the <span className={styles.headingItalic}>free</span> Guide
-            to Protein for Weight Loss
+            Find freedom with
+            <br />
+            <span className={styles.headingItalic}>personalized health</span>
           </h2>
 
           <p className={styles.subcopy}>
-            Written by board-certified doctors to support your journey.
+            Start your journey with GLP-1 treatments designed for real results.
           </p>
 
-          {/* Form */}
-          <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <div className={styles.field}>
-              <input
-                type="email"
-                placeholder="Your email address"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (status === "error") setStatus("idle");
-                }}
-                className={styles.input}
-                aria-label="Email address"
-                aria-invalid={status === "error"}
-                disabled={status === "submitting" || status === "success"}
-              />
-            </div>
+          <button className={styles.ctaButton}>Get Started</button>
+        </div>
 
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={status === "submitting" || status === "success"}
-            >
-              {status === "submitting"
-                ? "Sending..."
-                : status === "success"
-                  ? "Sent — check your inbox ✓"
-                  : "Get the guide"}
-            </button>
-
-            {status === "error" && (
-              <p className={styles.errorMsg} role="alert">
-                Please enter a valid email address.
-              </p>
-            )}
-          </form>
-
-          {/* Trust strip */}
-          <div className={styles.trustStrip}>
-            <span className={styles.trustDot} />
-            <span className={styles.trustText}>
-              Joined by 12,000+ readers this month
-            </span>
-          </div>
-
-          {/* Legal microcopy */}
-          <p className={styles.legal}>
-            By creating an account using email, I agree to the{" "}
-            <a href="#terms" className={styles.legalLink}>
-              Terms &amp; Conditions
-            </a>
-            , and acknowledge the{" "}
-            <a href="#privacy" className={styles.legalLink}>
-              Privacy Policy
-            </a>
-            .
-          </p>
+        {/* Hero image — bleeds right */}
+        <div className={styles.imageWrap}>
+          <img
+            src="/images/smiling-face.png"
+            alt="Smiling person enjoying a confident moment"
+            className={styles.heroImage}
+          />
+        </div>
         </div>
       </div>
     </section>

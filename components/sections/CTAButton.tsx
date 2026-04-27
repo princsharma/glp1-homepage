@@ -42,7 +42,7 @@ export default function CTAButton() {
           {/* Left — image */}
           <div className={styles.cardImageWrap}>
             <img
-              src="/cta/care-coaching.jpg"
+              src="/images/instructor.png"
               alt="Care coaching specialist"
               className={styles.cardImage}
             />

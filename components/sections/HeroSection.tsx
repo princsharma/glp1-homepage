@@ -1,12 +1,12 @@
 import styles from "./HeroSection.module.css";
 
 const marqueeImages = [
-  "/hero/img1.jpg",
-  "/hero/img2.jpg",
-  "/hero/img3.jpg",
-  "/hero/img4.jpg",
-  "/hero/img5.jpg",
-  "/hero/img6.jpg",
+  "/images/glp-a.png",
+  "/images/glp-b.png",
+  "/images/glp-c.png",
+  "/images/glp-d.png",
+  "/images/glp-a.png",
+  "/images/glp-b.png",
 ];
 
 export default function Herosection() {
