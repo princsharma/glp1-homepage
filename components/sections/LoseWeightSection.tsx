@@ -43,12 +43,18 @@ export default function LoseWeightSection() {
 
         {/* RIGHT: Image + floating weight chip */}
         <div className={styles.visual}>
-          <img
-            src="/images/fat-girl.png"
-            alt="Smiling person showcasing healthy lifestyle"
-            className={styles.heroImage}
-          />
-
+          <div className={styles.imageWrapper}>
+              <img
+                src="/images/fat-girl.png"
+                alt="Person before weight loss program"
+                className={`${styles.heroImage} ${styles.heroImageBefore}`}
+              />
+              <img
+                src="/images/slim-girl.png"
+                alt="Person after weight loss program"
+                className={`${styles.heroImage} ${styles.heroImageAfter}`}
+              />
+            </div>
           {/* Glassmorphic weight chip */}
           <div className={styles.weightChip}>
             <div className={styles.chipHeader}>

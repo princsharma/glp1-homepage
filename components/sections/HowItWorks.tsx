@@ -6,21 +6,21 @@ const steps = [
     title: "Get pre-approved online",
     caption: "with a 3 minute quiz",
     imageAlt: "Mobile app screen showing weight loss goal questions",
-    imageSrc: "/how-it-works/step-1.jpg",
+    imageSrc: "/images/step-a.jfif",
   },
   {
     number: "Step 2",
     title: "Meet with your US-based provider",
     caption: "to find your perfect treatment",
     imageAlt: "Healthcare provider in white coat",
-    imageSrc: "/how-it-works/step-2.jpg",
+    imageSrc: "/images/step-b.jfif",
   },
   {
     number: "Step 3",
     title: "Receive your prescription",
     caption: "with free 2-day shipping",
     imageAlt: "Hands receiving a delivery box",
-    imageSrc: "/how-it-works/step-3.jpg",
+    imageSrc: "/images/step-c.jfif",
   },
 ];
 

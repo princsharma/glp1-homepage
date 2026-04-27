@@ -8,10 +8,28 @@
    ============================================ */
 :root {
   /* Brand — Primary (sage green) */
- --color-primary: #347e5d;
+ /* --color-primary: #347e5d;
   --color-primary-dark: #1b4332;
   --color-primary-light: #74c69d;
-  --color-primary-soft: #d8f3dc;
+  --color-primary-soft: #d8f3dc; */
+
+  /* purple */
+   /* --color-primary: #7c5cd6;
+  --color-primary-dark: #4c3a9b;
+  --color-primary-light: #b8a4f0;
+  --color-primary-soft: #f3eefe; */
+
+  /* blue */
+  /* --color-primary: #0e7490;
+  --color-primary-dark: #155e75;
+  --color-primary-light: #67e8f9;
+  --color-primary-soft: #ecfeff; */
+
+    /* Brand — Primary (warm wine) */
+  --color-primary: #b8455e;
+  --color-primary-dark: #7d2c40;
+  --color-primary-light: #e8a4b3;
+  --color-primary-soft: #fdf2f4;
  
   /* Accent (warm coral) */
   --color-accent: #e76f51;
