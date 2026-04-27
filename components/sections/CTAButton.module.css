@@ -1,0 +1,231 @@
+/* ============================================
+   SECTION
+   ============================================ */
+.section {
+  width: 100%;
+  background-color: var(--color-bg);
+  padding: 5rem 1.5rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+
+.heading {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 0 0 3rem;
+}
+
+.headingAccent {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* ============================================
+   CARD — image + content
+   ============================================ */
+.card {
+  position: relative;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: visible;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.cardImageWrap {
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: var(--color-primary-soft);
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 2.5rem;
+}
+
+.cardTitle {
+  font-size: clamp(1.4rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.cardText {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ============================================
+   ROTATING BADGE — top right of card
+   ============================================ */
+.rotatingBadge {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 130px;
+  height: 130px;
+  z-index: 2;
+}
+
+.rotatingSvg {
+  width: 100%;
+  height: 100%;
+  /* The actual rotation animation */
+  animation: rotate 18s linear infinite;
+}
+
+.rotatingText {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: var(--color-primary);
+  text-transform: uppercase;
+}
+
+/* Center decoration — coral accent dot */
+.badgeCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 0 6px var(--color-bg), 0 0 0 7px var(--color-accent-soft);
+}
+
+/* The animation itself */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pause on hover — small delight */
+.rotatingBadge:hover .rotatingSvg {
+  animation-play-state: paused;
+}
+
+/* ============================================
+   FOOTER — tagline + link
+   ============================================ */
+.footer {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footerText {
+  font-size: 1rem;
+  color: var(--color-text);
+  font-weight: 500;
+  margin: 0;
+}
+
+.footerLink {
+  font-size: 1rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.15s ease;
+  display: inline-block;
+}
+
+.footerLink:hover {
+  color: var(--color-primary-dark);
+  transform: translateX(2px);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .cardImageWrap {
+    min-height: 280px;
+  }
+
+  .cardContent {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .rotatingBadge {
+    top: -30px;
+    right: -10px;
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heading {
+    margin-bottom: 2rem;
+  }
+
+  .rotatingBadge {
+    width: 90px;
+    height: 90px;
+    top: -25px;
+    right: -10px;
+  }
+
+  .rotatingText {
+    font-size: 13px;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .rotatingSvg {
+    animation: none;
+  }
+}

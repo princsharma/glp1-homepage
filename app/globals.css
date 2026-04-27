@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+/* ============================================
+   DESIGN TOKENS — COLORS
+   Used across the entire app via var(--token-name)
+   ============================================ */
+:root {
+  /* Brand — Primary (sage green) */
+ --color-primary: #347e5d;
+  --color-primary-dark: #1b4332;
+  --color-primary-light: #74c69d;
+  --color-primary-soft: #d8f3dc;
+ 
+  /* Accent (warm coral) */
+  --color-accent: #e76f51;
+  --color-accent-soft: #fce4dc;
+ 
+  /* Surfaces & Backgrounds */
+  --color-bg: #fffbf5;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4f1ec;
+ 
+  /* Text */
+  --color-text: #1a1a1a;
+  --color-text-muted: #5c6b73;
+  --color-text-soft: #8a9a9e;
+ 
+  /* Borders & Dividers */
+  --color-border: #e5e0d8;
+ 
+  /* Semantic */
+  --color-success: #52b788;
+  --color-warning: #f4a261;
+  --color-error: #d62828;
+}
+ 
+/* ============================================
+   GLOBAL BASE STYLES
+   ============================================ */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+ 
+* {
+  box-sizing: border-box;
+}
+ 
