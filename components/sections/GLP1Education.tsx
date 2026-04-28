@@ -55,7 +55,7 @@ export default function GLP1Education() {
               <div className={styles.imageBackdrop} />
               <div className={styles.imageWrap}>
                 <img
-                  src="/images/dr-vanessa-niles.webp"
+                  src="/images/instructor.png"
                   alt="Doctor showing positive results"
                   className={styles.heroImage}
                 />
