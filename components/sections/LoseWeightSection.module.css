@@ -33,11 +33,11 @@
 }
 
 /* On hover of the whole section, dissolve between images */
-.section:hover .heroImageBefore {
+.container:hover .heroImageBefore {
   opacity: 0;
 }
 
-.section:hover .heroImageAfter {
+.container:hover .heroImageAfter {
   opacity: 1;
 }
 .container {
@@ -322,5 +322,61 @@ max-width: 1280px;
     left: 1rem;
     right: 1rem;
     min-width: auto;
+  }
+}
+
+/* ============================================
+   BACKGROUND CURVE — descends on container hover
+   ============================================ */
+.bgCurve {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  /* On hover, the curve translates down to suggest weight loss */
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container:hover .bgCurve {
+  transform: translateY(80px);
+}
+
+/* The line itself */
+.bgCurveLine {
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Subtle dashed effect — looks technical/data-y */
+  stroke-dasharray: 6 5;
+}
+
+/* The soft area fill below the curve */
+.bgCurveFill {
+  fill: var(--color-warm-deep);
+}
+
+/* Dots on the curve */
+.bgCurveDot {
+  fill: var(--color-warm-soft);
+  stroke: var(--color-warm-deep);
+  stroke-width: 1.5;
+}
+
+/* Make sure inner grid sits ABOVE the curve */
+.loseweight_inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .bgCurve {
+    transition: none;
+  }
+  .container:hover .bgCurve {
+    transform: none;
   }
 }

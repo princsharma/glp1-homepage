@@ -2,12 +2,14 @@
    SECTION — DARK SAGE CANVAS
    ============================================ */
 .section {
-  width: 100%;
+  width: 97%;
   background-color: var(--color-primary-dark);
   padding: 5rem 1.5rem;
   color: var(--color-surface);
   position: relative;
   overflow: hidden;
+  margin: 3rem auto 3rem;
+border-radius: 28px;
 }
 
 /* Subtle radial glow for depth */

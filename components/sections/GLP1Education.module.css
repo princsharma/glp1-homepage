@@ -1,0 +1,501 @@
+/* ============================================
+   SECTION
+   ============================================ */
+.section {
+  width: 100%;
+  background-color: var(--color-bg);
+  padding: 5rem 1.5rem;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   PROMO BADGE
+   ============================================ */
+.promoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2.5rem;
+}
+
+.promoIcon {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   GRID
+   ============================================ */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* ============================================
+   LEFT — VISUAL
+   ============================================ */
+.visual {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.imageStack {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 540px;
+}
+
+/* Soft circular backdrop behind the photo */
+.imageBackdrop {
+  position: absolute;
+  inset: 8% 8% 4% 8%;
+  border-radius: 50% 50% 30% 30%;
+  background: var(--gradient-purple, var(--color-primary-soft));
+  z-index: 0;
+}
+
+.imageWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.heroImage {
+  width: 80%;
+  height: 95%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 50% 50% 24px 24px;
+}
+
+/* ============================================
+   FLOATING FEATURE PILLS
+   ============================================ */
+.featurePill {
+  position: absolute;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 0.875rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+  min-width: 140px;
+  animation: floatPill 4s ease-in-out infinite;
+}
+
+.featurePill_1 {
+  top: 5%;
+  left: 0%;
+  animation-delay: 0s;
+}
+
+.featurePill_2 {
+  top: 25%;
+  right: -5%;
+  animation-delay: 1s;
+}
+
+.featurePill_3 {
+  bottom: 28%;
+  left: -5%;
+  animation-delay: 2s;
+}
+
+.featurePill_4 {
+  top: 8%;
+  right: 5%;
+  animation-delay: 1.5s;
+}
+
+@keyframes floatPill {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.featureIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.featureText {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+  white-space: pre-line;
+}
+
+/* ============================================
+   ELIGIBILITY CHIP — under photo
+   ============================================ */
+.eligibilityChip {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  background-color: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  margin-top: 1rem;
+}
+
+.eligibilityChip:hover {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  transform: translateY(-1px);
+}
+
+.chipArrow {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.eligibilityChip:hover .chipArrow {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+}
+
+/* ============================================
+   STAT STRIP
+   ============================================ */
+.statStrip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background-color: var(--color-primary-soft);
+  border-radius: 16px;
+  padding: 1.25rem 0;
+  margin-top: 1rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  border-right: 1px solid rgba(124, 92, 214, 0.15);
+}
+
+.statItem:last-child {
+  border-right: none;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   RIGHT — CONTENT
+   ============================================ */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.heading {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.headingAccent {
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.subcopy {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.bodyCopy {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Highlighted drug names */
+.highlight {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ============================================
+   BENEFIT TABS
+   ============================================ */
+.benefitTabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.benefitTab,
+.benefitTabActive {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: border-color 0.25s ease, background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.benefitTab:hover {
+  border-color: var(--color-primary-light);
+}
+
+.benefitTabActive {
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 16px rgba(124, 92, 214, 0.08);
+}
+
+.benefitCheck {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.benefitTabActive .benefitCheck {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.benefitTabContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.benefitTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.benefitDescription {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   PRIMARY CTA
+   ============================================ */
+.primaryCta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  border: none;
+  padding: 1rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(124, 92, 214, 0.2);
+}
+
+.primaryCta:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 92, 214, 0.3);
+}
+
+.ctaArrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.primaryCta:hover .ctaArrow {
+  transform: translateX(3px);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .featurePill {
+    min-width: 120px;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .featureText {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .imageStack {
+    aspect-ratio: 4 / 5;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 3rem 1rem;
+  }
+
+  .featurePill {
+    min-width: 110px;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .featureIcon {
+    font-size: 1rem;
+  }
+
+  .featureText {
+    font-size: 0.65rem;
+  }
+
+  .featurePill_1 {
+    top: 0;
+    left: -5%;
+  }
+
+  .featurePill_2 {
+    top: 25%;
+    right: -8%;
+  }
+
+  .featurePill_3 {
+    bottom: 30%;
+    left: -8%;
+  }
+
+  .featurePill_4 {
+    top: 10%;
+    right: 0;
+  }
+
+  .statValue {
+    font-size: 1.25rem;
+  }
+
+  .heading {
+    font-size: 1.75rem;
+  }
+
+  .primaryCta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featurePill {
+    animation: none;
+  }
+  .benefitDescription {
+    animation: none;
+  }
+}

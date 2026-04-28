@@ -11,6 +11,7 @@ import Faq from "@/components/sections/Faq";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import Header from "@/components/Header";
 import Cascade from "@/components/Cascade";
+import GLP1Education from "@/components/sections/GLP1Education";
 export default function HomePage() {
   return (
     <>
@@ -42,7 +43,9 @@ export default function HomePage() {
 <div id="reviews">
   <Cascade from="right"><ProductReviews /></Cascade>
 </div>
-
+<div id="glpeducation">
+  <Cascade from="left"><GLP1Education /></Cascade>
+</div>
 <div id="doctors">
   <Cascade from="left"><OngoSolution /></Cascade>
 </div>
