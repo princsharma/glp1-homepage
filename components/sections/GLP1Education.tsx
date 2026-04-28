@@ -14,33 +14,26 @@ const BENEFITS: Benefit[] = [
     id: "proven",
     title: "Clinically proven weight loss",
     description:
-      "Weight loss medication often contains semaglutide, which mimics a natural hormone that signals fullness to your brain and slows digestion, helping regulate hunger cues and feeling satisfied with smaller portions.",
+      "Weight loss medication often contains semaglutide, which mimics a natural hormone that signals fullness to your brain and slows digestion.",
   },
   {
     id: "biological",
     title: "Breakthrough biological barriers",
     description:
-      "Weight loss isn't just about diet and exercise — factors like biology, age, hormones, and health conditions all play a role. Licensed pharmacists can prescribe treatment to make managing weight easier.",
+      "Weight loss isn't just about diet and exercise — biology, age, hormones, and health conditions all play a role.",
   },
   {
     id: "beyond",
     title: "More benefits beyond weight loss",
     description:
-      "GLP-1 drugs can also improve your energy levels and lower your risk for serious health conditions such as heart disease and diabetes.",
+      "GLP-1 drugs can also improve energy levels and lower your risk for heart disease and diabetes.",
   },
 ];
 
 const FEATURES = [
-  { icon: "🧪", label: "No blood test\nand no lab work" },
+  { icon: "🧪", label: "No blood test\nor lab work" },
   { icon: "👨‍⚕️", label: "Prescribed by\nlicensed doctors" },
   { icon: "🚚", label: "Free delivery\nto your door" },
-  { icon: "⏱", label: "Results in\nas little as 8 weeks" },
-];
-
-const STATS = [
-  { value: "100K+", label: "Members served" },
-  { value: "92%", label: "Success rate" },
-  { value: "24/7", label: "Care support" },
 ];
 
 export default function GLP1Education() {
@@ -49,26 +42,26 @@ export default function GLP1Education() {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        {/* Promotional badge */}
-        <div className={styles.promoBadge}>
-          <span className={styles.promoIcon}>★</span>
-          <span>Assessment 40% off — limited time</span>
-        </div>
-
         <div className={styles.grid}>
           {/* LEFT — Visual with floating features */}
           <div className={styles.visual}>
+            {/* Promo badge — now inside left column */}
+            <div className={styles.promoBadge}>
+              <span className={styles.promoIcon}>★</span>
+              <span>Assessment 40% off</span>
+            </div>
+
             <div className={styles.imageStack}>
               <div className={styles.imageBackdrop} />
               <div className={styles.imageWrap}>
                 <img
                   src="/images/dr-vanessa-niles.webp"
-                  alt="Person showing positive weight loss results"
+                  alt="Doctor showing positive results"
                   className={styles.heroImage}
                 />
               </div>
 
-              {/* Floating feature pills */}
+              {/* Floating feature pills — only 3 now */}
               <div className={`${styles.featurePill} ${styles.featurePill_1}`}>
                 <span className={styles.featureIcon}>{FEATURES[0].icon}</span>
                 <span className={styles.featureText}>{FEATURES[0].label}</span>
@@ -81,28 +74,6 @@ export default function GLP1Education() {
                 <span className={styles.featureIcon}>{FEATURES[2].icon}</span>
                 <span className={styles.featureText}>{FEATURES[2].label}</span>
               </div>
-              <div className={`${styles.featurePill} ${styles.featurePill_4}`}>
-                <span className={styles.featureIcon}>{FEATURES[3].icon}</span>
-                <span className={styles.featureText}>{FEATURES[3].label}</span>
-              </div>
-            </div>
-
-            {/* Eligibility CTA chip */}
-            <button type="button" className={styles.eligibilityChip}>
-              <span>Am I eligible for GLP-1 drugs?</span>
-              <span className={styles.chipArrow} aria-hidden="true">
-                →
-              </span>
-            </button>
-
-            {/* Stat strip */}
-            <div className={styles.statStrip}>
-              {STATS.map((stat, i) => (
-                <div key={i} className={styles.statItem}>
-                  <span className={styles.statValue}>{stat.value}</span>
-                  <span className={styles.statLabel}>{stat.label}</span>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -122,45 +93,58 @@ export default function GLP1Education() {
               proven to help people lose weight.
             </p>
 
-            <p className={styles.bodyCopy}>
-              These weight loss medications work by acting on the brain to
-              reduce hunger and slowing stomach emptying to help you feel full
-              longer — all of which support effective and sustainable weight
-              loss.
-            </p>
-
-            {/* Benefit tabs */}
-            <div className={styles.benefitTabs} role="tablist">
-              {BENEFITS.map((b) => (
-                <button
-                  key={b.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeBenefit === b.id}
-                  className={`${styles.benefitTab} ${
-                    activeBenefit === b.id ? styles.benefitTabActive : ""
-                  }`}
-                  onClick={() => setActiveBenefit(b.id)}
-                >
-                  <span className={styles.benefitCheck} aria-hidden="true">
-                    ✓
-                  </span>
-                  <div className={styles.benefitTabContent}>
-                    <span className={styles.benefitTitle}>{b.title}</span>
-                    {activeBenefit === b.id && (
+            {/* Compact accordion benefits */}
+            <div className={styles.benefits} role="tablist">
+              {BENEFITS.map((b) => {
+                const isActive = activeBenefit === b.id;
+                return (
+                  <div
+                    key={b.id}
+                    className={`${styles.benefit} ${
+                      isActive ? styles.benefitActive : ""
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={isActive}
+                      className={styles.benefitTrigger}
+                      onClick={() => setActiveBenefit(b.id)}
+                    >
+                      <span className={styles.benefitCheck} aria-hidden="true">
+                        ✓
+                      </span>
+                      <span className={styles.benefitTitle}>{b.title}</span>
+                    </button>
+                    <div className={styles.benefitPanel}>
                       <p className={styles.benefitDescription}>
                         {b.description}
                       </p>
-                    )}
+                    </div>
                   </div>
-                </button>
-              ))}
+                );
+              })}
             </div>
 
-            <button type="button" className={styles.primaryCta}>
-              Get my eligibility check
-              <span className={styles.ctaArrow}>→</span>
-            </button>
+            {/* CTA row */}
+            <div className={styles.ctaRow}>
+              <button type="button" className={styles.primaryCta}>
+                Get my eligibility check
+                <span className={styles.ctaArrow}>→</span>
+              </button>
+
+              <div className={styles.miniStats}>
+                <div className={styles.miniStatItem}>
+                  <span className={styles.miniStatValue}>100K+</span>
+                  <span className={styles.miniStatLabel}>Members</span>
+                </div>
+                <div className={styles.miniStatDivider} />
+                <div className={styles.miniStatItem}>
+                  <span className={styles.miniStatValue}>92%</span>
+                  <span className={styles.miniStatLabel}>Success rate</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

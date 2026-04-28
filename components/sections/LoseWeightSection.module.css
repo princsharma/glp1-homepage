@@ -355,7 +355,7 @@ max-width: 1280px;
 
 /* The soft area fill below the curve */
 .bgCurveFill {
-  fill: var(--color-warm-deep);
+  fill: var(--color-text-soft);
 }
 
 /* Dots on the curve */

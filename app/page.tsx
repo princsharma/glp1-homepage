@@ -12,6 +12,7 @@ import ThemeSwitcher from "@/components/ThemeSwitcher";
 import Header from "@/components/Header";
 import Cascade from "@/components/Cascade";
 import GLP1Education from "@/components/sections/GLP1Education";
+import Pricing from "@/components/sections/pricing";
 export default function HomePage() {
   return (
     <>
@@ -39,13 +40,17 @@ export default function HomePage() {
 <div id="why-us">
   <Cascade from="left"><CTAButton /></Cascade>
 </div>
-
+<div id="pricing">
+  <Cascade from="right"><Pricing /></Cascade>
+</div>
 <div id="reviews">
-  <Cascade from="right"><ProductReviews /></Cascade>
+  <Cascade from="left"><ProductReviews /></Cascade>
 </div>
+
 <div id="glpeducation">
-  <Cascade from="left"><GLP1Education /></Cascade>
+  <Cascade from="right"><GLP1Education /></Cascade>
 </div>
+
 <div id="doctors">
   <Cascade from="left"><OngoSolution /></Cascade>
 </div>

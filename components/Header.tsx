@@ -6,12 +6,14 @@ import styles from "./Header.module.css";
 const NAV_LINKS = [
   { id: "hero", label: "Home" },
   { id: "lose-weight", label: "Lose Weight" },
-  { id: "bmi", label: "BMI Check" },
   { id: "how-it-works", label: "How It Works" },
+  { id: "bmi", label: "BMI Check" },
   { id: "plans", label: "GLP-1 Plans" },
   { id: "why-us", label: "Why Us" },
-  { id: "doctors", label: "Our Doctors" },
+  { id: "pricing", label: "Pricing" },
   { id: "reviews", label: "Reviews" },
+  { id: "glpeducation", label: "About GLP-1" },
+  { id: "doctors", label: "Our Doctors" },
   { id: "faq", label: "FAQ" },
   { id: "get-started", label: "Get Started" },
 ];

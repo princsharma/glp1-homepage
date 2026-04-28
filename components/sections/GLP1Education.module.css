@@ -8,29 +8,8 @@
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-}
-
-/* ============================================
-   PROMO BADGE
-   ============================================ */
-.promoBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--color-primary-soft);
-  color: var(--color-primary-dark);
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 2.5rem;
-}
-
-.promoIcon {
-  color: var(--color-accent);
-  font-size: 0.85rem;
 }
 
 /* ============================================
@@ -53,19 +32,40 @@
   position: relative;
 }
 
+/* Promo badge — moved inside left column */
+.promoBadge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.5rem;
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.promoIcon {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+}
+
+/* Image stack */
 .imageStack {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  max-height: 540px;
+  max-width: 460px;
+  max-height: 460px;
+  margin: 0 auto;
 }
 
-/* Soft circular backdrop behind the photo */
 .imageBackdrop {
   position: absolute;
   inset: 8% 8% 4% 8%;
   border-radius: 50% 50% 30% 30%;
-  background: var(--gradient-purple, var(--color-primary-soft));
+  /* background: var(--gradient-purple, var(--color-primary-soft)); */
   z-index: 0;
 }
 
@@ -93,39 +93,33 @@
   position: absolute;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 0.875rem 1rem;
+  border-radius: 14px;
+  padding: 0.7rem 0.875rem;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   z-index: 2;
-  min-width: 140px;
+  min-width: 130px;
   animation: floatPill 4s ease-in-out infinite;
 }
 
 .featurePill_1 {
-  top: 5%;
-  left: 0%;
+  top: 8%;
+  left: -8%;
   animation-delay: 0s;
 }
 
 .featurePill_2 {
-  top: 25%;
-  right: -5%;
-  animation-delay: 1s;
+  top: 30%;
+  right: -8%;
+  animation-delay: 1.5s;
 }
 
 .featurePill_3 {
-  bottom: 28%;
-  left: -5%;
-  animation-delay: 2s;
-}
-
-.featurePill_4 {
-  top: 8%;
-  right: 5%;
-  animation-delay: 1.5s;
+  bottom: 12%;
+  left: -8%;
+  animation-delay: 3s;
 }
 
 @keyframes floatPill {
@@ -138,102 +132,16 @@
 }
 
 .featureIcon {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   flex-shrink: 0;
 }
 
 .featureText {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--color-text);
   line-height: 1.3;
   white-space: pre-line;
-}
-
-/* ============================================
-   ELIGIBILITY CHIP — under photo
-   ============================================ */
-.eligibilityChip {
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  background-color: var(--color-primary-soft);
-  border: 1px solid var(--color-primary-light);
-  color: var(--color-primary-dark);
-  padding: 0.75rem 1.25rem;
-  border-radius: 9999px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-  margin-top: 1rem;
-}
-
-.eligibilityChip:hover {
-  background-color: var(--color-primary);
-  color: var(--color-surface);
-  transform: translateY(-1px);
-}
-
-.chipArrow {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-  color: var(--color-surface);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  transition: background-color 0.2s ease;
-}
-
-.eligibilityChip:hover .chipArrow {
-  background-color: var(--color-surface);
-  color: var(--color-primary);
-}
-
-/* ============================================
-   STAT STRIP
-   ============================================ */
-.statStrip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  background-color: var(--color-primary-soft);
-  border-radius: 16px;
-  padding: 1.25rem 0;
-  margin-top: 1rem;
-}
-
-.statItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  border-right: 1px solid rgba(124, 92, 214, 0.15);
-}
-
-.statItem:last-child {
-  border-right: none;
-}
-
-.statValue {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--color-primary-dark);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.statLabel {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 /* ============================================
@@ -268,61 +176,58 @@
   margin: 0;
 }
 
-.bodyCopy {
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
-/* Highlighted drug names */
 .highlight {
   background-color: var(--color-primary-soft);
   color: var(--color-primary-dark);
   padding: 0.1rem 0.4rem;
   border-radius: 6px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* ============================================
-   BENEFIT TABS
+   ACCORDION BENEFITS
    ============================================ */
-.benefitTabs {
+.benefits {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-.benefitTab,
-.benefitTabActive {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.875rem;
-  padding: 1rem 1.25rem;
+.benefit {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 14px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  transition: border-color 0.25s ease, background-color 0.25s ease,
-    box-shadow 0.25s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.benefitTab:hover {
+.benefit:hover {
   border-color: var(--color-primary-light);
 }
 
-.benefitTabActive {
+.benefitActive {
   border-color: var(--color-primary);
-  background-color: var(--color-surface);
-  box-shadow: 0 4px 16px rgba(124, 92, 214, 0.08);
+  box-shadow: 0 4px 16px rgba(124, 92, 214, 0.06);
+}
+
+.benefitTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
 }
 
 .benefitCheck {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
@@ -332,69 +237,75 @@
   font-size: 0.7rem;
   font-weight: 800;
   flex-shrink: 0;
-  margin-top: 2px;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-.benefitTabActive .benefitCheck {
+.benefitActive .benefitCheck {
   background-color: var(--color-primary);
   color: var(--color-surface);
 }
 
-.benefitTabContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .benefitTitle {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--color-text);
   letter-spacing: -0.01em;
+  flex: 1;
+}
+
+/* Accordion panel — animates from 0 to auto height */
+.benefitPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.benefitActive .benefitPanel {
+  grid-template-rows: 1fr;
 }
 
 .benefitDescription {
-  font-size: 0.875rem;
+  overflow: hidden;
+  font-size: 0.85rem;
   line-height: 1.6;
   color: var(--color-text-muted);
   margin: 0;
-  animation: fadeIn 0.3s ease-out;
+  padding: 0 1rem 0 2.75rem;
+  transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.benefitActive .benefitDescription {
+  padding: 0 1rem 0.875rem 2.75rem;
 }
 
 /* ============================================
-   PRIMARY CTA
+   CTA ROW — button + mini stats inline
    ============================================ */
+.ctaRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .primaryCta {
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 0.625rem;
   background-color: var(--color-primary);
   color: var(--color-surface);
   border: none;
-  padding: 1rem 1.75rem;
+  padding: 0.95rem 1.75rem;
   border-radius: 9999px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  margin-top: 1rem;
   transition: background-color 0.2s ease, transform 0.15s ease,
     box-shadow 0.2s ease;
   box-shadow: 0 4px 12px rgba(124, 92, 214, 0.2);
+  white-space: nowrap;
 }
 
 .primaryCta:hover {
@@ -404,7 +315,7 @@
 }
 
 .ctaArrow {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   transition: transform 0.2s ease;
 }
 
@@ -412,17 +323,52 @@
   transform: translateX(3px);
 }
 
+/* Mini stats next to CTA */
+.miniStats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.miniStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.miniStatValue {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.miniStatLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.miniStatDivider {
+  width: 1px;
+  height: 30px;
+  background-color: var(--color-border);
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 1024px) {
   .featurePill {
-    min-width: 120px;
-    padding: 0.75rem 0.875rem;
+    min-width: 110px;
+    padding: 0.6rem 0.75rem;
   }
 
   .featureText {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
 }
 
@@ -434,8 +380,6 @@
 
   .imageStack {
     aspect-ratio: 4 / 5;
-    max-width: 480px;
-    margin: 0 auto;
   }
 }
 
@@ -445,48 +389,48 @@
   }
 
   .featurePill {
-    min-width: 110px;
-    padding: 0.6rem 0.75rem;
+    min-width: 100px;
+    padding: 0.5rem 0.65rem;
   }
 
   .featureIcon {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .featureText {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 
   .featurePill_1 {
     top: 0;
-    left: -5%;
+    left: -3%;
   }
 
   .featurePill_2 {
-    top: 25%;
-    right: -8%;
+    top: 30%;
+    right: -3%;
   }
 
   .featurePill_3 {
-    bottom: 30%;
-    left: -8%;
-  }
-
-  .featurePill_4 {
-    top: 10%;
-    right: 0;
-  }
-
-  .statValue {
-    font-size: 1.25rem;
+    bottom: 12%;
+    left: -3%;
   }
 
   .heading {
     font-size: 1.75rem;
   }
 
+  .ctaRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .primaryCta {
     width: 100%;
+    justify-content: center;
+  }
+
+  .miniStats {
     justify-content: center;
   }
 }
@@ -495,7 +439,7 @@
   .featurePill {
     animation: none;
   }
-  .benefitDescription {
-    animation: none;
+  .benefitPanel {
+    transition: none;
   }
 }
