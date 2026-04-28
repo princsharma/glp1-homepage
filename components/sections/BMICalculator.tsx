@@ -20,12 +20,11 @@ const CATEGORIES: Category[] = [
   { label: "Obese", range: "≥ 30", min: 30, max: 60, tone: "high" },
 ];
 
-// Eligibility copy keyed off BMI category
-const ELIGIBILITY: Record<Category["tone"], { label: string; tone: string }> = {
-  low: { label: "Not a candidate", tone: "neutral" },
-  ok: { label: "Unlikely to qualify", tone: "neutral" },
-  warn: { label: "May qualify", tone: "ok" },
-  high: { label: "Likely qualifies", tone: "good" },
+const ELIGIBILITY: Record<Category["tone"], { label: string }> = {
+  low: { label: "Not a candidate" },
+  ok: { label: "Unlikely to qualify" },
+  warn: { label: "May qualify" },
+  high: { label: "Likely qualifies" },
 };
 
 export default function BMICalculator() {
@@ -36,7 +35,6 @@ export default function BMICalculator() {
   const [feet, setFeet] = useState<number>(5);
   const [inches, setInches] = useState<number>(7);
 
-  // Compute BMI from current unit
   const bmi = useMemo(() => {
     if (unit === "metric") {
       const m = heightCm / 100;
@@ -50,14 +48,12 @@ export default function BMICalculator() {
   }, [unit, weightKg, heightCm, weightLb, feet, inches]);
 
   const category = useMemo(
-    () =>
-      CATEGORIES.find((c) => bmi >= c.min && bmi < c.max) ?? CATEGORIES[3],
+    () => CATEGORIES.find((c) => bmi >= c.min && bmi < c.max) ?? CATEGORIES[3],
     [bmi]
   );
 
   const eligibility = ELIGIBILITY[category.tone];
 
-  // Gauge math: map BMI [10..40] → angle [-120..120]
   const angle = useMemo(() => {
     const clamped = Math.min(40, Math.max(10, bmi));
     const t = (clamped - 10) / 30;
@@ -70,7 +66,6 @@ export default function BMICalculator() {
         <span className={styles.eyebrow}>BMI ELIGIBILITY</span>
 
         <div className={styles.grid}>
-          {/* LEFT: copy + inputs + result */}
           <div className={styles.left}>
             <h2 className={styles.heading}>
               Could a GLP-1 be{" "}
@@ -83,9 +78,9 @@ export default function BMICalculator() {
               eligibility for GLP-1 medications.
             </p>
 
-            {/* Unit toggle */}
             <div className={styles.unitToggle} role="tablist">
               <button
+                type="button"
                 role="tab"
                 aria-selected={unit === "metric"}
                 className={`${styles.unitBtn} ${
@@ -96,6 +91,7 @@ export default function BMICalculator() {
                 Metric
               </button>
               <button
+                type="button"
                 role="tab"
                 aria-selected={unit === "imperial"}
                 className={`${styles.unitBtn} ${
@@ -107,7 +103,6 @@ export default function BMICalculator() {
               </button>
             </div>
 
-            {/* Inputs */}
             <div className={styles.inputs}>
               {unit === "metric" ? (
                 <>
@@ -139,7 +134,6 @@ export default function BMICalculator() {
               )}
             </div>
 
-            {/* Eligibility result */}
             <div
               className={`${styles.resultCard} ${
                 styles[`tone_${category.tone}`]
@@ -149,12 +143,11 @@ export default function BMICalculator() {
                 <span className={styles.resultEyebrow}>Eligibility</span>
                 <span className={styles.resultLabel}>{eligibility.label}</span>
               </div>
-              <button className={styles.cta}>
+              <button type="button" className={styles.cta}>
                 Start Medical Evaluation →
               </button>
             </div>
 
-            {/* Category legend */}
             <div className={styles.legend}>
               {CATEGORIES.map((c) => (
                 <div
@@ -168,15 +161,8 @@ export default function BMICalculator() {
                 </div>
               ))}
             </div>
-
-            <p className={styles.disclaimer}>
-              This tool is for general reference and not a diagnosis.
-              Eligibility is determined by a licensed provider based on your
-              individual health profile, and a prescription is never guaranteed.
-            </p>
           </div>
 
-          {/* RIGHT: gauge */}
           <div className={styles.right}>
             <Gauge bmi={bmi} angle={angle} category={category} />
           </div>
@@ -185,8 +171,6 @@ export default function BMICalculator() {
     </section>
   );
 }
-
-/* ----- Sub-components ----- */
 
 function Field({
   label,
@@ -219,25 +203,33 @@ function Gauge({
   angle: number;
   category: Category;
 }) {
-  // SVG arc geometry
   const size = 320;
   const cx = size / 2;
   const cy = size / 2;
   const r = 130;
+  const tickInner = r - 18;
+  const tickOuter = r + 8;
 
-  // Convert angle (degrees, 0 = top, +clockwise) to point on circle
-  const polar = (deg: number) => {
+  const polar = (deg: number, radius: number = r) => {
     const rad = ((deg - 90) * Math.PI) / 180;
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
   };
 
-  // Build the full background arc path (-120° to +120°)
   const start = polar(-120);
   const end = polar(120);
   const arcPath = `M ${start.x} ${start.y} A ${r} ${r} 0 1 1 ${end.x} ${end.y}`;
 
-  // Pointer end
-  const pointer = polar(angle);
+  const totalArcLength = (240 / 360) * 2 * Math.PI * r;
+  const arcProgress = (angle + 120) / 240;
+  const visibleArcLength = totalArcLength * arcProgress;
+
+  const ticks = [];
+  for (let deg = -120; deg <= 120; deg += 12) {
+    const isMajor = (deg + 120) % 60 === 0;
+    const inner = polar(deg, isMajor ? tickInner - 4 : tickInner);
+    const outer = polar(deg, tickOuter);
+    ticks.push({ inner, outer, isMajor, deg });
+  }
 
   return (
     <div className={styles.gauge}>
@@ -247,9 +239,29 @@ function Gauge({
             <stop offset="0%" stopColor="var(--color-primary-light)" />
             <stop offset="100%" stopColor="var(--color-primary-dark)" />
           </linearGradient>
+          <filter id="gaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="glow" />
+            <feMerge>
+              <feMergeNode in="glow" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
 
-        {/* Background track */}
+        {ticks.map((tick, i) => (
+          <line
+            key={i}
+            x1={tick.inner.x}
+            y1={tick.inner.y}
+            x2={tick.outer.x}
+            y2={tick.outer.y}
+            stroke="rgba(255, 255, 255, 0.3)"
+            strokeWidth={tick.isMajor ? 2 : 1}
+            strokeLinecap="round"
+            opacity={tick.isMajor ? 0.6 : 0.3}
+          />
+        ))}
+
         <path
           d={arcPath}
           fill="none"
@@ -258,39 +270,41 @@ function Gauge({
           strokeLinecap="round"
         />
 
-        {/* Active arc — full sage gradient */}
         <path
           d={arcPath}
           fill="none"
           stroke="url(#gaugeGrad)"
           strokeWidth="22"
           strokeLinecap="round"
-          opacity="0.85"
+          opacity="0.9"
+          filter="url(#gaugeGlow)"
+          strokeDasharray={`${visibleArcLength} ${totalArcLength}`}
+          className={styles.gaugeArc}
         />
 
-        {/* Pointer line from center to position on arc */}
-        <line
-          x1={cx}
-          y1={cy}
-          x2={pointer.x}
-          y2={pointer.y}
-          stroke="var(--color-surface)"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-
-        {/* Pointer tip — coral accent dot */}
-        <circle
-          cx={pointer.x}
-          cy={pointer.y}
-          r="10"
-          fill="var(--color-accent)"
-          stroke="var(--color-surface)"
-          strokeWidth="3"
-        />
-
-        {/* Center hub */}
-        <circle cx={cx} cy={cy} r="6" fill="var(--color-surface)" />
+        <g
+          className={styles.pointer}
+          style={{
+            transform: `rotate(${angle}deg)`,
+            transformOrigin: `${cx}px ${cy}px`,
+          }}
+        >
+          <circle
+            cx={cx}
+            cy={cy - r}
+            r="14"
+            fill="var(--color-accent)"
+            opacity="0.25"
+          />
+          <circle
+            cx={cx}
+            cy={cy - r}
+            r="9"
+            fill="var(--color-accent)"
+            stroke="var(--color-surface)"
+            strokeWidth="3"
+          />
+        </g>
       </svg>
 
       <div className={styles.gaugeReadout}>
@@ -306,6 +320,12 @@ function Gauge({
           {category.label}
         </span>
       </div>
+
+      <p className={styles.disclaimer}>
+        This tool is for general reference and not a diagnosis. Eligibility is
+        determined by a licensed provider based on your individual health
+        profile, and a prescription is never guaranteed.
+      </p>
     </div>
   );
 }

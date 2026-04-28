@@ -3,31 +3,59 @@ import LoseWeightSection from "@/components/sections/LoseWeightSection";
 import BMICalculator from "@/components/sections/BMICalculator";
 import HowItWorks from "@/components/sections/HowItWorks";
 import CreateGLP1Plan from "@/components/sections/CreateGLP1Plan";
-// import Services from "@/components/sections/Services";
 import CTAButton from "@/components/sections/CTAButton";
 import ProductReviews from "@/components/sections/ProductReviews";
-// import WhoIsItFor from "@/components/sections/WhoIsItFor";
 import OngoSolution from "@/components/sections/OngoSolution";
 import AppMobileCTA from "@/components/sections/AppMobileCTA";
 import Faq from "@/components/sections/Faq";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
-
+import Header from "@/components/Header";
+import Cascade from "@/components/Cascade";
 export default function HomePage() {
   return (
-    <main className="flex flex-col w-full">
-      <HeroSection />
-      <LoseWeightSection />
-      <BMICalculator />
-      <HowItWorks />
-      <CreateGLP1Plan />
-      {/* <Services /> */}
-      <CTAButton />
-      <ProductReviews />
-      {/* <WhoIsItFor /> */}
-      <OngoSolution />
-      <AppMobileCTA />
-      <Faq />
-       <ThemeSwitcher />
-    </main>
+    <>
+      <Header />
+      <main className="flex flex-col w-full">
+        {/* Hero — no animation, loads in immediately */}
+        <div id="hero"><HeroSection /></div>
+
+     <div id="lose-weight">
+  <Cascade ><LoseWeightSection /></Cascade>
+</div>
+
+<div id="bmi">
+  <Cascade from="left"><BMICalculator /></Cascade>
+</div>
+
+<div id="how-it-works">
+  <Cascade from="right"><HowItWorks /></Cascade>
+</div>
+
+<div id="plans">
+  <Cascade from="left"><CreateGLP1Plan /></Cascade>
+</div>
+
+<div id="why-us">
+  <Cascade from="right"><CTAButton /></Cascade>
+</div>
+
+<div id="reviews">
+  <Cascade from="left"><ProductReviews /></Cascade>
+</div>
+
+<div id="doctors">
+  <Cascade><OngoSolution /></Cascade>
+</div>
+
+<div id="faq">
+  <Cascade from="right"><Faq /></Cascade>
+</div>
+
+<div id="get-started">
+  <Cascade from="left"><AppMobileCTA /></Cascade>
+</div>
+        <ThemeSwitcher />
+      </main>
+    </>
   );
 }

@@ -12,52 +12,29 @@ const COLUMN_LEFT: Doctor[] = [
     name: "Daniel Funsch",
     credential: "MD",
     affiliation: "American Board of Emergency Medicine",
-    imageSrc: "/doctors/daniel.jpg",
+    imageSrc: "/images/johnathan-miller.webp",
   },
   {
     name: "Kimberli Hastings",
     credential: "NP",
     affiliation: "American Academy of Nurse Practitioners",
-    imageSrc: "/doctors/kimberli.jpg",
+    imageSrc: "/images/dr-krasne .webp",
   },
-  {
+ 
+];
+
+const COLUMN_RIGHT: Doctor[] = [
+ {
     name: "Marcus Reed",
     credential: "MD",
     affiliation: "American Board of Internal Medicine",
-    imageSrc: "/doctors/marcus.jpg",
+    imageSrc: "/images/Dr-vanessa-niles.webp",
   },
   {
     name: "Priya Shah",
     credential: "NP",
     affiliation: "American Academy of Nurse Practitioners",
-    imageSrc: "/doctors/priya.jpg",
-  },
-];
-
-const COLUMN_RIGHT: Doctor[] = [
-  {
-    name: "Theresa Vergara",
-    credential: "NP",
-    affiliation: "Certified Nurse Practitioner with a Doctorate in Nursing",
-    imageSrc: "/doctors/theresa.jpg",
-  },
-  {
-    name: "Takashi Nakamura",
-    credential: "MD",
-    affiliation: "American Board of Emergency Medicine",
-    imageSrc: "/doctors/takashi.jpg",
-  },
-  {
-    name: "Elena Ramirez",
-    credential: "MD",
-    affiliation: "American Board of Family Medicine",
-    imageSrc: "/doctors/elena.jpg",
-  },
-  {
-    name: "James Whitfield",
-    credential: "NP",
-    affiliation: "American Academy of Nurse Practitioners",
-    imageSrc: "/doctors/james.jpg",
+    imageSrc: "/images/cheryl-bugailiskis.webp",
   },
 ];
 

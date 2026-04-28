@@ -2,7 +2,7 @@ import styles from "./CTAButton.module.css";
 
 // The rotating text — repeats once around the circle.
 // Keep it short so all characters fit comfortably around 360°.
-const ROTATING_TEXT = "WITH YOU FROM START TO SUCCESS · ";
+const ROTATING_TEXT = "★ MODERN HEALTHCARE · MODERN CARE  ";
 
 export default function CTAButton() {
   return (

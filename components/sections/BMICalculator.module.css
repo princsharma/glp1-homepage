@@ -261,9 +261,9 @@
    DISCLAIMER
    ============================================ */
 .disclaimer {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.4);
+  color: #fff;
   margin: 0;
   border-left: 2px solid var(--color-accent-soft);
   padding-left: 0.75rem;
@@ -291,40 +291,6 @@
   height: 100%;
 }
 
-.gaugeReadout {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  pointer-events: none;
-}
-
-.gaugeEyebrow {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.gaugeValue {
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: var(--color-surface);
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.gaugeCategory {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-top: 0.25rem;
-}
 
 /* ============================================
    TONES — color-coded by BMI category
@@ -389,5 +355,64 @@
 
   .cta {
     width: 100%;
+  }
+}
+
+.gaugeReadout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  pointer-events: none;
+}
+
+.gaugeEyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.1rem;
+}
+
+.gaugeValue {
+  font-size: 3.25rem;
+  font-weight: 800;
+  color: var(--color-surface);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.gaugeCategory {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+/* ============================================
+   GAUGE ANIMATIONS — RPM-style
+   ============================================ */
+
+/* Pointer rotation — smooth analog-style with overshoot */
+.pointer {
+  /* Cubic-bezier with slight overshoot — feels like a real gauge needle */
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Active arc — smooth dash animation */
+.gaugeArc {
+  transition: stroke-dasharray 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pointer,
+  .gaugeArc {
+    transition: none;
   }
 }

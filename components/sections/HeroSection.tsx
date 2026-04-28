@@ -1,12 +1,11 @@
 import styles from "./HeroSection.module.css";
 
 const marqueeImages = [
-  "/images/glp-a.png",
-  "/images/glp-b.png",
-  "/images/glp-c.png",
+  "/images/glp-a.jpg",
+  "/images/glp-b.jpg",
+  "/images/glp-c.jpg",
   "/images/glp-d.png",
-  "/images/glp-a.png",
-  "/images/glp-b.png",
+  "/images/glp-c.jpg",
 ];
 
 export default function Herosection() {
@@ -22,7 +21,7 @@ export default function Herosection() {
           Weight loss made easy with{" "}
           <span className={styles.headingItalic}>a prescription</span> for
           GLP-1&apos;s
-        </h1>
+        </h1> 
 
         <ul className={styles.benefits}>
           <li className={styles.benefitItem}>
