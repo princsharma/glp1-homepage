@@ -13,9 +13,11 @@ import Header from "@/components/Header";
 import Cascade from "@/components/Cascade";
 import GLP1Education from "@/components/sections/GLP1Education";
 import Pricing from "@/components/sections/pricing";
+import ScrollProgress from "@/components/ScrollProgress";
 export default function HomePage() {
   return (
     <>
+      <ScrollProgress />
       <Header />
       <main className="flex flex-col w-full">
         {/* Hero — no animation, loads in immediately */}
