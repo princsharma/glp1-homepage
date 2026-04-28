@@ -22,29 +22,29 @@ export default function HomePage() {
      <div id="lose-weight">
   <Cascade ><LoseWeightSection /></Cascade>
 </div>
+<div id="how-it-works">
+  <Cascade from="right"><HowItWorks /></Cascade>
+</div>
 
 <div id="bmi">
   <Cascade from="left"><BMICalculator /></Cascade>
 </div>
 
-<div id="how-it-works">
-  <Cascade from="right"><HowItWorks /></Cascade>
-</div>
 
 <div id="plans">
-  <Cascade from="left"><CreateGLP1Plan /></Cascade>
+  <Cascade from="right"><CreateGLP1Plan /></Cascade>
 </div>
 
 <div id="why-us">
-  <Cascade from="right"><CTAButton /></Cascade>
+  <Cascade from="left"><CTAButton /></Cascade>
 </div>
 
 <div id="reviews">
-  <Cascade from="left"><ProductReviews /></Cascade>
+  <Cascade from="right"><ProductReviews /></Cascade>
 </div>
 
 <div id="doctors">
-  <Cascade><OngoSolution /></Cascade>
+  <Cascade from="left"><OngoSolution /></Cascade>
 </div>
 
 <div id="faq">
