@@ -3,24 +3,24 @@ import styles from "./HowItWorks.module.css";
 const steps = [
   {
     number: "Step 1",
-    title: "Get pre-approved online",
-    caption: "with a 3 minute quiz",
+    title: "Start with a Free Intake Call",
+    caption: "Discuss your medication preferences",
     imageAlt: "Mobile app screen showing weight loss goal questions",
-    imageSrc: "/images/step-a.jfif",
+    imageSrc: "/images/Get pre-approved online_1.webp",
   },
   {
     number: "Step 2",
-    title: "Meet with your US-based provider",
-    caption: "to find your perfect treatment",
+    title: "Consult with a Licensed Doctor",
+    caption: "Determine your eligibility",
     imageAlt: "Healthcare provider in white coat",
-    imageSrc: "/images/step-b.jfif",
+    imageSrc: "/images/Meet with your US-based provider_1.webp",
   },
   {
     number: "Step 3",
-    title: "Receive your prescription",
-    caption: "with free 2-day shipping",
+    title: "Receive a Personalized Treatment Plan",
+    caption: "If appropriate, start your treatment",
     imageAlt: "Hands receiving a delivery box",
-    imageSrc: "/images/step-c.jfif",
+    imageSrc: "/images/Receive your prescription_1.webp",
   },
 ];
 
@@ -31,8 +31,8 @@ export default function HowItWorks() {
         {/* Header row: title + CTA */}
         <header className={styles.header}>
           <h2 className={styles.heading}>
-            Begin <span className={styles.headingAccent}>your journey</span>{" "}
-            with us
+           How your treatment <span className={styles.headingAccent}>journey works</span>{" "}
+          
           </h2>
           <button className={styles.ctaButton}>Get Started</button>
         </header>

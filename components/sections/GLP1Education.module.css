@@ -121,7 +121,11 @@
   left: -8%;
   animation-delay: 3s;
 }
-
+.featurePill_4 {
+  bottom: 12%;
+  right: -8%;
+  animation-delay: 3s;
+}
 @keyframes floatPill {
   0%, 100% {
     transform: translateY(0);

@@ -18,27 +18,28 @@ const PLANS: Plan[] = [
 ];
 
 const FEATURES = [
-  "Unlimited access to a physician & dietitian",
-  "Nutrition coaching sessions",
-  "Access to weight loss medications and more",
-  "24/7 customer support",
+  "Access to evaluations from licensed doctors",
+  "Access to nutrition coaching sessions",
+  "Prescription approval and medication access",
+  "24/7 care team availability",
 ];
 
 const MEDICATIONS = [
   {
-    name: "Compounded Semaglutide",
-    price: "+ $99/mo",
+    name: "Semaglutide ",
+    price: "+ $299/mo",
     icon: "💊",
   },
   {
-    name: "Compounded Tirzepatide",
-    price: "+ $199/mo",
+    name: "Tirzepatide",
+    price: "+ $399/mo",
     icon: "💊",
   },
+  
   {
-    name: "Treatments across skincare, hair growth, and more",
-    price: "",
-    icon: "🧴",
+    name: "Liraglutide",
+    price: "Varies",
+    icon: "💊",
   },
 ];
 
@@ -53,31 +54,29 @@ export default function Pricing() {
         <div className={styles.grid}>
           {/* LEFT — Copy */}
           <div className={styles.content}>
-            <p className={styles.eyebrow}>SIMPLE PRICING</p>
+            <p className={styles.eyebrow}>Program Pricing Overview</p>
             <h2 className={styles.heading}>
               What&apos;s included in your{" "}
               <span className={styles.headingAccent}>
-                Care membership
+                weight loss membership
               </span>
             </h2>
             <p className={styles.subcopy}>
-              Our membership delivers exceptional value. You get low-cost care
-              with a high level of human support — what we believe every
-              patient deserves.
+             We offer clear and transparent pricing for our program. This reflects our belief that each patient deserves healthcare access at an affordable range. 
             </p>
 
             <div className={styles.trustList}>
               <div className={styles.trustItem}>
-                <span className={styles.trustValue}>100K+</span>
+                <span className={styles.trustValue}>5000+</span>
                 <span className={styles.trustText}>Members</span>
               </div>
               <div className={styles.trustItem}>
                 <span className={styles.trustValue}>$0</span>
-                <span className={styles.trustText}>Hidden fees</span>
+                <span className={styles.trustText}>Initial Call</span>
               </div>
               <div className={styles.trustItem}>
-                <span className={styles.trustValue}>30 day</span>
-                <span className={styles.trustText}>Guarantee</span>
+                <span className={styles.trustValue}>24/7</span>
+                <span className={styles.trustText}>Availability</span>
               </div>
             </div>
           </div>
@@ -157,7 +156,7 @@ export default function Pricing() {
 
             {/* CTA */}
             <button type="button" className={styles.cta}>
-              Am I eligible?
+              Check Your Eligibility
             </button>
           </div>
         </div>

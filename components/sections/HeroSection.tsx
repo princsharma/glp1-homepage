@@ -13,28 +13,29 @@ export default function Herosection() {
     <section className={styles.hero}>
       <div className={styles.heroContent}>
         <p className={styles.eyebrow}>
-          JOIN <span className={styles.eyebrowHighlight}>100,000+</span>{" "}
+          JOIN <span className={styles.eyebrowHighlight}>5,000+</span>{" "}
           PATIENTS WHO HAVE STARTED THEIR GLP-1 JOURNEY
         </p>
 
         <h1 className={styles.heading}>
-          Weight loss made easy with{" "}
-          <span className={styles.headingItalic}>a prescription</span> for
-          GLP-1&apos;s
+          Weight loss program rooted in {" "}
+          <span className={styles.headingItalic}>science,</span>
+          not trends
         </h1> 
 
         <ul className={styles.benefits}>
           <li className={styles.benefitItem}>
             <span className={styles.benefitCheck}>✓</span>
-            Lose up to 24% of your body weight
+           Board-certified Physicians
           </li>
           <li className={styles.benefitItem}>
             <span className={styles.benefitCheck}>✓</span>
-            Stop junk food cravings in their tracks
+           HIPAA Compliant Platform
+
           </li>
           <li className={styles.benefitItem}>
             <span className={styles.benefitCheck}>✓</span>
-            No waiting rooms or pharmacy lines
+           100% Online Consultations
           </li>
         </ul>
 

@@ -36,13 +36,13 @@ export default function AppMobileCTA() {
         {/* Content */}
         <div className={styles.content}>
           <h2 className={styles.heading}>
-            Find freedom with
+           Be in charge of
             <br />
-            <span className={styles.headingItalic}>personalized health</span>
+            <span className={styles.headingItalic}>your health!</span>
           </h2>
 
           <p className={styles.subcopy}>
-            Start your journey with GLP-1 treatments designed for real results.
+          Start your evaluation today for GLP-1 treatments tailored to sustainable weight loss.
           </p>
 
           <button className={styles.ctaButton}>Get Started</button>
@@ -51,7 +51,7 @@ export default function AppMobileCTA() {
         {/* Hero image — bleeds right */}
         <div className={styles.imageWrap}>
           <img
-            src="/images/smiling-face.png"
+            src="/images/Find freedom with.webp"
             alt="Smiling person enjoying a confident moment"
             className={styles.heroImage}
           />

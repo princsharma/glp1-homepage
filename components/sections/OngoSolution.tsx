@@ -4,20 +4,24 @@ type Doctor = {
   name: string;
   credential: string;
   affiliation: string;
+ npi: string;
   imageSrc: string;
 };
 
 const COLUMN_LEFT: Doctor[] = [
   {
-    name: "Daniel Funsch",
+    name: "Dr. Miller",
     credential: "MD",
-    affiliation: "American Board of Emergency Medicine",
+    affiliation: "Licensed physician",
+    npi: "NPI: 1235623372",
+
     imageSrc: "/images/johnathan-miller.webp",
   },
   {
-    name: "Kimberli Hastings",
-    credential: "NP",
-    affiliation: "American Academy of Nurse Practitioners",
+    name: "Dr. Krasne",
+    credential: "MD",
+    affiliation: "Licensed physician",
+    npi: "NPI: 1306189832",
     imageSrc: "/images/dr-krasne .webp",
   },
  
@@ -25,15 +29,19 @@ const COLUMN_LEFT: Doctor[] = [
 
 const COLUMN_RIGHT: Doctor[] = [
  {
-    name: "Marcus Reed",
-    credential: "MD",
-    affiliation: "American Board of Internal Medicine",
+    name: "Dr. Niles",
+    credential: "R.N., M.D., F.A.C.O.G",
+    affiliation: "Board-certified physician",
+    npi: "NPI: 1922199470",
+
     imageSrc: "/images/Dr-vanessa-niles.webp",
   },
   {
-    name: "Priya Shah",
-    credential: "NP",
-    affiliation: "American Academy of Nurse Practitioners",
+    name: "Dr. Bugailiskis",
+    credential: "MD",
+    affiliation: "Board-certified physician",
+    npi: "NPI: 1871882035",
+
     imageSrc: "/images/cheryl-bugailiskis.webp",
   },
 ];
@@ -50,9 +58,8 @@ export default function ongoSolution() {
           </h2>
 
           <p className={styles.subcopy}>
-            Talk to our team for advice on eating healthy, staying fit, and
-            keeping your confidence while you lose weight. Restore your health
-            with a little help from our devoted team.
+           We connect you with licensed doctors who guide you toward healthy and sustainable weight loss.
+
           </p>
 
           <button className={styles.ctaButton}>Get Started</button>
@@ -60,7 +67,7 @@ export default function ongoSolution() {
           {/* Trust strip */}
           <div className={styles.trustStrip}>
             <div className={styles.trustItem}>
-              <span className={styles.trustValue}>200+</span>
+              <span className={styles.trustValue}>30+</span>
               <span className={styles.trustLabel}>Licensed providers</span>
             </div>
             <div className={styles.trustDivider} />
@@ -117,6 +124,7 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
           </span>
         </h3>
         <p className={styles.doctorAffiliation}>{doctor.affiliation}</p>
+        <p className={styles.doctorNPI}>{doctor.npi}</p>
       </div>
     </article>
   );

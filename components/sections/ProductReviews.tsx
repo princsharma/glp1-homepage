@@ -23,7 +23,7 @@ const ROW_TOP: Card[] = [
     quote:
       "Absolutely wonderful and helpful. She walked me through everything and made me feel as if I really mattered. I was very pleased with our conversation.",
   },
-  { type: "image", imageSrc: "/images/review-a.avif", alt: "Smiling man" },
+  { type: "image", imageSrc: "/images/review-a.webp", alt: "Smiling man" },
   {
     type: "text",
     name: "Jamie",
@@ -45,7 +45,7 @@ const ROW_TOP: Card[] = [
     quote:
       "The staff has been so friendly and caring. I didn't expect that! If I call, I get an immediate answer from a real person!",
   },
-  { type: "image", imageSrc: "/images/review-b.avif", alt: "Smiling woman" },
+  { type: "image", imageSrc: "/images/review-b.webp", alt: "Smiling woman" },
 ];
 
 const ROW_BOTTOM: Card[] = [
@@ -63,7 +63,7 @@ const ROW_BOTTOM: Card[] = [
     quote:
       "I was ready to give up. Wow. I would pay 10x as much if I had to. Dieting days are over. Thanks to the team for the metabolic fix — game changer.",
   },
-  { type: "image", imageSrc: "/images/review-c.avif", alt: "Happy customer" },
+  { type: "image", imageSrc: "/images/review-c.webp", alt: "Happy customer" },
   {
     type: "text",
     name: "Lou-Ann",
@@ -78,7 +78,7 @@ const ROW_BOTTOM: Card[] = [
     quote:
       "My clinician was kind, understanding of expectations, and future follow-ups are easy to understand and schedule.",
   },
-  { type: "image", imageSrc: "/images/review-d.avif", alt: "Smiling person" },
+  { type: "image", imageSrc: "/images/review-d.webp", alt: "Smiling person" },
 ];
 
 export default function ProductReviews() {

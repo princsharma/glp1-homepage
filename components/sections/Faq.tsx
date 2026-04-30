@@ -10,34 +10,39 @@ type FaqItem = {
 
 const FAQS: FaqItem[] = [
   {
-    question: "What is GLP-1 and how does it help with weight loss?",
+    question: "What are GLP-1 medications and how do they help with weight loss?",
     answer:
-      "GLP-1 (Glucagon-Like Peptide-1) is a hormone naturally produced in your gut that helps regulate appetite, slow digestion, and improve blood sugar levels. GLP-1 medications mimic this hormone, helping you feel fuller longer and reducing cravings — a powerful tool for sustainable weight loss when combined with lifestyle changes.",
+      "GLP-1 medications are prescription drugs that help control blood sugar and reduce appetite. They work by mimicking a natural hormone that signals fullness, making it easier to eat less and lose weight over time.",
   },
   {
-    question: "Am I eligible for the program?",
+    question: "What’s the difference between GLP-1 and other weight loss medications?",
     answer:
-      "Eligibility is determined by a licensed healthcare provider after reviewing your medical history, current medications, and BMI. Generally, candidates have a BMI of 27 or higher with weight-related health conditions, or a BMI of 30+. Use our BMI calculator above to get a quick initial assessment.",
+      "GLP-1 medications focus on regulating appetite and blood sugar, unlike many weight loss pills that act as stimulants or suppressants. They are given by injection and are often more effective for long-term results.",
   },
   {
-    question: "How quickly will I see results?",
+    question: "Who should consider taking GLP-1 medications for weight management?",
     answer:
-      "Most members begin noticing reduced cravings within the first 1–2 weeks. Significant weight loss typically becomes visible by week 4–6, with members reporting an average weight loss of 29.3 lbs in the first six months when combined with diet and exercise.",
+      "GLP-1 medications are meant for adults with obesity or those who are overweight with weight-related health conditions like type 2 diabetes, high blood pressure, or high cholesterol.",
   },
   {
-    question: "Are there any side effects I should know about?",
+    question: "What are the common side effects of GLP-1 medications?",
     answer:
-      "Common side effects include mild nausea, fatigue, and digestive changes — usually resolving within the first few weeks. More serious side effects are rare but possible. Your provider will discuss your full medical history and monitor you throughout the program. Important safety information is available during consultation.",
+      "Some common side effects include nausea, mild stomach upset, and occasional fatigue. These usually fade over time as your body adjusts.",
   },
   {
-    question: "How much does the program cost?",
+    question: "Do GLP-1 medications require a prescription from a doctor?",
     answer:
-      "Pricing varies based on the medication and treatment plan recommended for you. Many plans are FSA & HSA eligible, and we accept most major insurance providers. After your consultation, you'll receive a transparent breakdown with no hidden fees.",
+      "Yes, GLP-1 medications are prescription-based. A licensed healthcare provider needs to evaluate your health and determine if they are right for you.",
+  },
+  {
+    question: "How much does the Ongo Weight Loss program cost?",
+    answer:
+      "The evaluation fee for our program is $49. Medication costs are additional based on the type, dose, and treatment plan.",
   },
   {
     question: "Can I cancel my membership anytime?",
     answer:
-      "Yes — there are no long-term contracts. You can pause or cancel your membership at any time. We recommend speaking with your provider before stopping medication to ensure a safe transition plan.",
+      "Yes. You can pause or cancel your membership before the next billing cycle. We recommend speaking with your provider before stopping medication to ensure a safe transition plan.",
   },
 ];
 
@@ -71,14 +76,14 @@ export default function Faq() {
           <div className={styles.contactCard}>
             <span className={styles.contactBadge}>
               <span className={styles.contactDot} />
-              Live support
+             Care Team Support
             </span>
             <h3 className={styles.contactTitle}>Still have questions?</h3>
             <p className={styles.contactText}>
-              Talk to a real person — no waiting rooms, no phone trees.
+             Talk to a care team member to get a better understanding of your treatment.
             </p>
             <button className={styles.contactButton}>
-              Talk to our team →
+             Free Call →
             </button>
           </div>
         </aside>

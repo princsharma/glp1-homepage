@@ -23,13 +23,13 @@ const MEDICATIONS: Medication[] = [
     id: "zepbound",
     name: "Zepbound®",
     isNew: true,
-   benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
+    benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
     imageSrc: "/medications/foundaya.png",
   },
   {
     id: "ozempic",
     name: "Ozempic®",
-   benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
+    benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
     imageSrc: "/medications/wegovy.png",
   },
   {
@@ -42,7 +42,7 @@ const MEDICATIONS: Medication[] = [
   {
     id: "rybelsus",
     name: "Rybelsus®",
-    benefits: ["FDA Approved", "Dosing : Once-daily oral tablet"],
+    benefits: ["FDA Approved", "Dosing : Once-daily tablet"],
     imageSrc: "/medications/zepbound-vial.png",
   },
   {
@@ -63,15 +63,12 @@ export default function CreateGLP1Plan() {
         {/* Header */}
         <header className={styles.header}>
           <h2 className={styles.heading}>
-            We&apos;re here to help you achieve{" "}
-            <span className={styles.headingAccent}>
-              your weight loss goals
-            </span>
+            Find the right medication for your{" "}
+            <span className={styles.headingAccent}>weight management</span>
           </h2>
           <p className={styles.subcopy}>
-            Lose weight with access to GLP-1 treatment options, clinical
-            oversight, metabolic testing, and ongoing support from licensed
-            healthcare providers through us.
+            Our providers may prescribe from one of the six GLP-1 options
+            depending on medical necessity and the patient’s health needs.
           </p>
         </header>
 
@@ -140,19 +137,16 @@ export default function CreateGLP1Plan() {
         {/* Disclaimer */}
         <div className={styles.disclaimers}>
           <p className={styles.disclaimer}>
-            Prescription GLP-1 medications mimic natural hormones to regulate
-            digestion and appetite. This makes them highly effective at helping
-            patients lose weight and improve their health.{" "}
+            GLP-1 medications mimic natural hormones to regulate digestion and
+            appetite.Clinical data shows that these medications support weight
+            loss when combined with lifestyle changes.{" "}
             <a href="#" className={styles.disclaimerLink}>
               Important Safety Information
             </a>
           </p>
           <p className={styles.disclaimerSmall}>
-            Take precaution with, and resist worrying concerning, GLP-1s, as
-            they may cause serious side effects, including risk of thyroid
-            C-cell tumors. Do not use if you or your family have a history of a
-            type of thyroid cancer called MTC (medullary thyroid carcinoma) or
-            MEN 2 (multiple endocrine neoplasia syndrome).
+           Your provider may offer compounded medication based on your eligibility. However, compounded medications are not FDA-approved.
+
           </p>
         </div>
       </div>

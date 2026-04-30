@@ -1,9 +1,9 @@
 import styles from "./LoseWeightSection.module.css";
 
 const benefits = [
-  { icon: "✋", text: "Reducing hunger and cravings" },
-  { icon: "◐", text: 'Creating "fullness" faster' },
-  { icon: "📈", text: "Enabling lifestyle improvements" },
+  { icon: "✋", text: "1:1 physician guidance" },
+  { icon: "◐", text: 'Access to GLP-1 medications (when appropriate)' },
+  { icon: "📈", text: "Progress monitoring and adjustment" },
 ];
 
 export default function LoseWeightSection() {
@@ -52,16 +52,16 @@ export default function LoseWeightSection() {
           {/* LEFT: Content */}
           <div className={styles.content}>
             <h2 className={styles.heading}>
-              Lose weight with a
+              Weight loss plan 
+
               <br />
-              plan made{" "}
-              <span className={styles.headingAccent}>just for you</span>
+             tailored to{" "}
+              <span className={styles.headingAccent}>your health</span>
             </h2>
 
             <p className={styles.subcopy}>
-              Our program is designed to make weight loss uncomplicated and
-              within reach. It&apos;s quick &amp; easy to administer and can
-              improve your physical and emotional health by:
+             Our program is simple and easy to fit into your routine. We offer: 
+
             </p>
 
             <ul className={styles.benefitList}>
@@ -82,12 +82,12 @@ export default function LoseWeightSection() {
           <div className={styles.visual}>
             <div className={styles.imageWrapper}>
               <img
-                src="/images/fat-girl.png"
+                src="/images/fat-girl.webp"
                 alt="Person before weight loss program"
                 className={`${styles.heroImage} ${styles.heroImageBefore}`}
               />
               <img
-                src="/images/slim-girl.png"
+                src="/images/slim-girl.webp"
                 alt="Person after weight loss program"
                 className={`${styles.heroImage} ${styles.heroImageAfter}`}
               />

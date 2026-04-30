@@ -9,13 +9,15 @@ export default function CTAButton() {
     <section className={styles.section}>
       <div className={styles.container}>
         {/* Eyebrow */}
-        <p className={styles.eyebrow}>BETTER IS POSSIBLE — AND WE BUILT FOR IT.</p>
+        <p className={styles.eyebrow}>
+          Clinicians-Supervised Lifestyle Guidance
+        </p>
 
         {/* Headline */}
         <h2 className={styles.heading}>
-          Modern healthcare,
+          A fitness plan designed for
           <br />
-          <span className={styles.headingAccent}>built around you</span>
+          <span className={styles.headingAccent}>long-term success</span>
         </h2>
 
         {/* Card with image + content */}
@@ -42,7 +44,7 @@ export default function CTAButton() {
           {/* Left — image */}
           <div className={styles.cardImageWrap}>
             <img
-              src="/images/instructor.jfif"
+              src="/images/Care coaching and.webp"
               alt="Care coaching specialist"
               className={styles.cardImage}
             />
@@ -51,15 +53,14 @@ export default function CTAButton() {
           {/* Right — content */}
           <div className={styles.cardContent}>
             <h3 className={styles.cardTitle}>
-              Care coaching and
+              Lifestyle support
               <br />
-              nutrition support
+              made just for you
             </h3>
             <p className={styles.cardText}>
-              Our care coaching team, led by certified medical assistants and
-              registered dietitians, helps answer questions about your
-              medication, program, and day-to-day lifestyle changes — so you
-              have the guidance you need to stay on track and see results.
+              We believe that progress over perfection matters. That’s why each
+              plan includes nutrition tips and physical activity guidance at
+              every step of your journey.
             </p>
           </div>
         </article>
@@ -67,11 +68,10 @@ export default function CTAButton() {
         {/* Bottom tagline + linked CTA */}
         <footer className={styles.footer}>
           <p className={styles.footerText}>
-            We&apos;re creating a better healthcare experience, and the details
-            matter.
+           We're promoting safe, steady, and sustainable weight loss.
           </p>
           <a href="#details" className={styles.footerLink}>
-            We&apos;re here for those details →
+            We're here for those who choose progress →
           </a>
         </footer>
       </div>

@@ -73,9 +73,7 @@ export default function BMICalculator() {
             </h2>
 
             <p className={styles.subcopy}>
-              Before prescribing any treatment, your provider will review your
-              full medical history. BMI is one factor that helps determine
-              eligibility for GLP-1 medications.
+           Your provider reviews key criteria to check your eligibility. Clinical factors like BMI and waist circumference may be considered.
             </p>
 
             <div className={styles.unitToggle} role="tablist">
@@ -322,9 +320,7 @@ function Gauge({
       </div>
 
       <p className={styles.disclaimer}>
-        This tool is for general reference and not a diagnosis. Eligibility is
-        determined by a licensed provider based on your individual health
-        profile, and a prescription is never guaranteed.
+       This chart is for general reference and not a diagnosis. Eligibility is determined by a licensed provider based on your individual health profile, and a prescription is never guaranteed.
       </p>
     </div>
   );

@@ -26,7 +26,19 @@
   gap: 1.5rem;
   max-width: 480px;
 }
-
+.doctorNPI {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  background-color: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+  width: fit-content;
+}
 .heading {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
