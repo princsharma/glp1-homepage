@@ -50,26 +50,14 @@
   position: relative;
   border-radius: 28px;
   overflow: hidden;
-  min-height: 540px;
+  min-height: 580px;
 
   /* base gradient */
-  background: linear-gradient(135deg, #a5d4e8 0%, #8ec3dc 40%, #6daec9 100%);
+ background: linear-gradient(135deg, #5fb3d4 0%, #4a9bc4 40%, #3782b1 100%);
 }
 
 /* overlay gradient */
-.container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
 
-  background: linear-gradient(135deg, #5fb3d4 0%, #4a9bc4 40%, #3782b1 100%);
-
-  opacity: 0;
-  transition: opacity 0.4s ease;
-
-  pointer-events: none; /* doesn't block clicks */
-}
 
 /* hover effect */
 .container:hover::before {
@@ -146,8 +134,8 @@ max-width: 1280px;
   background-color: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .benefitItem {
@@ -365,7 +353,7 @@ max-width: 1280px;
   object-fit: cover;
 }
 .container:hover .bgCurve {
-  transform: translateY(80px);
+  transform: translateY(100px);
 }
 
 
