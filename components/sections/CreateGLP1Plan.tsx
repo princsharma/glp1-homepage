@@ -135,20 +135,16 @@ export default function CreateGLP1Plan() {
         </div>
 
         {/* Disclaimer */}
-        <div className={styles.disclaimers}>
-          <p className={styles.disclaimer}>
-            GLP-1 medications mimic natural hormones to regulate digestion and
-            appetite.Clinical data shows that these medications support weight
-            loss when combined with lifestyle changes.{" "}
-            <a href="#" className={styles.disclaimerLink}>
-              Important Safety Information
-            </a>
-          </p>
-          <p className={styles.disclaimerSmall}>
-           Your provider may offer compounded medication based on your eligibility. However, compounded medications are not FDA-approved.
+       <div className={styles.disclaimers}>
+  <p className={styles.disclaimer}>
+    <span className={styles.disclaimerLink}>Important:</span>{" "}
+    Medications such as Ozempic, Mounjaro, Rybelsus, and Victoza are not FDA-approved for weight loss but are often prescribed off-label based on medical necessity.
+  </p>
 
-          </p>
-        </div>
+  <p className={styles.disclaimerSmall}>
+    Your provider may offer compounded medication based on your eligibility. However, compounded medications are not FDA-approved.
+  </p>
+</div>
       </div>
     </section>
   );

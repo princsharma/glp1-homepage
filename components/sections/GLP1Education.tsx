@@ -40,7 +40,7 @@ const FEATURES = [
   { icon: "🧪", label: "Rx Based\nMedications" },
   { icon: "👨‍⚕️", label: "HIPAA Compliant\nSystem" },
   { icon: "🚚", label: "Prescribed by\nlicensed doctors" },
-  { icon: "🚚", label: "Medication delivery\nto your door" },
+  { icon: "📦", label: "Medication delivery\nto your door" },
 ];
 
 export default function GLP1Education() {
@@ -82,8 +82,8 @@ export default function GLP1Education() {
                 <span className={styles.featureText}>{FEATURES[2].label}</span>
               </div>
               <div className={`${styles.featurePill} ${styles.featurePill_4}`}>
-                <span className={styles.featureIcon}>{FEATURES[2].icon}</span>
-                <span className={styles.featureText}>{FEATURES[2].label}</span>
+                <span className={styles.featureIcon}>{FEATURES[3].icon}</span>
+                <span className={styles.featureText}>{FEATURES[3].label}</span>
               </div>
             </div>
           </div>

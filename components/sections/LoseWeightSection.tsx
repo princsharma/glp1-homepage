@@ -11,42 +11,11 @@ export default function LoseWeightSection() {
     <section className={styles.section}>
       <div className={styles.container}>
         {/* Descending weight curve in background — drops on hover */}
-        <svg
-          className={styles.bgCurve}
-          viewBox="0 0 1280 540"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          {/* Subtle area fill below curve */}
-          <path
-            d="M 0,180 Q 320,120 640,200 T 1280,260 L 1280,540 L 0,540 Z"
-            className={styles.bgCurveFill}
-          />
-          {/* The actual line */}
-          <path
-            d="M 0,180 Q 320,120 640,200 T 1280,260"
-            className={styles.bgCurveLine}
-            fill="none"
-          />
-          {/* Dots along the curve */}
-          {[
-            [0, 180],
-            [213, 145],
-            [427, 165],
-            [640, 200],
-            [853, 230],
-            [1067, 245],
-            [1280, 260],
-          ].map(([x, y], i) => (
-            <circle
-              key={i}
-              cx={x}
-              cy={y}
-              r="4"
-              className={styles.bgCurveDot}
-            />
-          ))}
-        </svg>
+      {/* Descending diagonal trend line in background — drops on hover */}
+{/* Smooth descending wave curve in background — drops on hover */}
+<div  className={styles.bgCurve}>
+  <img src="images/graph.png" alt="graph goes down like your weight" />
+</div>
 
         <div className={styles.loseweight_inner}>
           {/* LEFT: Content */}

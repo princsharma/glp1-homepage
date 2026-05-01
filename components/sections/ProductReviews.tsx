@@ -88,12 +88,11 @@ export default function ProductReviews() {
       <header className={styles.header}>
         <p className={styles.eyebrow}>THOSE WHO CHOSE US</p>
         <h2 className={styles.heading}>
-          There&apos;s a reason people are{" "}
-          <span className={styles.headingAccent}>raving about us</span>.
+          There&apos;s a reason why people are{" "}
+          <span className={styles.headingAccent}>choosing us</span>.
         </h2>
         <p className={styles.subcopy}>
-          Join the multitude of people who have trusted us to help change their
-          lives, achieving significant, lasting weight loss.
+         Join thousands of people who have trusted us to help change their lives, achieving sustainable and lasting weight loss.
         </p>
       </header>
 

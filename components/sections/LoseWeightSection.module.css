@@ -40,19 +40,40 @@
 .container:hover .heroImageAfter {
   opacity: 1;
 }
+/* .container:hover {
+  background: linear-gradient(135deg, 
+#5fb3d4 0%, 
+#4a9bc4 40%, 
+#3782b1 100%);
+} */
 .container {
-  
+  position: relative;
   border-radius: 28px;
   overflow: hidden;
-  /* Ocean blue gradient — diagonal */
-  background: linear-gradient(
-    135deg,
-    #5fb3d4 0%,
-    #4a9bc4 40%,
-    #3782b1 100%
-  );
   min-height: 540px;
-  position: relative;
+
+  /* base gradient */
+  background: linear-gradient(135deg, #a5d4e8 0%, #8ec3dc 40%, #6daec9 100%);
+}
+
+/* overlay gradient */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+
+  background: linear-gradient(135deg, #5fb3d4 0%, #4a9bc4 40%, #3782b1 100%);
+
+  opacity: 0;
+  transition: opacity 0.4s ease;
+
+  pointer-events: none; /* doesn't block clicks */
+}
+
+/* hover effect */
+.container:hover::before {
+  opacity: 1;
 }
 .loseweight_inner {
 max-width: 1280px;
@@ -63,7 +84,7 @@ max-width: 1280px;
   align-items: stretch;
 }
 /* Subtle vignette for depth */
-.container::before {
+/* .container::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -73,7 +94,7 @@ max-width: 1280px;
     transparent 50%
   );
   pointer-events: none;
-}
+} */
 
 /* ============================================
    LEFT — CONTENT
@@ -338,32 +359,15 @@ max-width: 1280px;
   /* On hover, the curve translates down to suggest weight loss */
   transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
+.bgCurve img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .container:hover .bgCurve {
   transform: translateY(80px);
 }
 
-/* The line itself */
-.bgCurveLine {
-  stroke: rgba(255, 255, 255, 0.4);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  /* Subtle dashed effect — looks technical/data-y */
-  stroke-dasharray: 6 5;
-}
-
-/* The soft area fill below the curve */
-.bgCurveFill {
-  fill: var(--color-text-soft);
-}
-
-/* Dots on the curve */
-.bgCurveDot {
-  fill: var(--color-warm-soft);
-  stroke: var(--color-warm-deep);
-  stroke-width: 1.5;
-}
 
 /* Make sure inner grid sits ABOVE the curve */
 .loseweight_inner {
