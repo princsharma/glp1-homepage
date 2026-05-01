@@ -1,7 +1,7 @@
 import styles from "./HeroSection.module.css";
 
 const marqueeImages = [
-  "/images/glp-a.jpg",
+  "/images/glp-a (2).png",
   "/images/glp-e.png",
   "/images/glp-b.jpg",
   "/images/glp-c.jpg",
