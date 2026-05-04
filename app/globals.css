@@ -78,4 +78,9 @@ body {
 * {
   box-sizing: border-box;
 }
- 
+ .wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;   /* must beat .hdr (z:20) and .sc (z:2) */
+}

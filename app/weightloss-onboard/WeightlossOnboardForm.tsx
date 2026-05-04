@@ -49,6 +49,7 @@ import {
   WEIGHT_GOALS,
   YES_NO,
 } from "./data";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 // BMI categories shown as a row of cards on the BMI screen.
 const BMI_CATEGORY_CARDS = [
@@ -58,6 +59,20 @@ const BMI_CATEGORY_CARDS = [
   { key: "obese", name: "OBESE", range: "≥ 30" },
 ] as const;
 
+// Drives the header progress bar — order matters.
+// dHard / iThanks intentionally omitted (off-flow ends).
+const PROGRESS_ORDER: ScreenId[] = [
+  "s1", "s2", "s3", "iGood", "s20", "iRoad",
+  "s4", "s5", "s6",
+  "s7", "s7m", "s7b", "s7a", "s7c", "s7d", "s7e",
+  "s9", "s9b",
+  "s10", "s11",
+  "s12", "s13", "s13a", "s14", "s14b", "s15",
+  "s16", "s17", "s18",
+  "s19", "s21", "s22", "s23",
+  "sPlan", "sPay", "iConfirm",
+];
+
 export default function WeightlossOnboardForm() {
   // ───────────────────────────────────
   //  State + navigation
@@ -66,6 +81,14 @@ export default function WeightlossOnboardForm() {
   const [form, setForm] = useState<Form>(initialForm);
   const screenHistory = useRef<ScreenId[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Header progress (% complete based on PROGRESS_ORDER above).
+  const progressPercent = (() => {
+    if (screen === "dHard" || screen === "iThanks") return 0;
+    const idx = PROGRESS_ORDER.indexOf(screen);
+    if (idx === -1) return 0;
+    return Math.round(((idx + 1) / PROGRESS_ORDER.length) * 100);
+  })();
 
   const goTo = (next: ScreenId) => {
     screenHistory.current.push(screen);
@@ -240,6 +263,23 @@ export default function WeightlossOnboardForm() {
               <span className="contact-num">1 (888) 555-0123</span>
             </a>
           </div>
+
+          {/* Progress bar — fills as the user advances through PROGRESS_ORDER */}
+          {progressPercent > 0 && (
+            <div
+              className="progress-bar"
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Form completion progress"
+            >
+              <div
+                className="progress-fill"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          )}
 
           {/* ════════════════════════════════════════════
               GOALS & INSPIRATION (s1, s2)
@@ -433,6 +473,9 @@ export default function WeightlossOnboardForm() {
             <div className="inter">
               <div className="ibg" />
               <div className="ic center">
+                {/* <div className="center_banner mb-20">
+                    <img src="images/all-good.png" alt="" />
+                  </div> */}
                 <div className="ic-body">
                   <div className="ititle">Good news!</div>
                   <div className="ibody">
@@ -1644,6 +1687,9 @@ export default function WeightlossOnboardForm() {
           )}
         </div>
       </div>
+
+      {/* Theme switcher — rendered once at the root so it appears on every screen */}
+      <ThemeSwitcher />
     </div>
   );
 }
