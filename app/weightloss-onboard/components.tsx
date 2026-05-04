@@ -243,7 +243,7 @@ export function StressSlider({ value, onChange }: StressSliderProps) {
 }
 
 // ─────────────────────────────────────────
-//  PlanCard — plan tabs + price + benefits + medication add-ons
+//  PlanCard — horizontal row plans + benefits
 //  (Used on the sPlan screen.)
 // ─────────────────────────────────────────
 type PlanCardProps = {
@@ -251,63 +251,113 @@ type PlanCardProps = {
   onSelectPlan: (planId: Plan["id"]) => void;
 };
 
+// Helper — renders the saving label without the broken minus sign
+// Falls back to a clean "Save $X" string if formatSavings produced "$-X"
+function cleanSavings(raw: string | number): string {
+  const text = String(raw);
+  // Strip any "$-" sequence and force "Save $X" format
+  const numMatch = text.match(/-?\d+(\.\d+)?/);
+  if (!numMatch) return text;
+  const n = Math.abs(parseFloat(numMatch[0]));
+  return `Save $${n}`;
+}
+
 export function PlanCard({ selectedPlanId, onSelectPlan }: PlanCardProps) {
-  const activePlan = PLANS.find((plan) => plan.id === selectedPlanId) ?? PLANS[0];
+  // The plan with the largest discount auto-tags as "Best value".
+  // To hardcode, replace with: const popularId = "plan_3mo";
+  const popularId = PLANS.reduce(
+    (best, plan) => (plan.save > best.save ? plan : best),
+    PLANS[0],
+  ).id;
+
+  const activePlan =
+    PLANS.find((plan) => plan.id === selectedPlanId) ?? PLANS[0];
 
   return (
-    <div className="plan-card">
-      <div className="plan-tabs">
-        {PLANS.map((plan) => (
-          <button
-            key={plan.id}
-            type="button"
-            className={`plan-tab ${activePlan.id === plan.id ? "active" : ""}`}
-            onClick={() => onSelectPlan(plan.id)}
-          >
-            {plan.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="plan-price-row">
-        <div className="plan-price-col">
-          <div className="plan-old">${activePlan.oldMonthly}/mo</div>
-          <div className="plan-new">
-            <span className="plan-new-amt">${activePlan.monthly}</span>
-            <span className="plan-new-suffix">/mo</span>
-          </div>
-        </div>
-        <div className="plan-save">{formatSavings(activePlan.save)}</div>
-      </div>
-
-      <ul className="plan-bullets">
-        {PLAN_BENEFITS.map((benefit) => (
-          <li key={benefit}>
-            <span className="plan-tick">✓</span>
-            {benefit}
-          </li>
-        ))}
-      </ul>
-
-      <div className="plan-divider" />
-
-      <div className="plan-meds-title">Medication options</div>
-      <div className="plan-meds">
-        {MEDICATION_ADDONS.map((medication) => (
-          <div key={medication.label} className="plan-med-row">
-            <span
-              className={`plan-med-icon ${medication.pill ? "pill" : "skin"}`}
-              aria-hidden
+    <>
+      {/* Stacked horizontal plan rows */}
+      <div className="plan-list">
+        {PLANS.map((plan) => {
+          const isSelected = selectedPlanId === plan.id;
+          const isPopular = plan.id === popularId;
+          return (
+            <button
+              key={plan.id}
+              type="button"
+              className={`plan-row ${isSelected ? "sel" : ""} ${
+                isPopular ? "popular" : ""
+              }`}
+              onClick={() => onSelectPlan(plan.id)}
+              aria-pressed={isSelected}
             >
-              {medication.pill ? "💊" : "🧴"}
-            </span>
-            <span className="plan-med-label">{medication.label}</span>
-            {medication.price && (
-              <span className="plan-med-price">{medication.price}</span>
-            )}
-          </div>
-        ))}
+              {isPopular && (
+                <span className="plan-row-badge">Best value</span>
+              )}
+
+              <span className="plan-row-radio" aria-hidden>
+                <span className="plan-row-radio-dot" />
+              </span>
+
+              <span className="plan-row-info">
+                <span className="plan-row-label">{plan.label}</span>
+                <span className="plan-row-old">${plan.oldMonthly}/mo</span>
+              </span>
+
+              <span className="plan-row-price">
+                <span className="plan-row-amt">
+                  <span className="plan-row-currency">$</span>
+                  {plan.monthly}
+                </span>
+                <span className="plan-row-permo">/month</span>
+              </span>
+
+              <span className="plan-row-save">
+                {cleanSavings(formatSavings(plan.save))}
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </div>
+
+      {/* Benefits + medication options card */}
+      <div className="plan-detail-card">
+        <div className="plan-detail-head">
+          Your <strong>{activePlan.label}</strong> plan includes
+        </div>
+
+        <ul className="plan-bullets">
+          {PLAN_BENEFITS.map((benefit) => (
+            <li key={benefit}>
+              <span className="plan-tick" aria-hidden>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="5 12.5 10 17 19 7.5" />
+                </svg>
+              </span>
+              {benefit}
+            </li>
+          ))}
+        </ul>
+
+        <div className="plan-divider" />
+
+        <div className="plan-meds-title">Medication options</div>
+        <div className="plan-meds">
+          {MEDICATION_ADDONS.map((medication) => (
+            <div key={medication.label} className="plan-med-row">
+              <span
+                className={`plan-med-icon ${medication.pill ? "pill" : "skin"}`}
+                aria-hidden
+              >
+                {medication.pill ? "💊" : "🧴"}
+              </span>
+              <span className="plan-med-label">{medication.label}</span>
+              {medication.price && (
+                <span className="plan-med-price">{medication.price}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }

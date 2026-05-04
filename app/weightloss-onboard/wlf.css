@@ -990,11 +990,11 @@
   border-radius: var(--wlf-r-pill);
   color: #fff; letter-spacing: -0.1px;
 }
-.wlf-root .stress-low input[type="range"] { accent-color: #2D6A4F; }
-.wlf-root .stress-med input[type="range"] { accent-color: #C68A0F; }
+  .wlf-root .stress-low input[type="range"] { accent-color: #2D6A4F; }
+  .wlf-root .stress-med input[type="range"] { accent-color: var(--color-primary); }
 .wlf-root .stress-high input[type="range"] { accent-color: #B4271F; }
 .wlf-root .stress-low .sv { background: #2D6A4F; }
-.wlf-root .stress-med .sv { background: #C68A0F; }
+.wlf-root .stress-med .sv { background: var(--color-primary); }
 .wlf-root .stress-high .sv { background: #B4271F; }
 .wlf-root .stress-zones {
   display: flex; justify-content: space-between;
@@ -1005,7 +1005,7 @@
 }
 .wlf-root .stress-zones span { transition: color 0.2s var(--wlf-ease); }
 .wlf-root .stress-low .stress-zones span.active { color: #2D6A4F; }
-.wlf-root .stress-med .stress-zones span.active { color: #C68A0F; }
+.wlf-root .stress-med .stress-zones span.active { color: var(--color-primary); }
 .wlf-root .stress-high .stress-zones span.active { color: #B4271F; }
 
 /* ─── Uploads ────────────────────────────────────────── */
@@ -1068,114 +1068,307 @@
 }
 .wlf-root .cta.cta-cap:not(:disabled):hover { background: var(--wlf-brand-dark); }
 
-/* ─── Plan card ──────────────────────────────────────── */
-.wlf-root .plan-card {
+/* ════════════════════════════════════════════════════════════════
+   APPEND TO wlf.css — and DELETE these old rules first if present:
+     .plan-grid, .plan-box, .plan-box-*, .plan-tabs, .plan-tab,
+     .plan-card, .plan-card-header, .plan-card-header-label,
+     .plan-price-row, .plan-old, .plan-new, .plan-new-amt,
+     .plan-new-suffix, .plan-save
+   The new styles below replace all of them.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── Plan list — stacked horizontal rows ──────────── */
+.wlf-root .plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+  margin-top: 6px;
+}
+
+.wlf-root .plan-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  background: var(--wlf-surface);
+  border: 1.5px solid var(--wlf-border);
+  border-radius: var(--wlf-r-card);
+  padding: 18px 20px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.2s var(--wlf-ease),
+              background 0.2s var(--wlf-ease),
+              transform 0.12s var(--wlf-ease),
+              box-shadow 0.25s var(--wlf-ease);
+  box-shadow: var(--wlf-shadow-sm);
+}
+
+.wlf-root .plan-row:hover {
+  border-color: var(--wlf-border-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(20, 17, 13, 0.04),
+              0 8px 18px -4px rgba(20, 17, 13, 0.08);
+}
+
+.wlf-root .plan-row.sel {
+  border-color: var(--wlf-brand);
+  background: linear-gradient(180deg, var(--wlf-brand-soft) 0%, var(--wlf-surface) 100%);
+  box-shadow: 0 1px 2px rgba(20, 17, 13, 0.04),
+              0 0 0 3px rgba(52, 126, 93, 0.12),
+              0 10px 24px -6px rgba(52, 126, 93, 0.22);
+}
+
+/* "Best value" badge — top-right, doesn't collide with anything */
+.wlf-root .plan-row-badge {
+  position: absolute;
+  top: -9px;
+  right: 16px;
+  background: var(--wlf-brand);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--wlf-r-pill);
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(52, 126, 93, 0.35);
+  z-index: 2;
+}
+
+/* Radio circle */
+.wlf-root .plan-row-radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--wlf-border-input);
+  background: var(--wlf-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s var(--wlf-ease);
+}
+.wlf-root .plan-row.sel .plan-row-radio {
+  border-color: var(--wlf-brand);
+  background: var(--wlf-brand);
+  box-shadow: 0 2px 6px rgba(52, 126, 93, 0.35);
+}
+.wlf-root .plan-row-radio-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  transform: scale(0);
+  transition: transform 0.22s var(--wlf-ease-out);
+}
+.wlf-root .plan-row.sel .plan-row-radio-dot { transform: scale(1); }
+
+/* Left text block: "1 month" + crossed-out price */
+.wlf-root .plan-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.wlf-root .plan-row-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--wlf-text);
+  letter-spacing: -0.2px;
+}
+.wlf-root .plan-row-old {
+  font-size: 12.5px;
+  color: var(--wlf-text-3);
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+/* Center price block */
+.wlf-root .plan-row-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+}
+.wlf-root .plan-row-amt {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--wlf-text);
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: baseline;
+}
+.wlf-root .plan-row-currency {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 1px;
+  color: var(--wlf-text-2);
+}
+.wlf-root .plan-row-permo {
+  font-size: 11.5px;
+  color: var(--wlf-text-3);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+/* Save pill */
+.wlf-root .plan-row-save {
+  background: var(--wlf-brand-soft);
+  color: var(--wlf-brand-dark);
+  border: 1px solid var(--wlf-brand-light);
+  border-radius: var(--wlf-r-pill);
+  padding: 5px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: -0.1px;
+  flex-shrink: 0;
+}
+.wlf-root .plan-row.sel .plan-row-save {
+  background: var(--wlf-brand);
+  color: #fff;
+  border-color: var(--wlf-brand);
+}
+
+/* ─── Benefits + medication detail card ────────────── */
+.wlf-root .plan-detail-card {
   background: var(--wlf-surface);
   border: 1px solid var(--wlf-border);
   border-radius: var(--wlf-r-card);
-  padding: 26px 22px;
+  padding: 22px;
   margin-bottom: 18px;
   box-shadow: var(--wlf-shadow-card);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
 }
-.wlf-root .plan-card::before {
+.wlf-root .plan-detail-card::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
   background: linear-gradient(90deg, var(--wlf-brand) 0%, var(--wlf-brand-light) 100%);
 }
-.wlf-root .plan-tabs {
-  display: inline-flex; background: var(--wlf-surface-sunk);
-  border-radius: var(--wlf-r-pill); padding: 4px;
-  margin-bottom: 24px; gap: 2px;
-}
-.wlf-root .plan-tab {
-  background: transparent; border: none;
-  font-family: inherit; font-size: 13px; font-weight: 500;
+
+.wlf-root .plan-detail-head {
+  font-size: 14px;
   color: var(--wlf-text-2);
-  padding: 9px 18px; border-radius: var(--wlf-r-pill);
-  cursor: pointer; transition: all 0.2s var(--wlf-ease);
+  font-weight: 500;
+  margin-bottom: 16px;
   letter-spacing: -0.1px;
 }
-.wlf-root .plan-tab:hover { color: var(--wlf-text); }
-.wlf-root .plan-tab.active {
-  background: var(--wlf-surface); color: var(--wlf-text);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(20, 17, 13, 0.1);
-}
-.wlf-root .plan-price-row {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 14px; margin-bottom: 16px;
-}
-.wlf-root .plan-old {
-  font-size: 14px; color: var(--wlf-text-3);
-  text-decoration: line-through; margin-bottom: 4px; font-weight: 400;
-}
-.wlf-root .plan-new { display: flex; align-items: baseline; gap: 3px; }
-.wlf-root .plan-new-amt {
-  font-size: 56px; font-weight: 700;
-  color: var(--wlf-text); line-height: 1;
-  letter-spacing: -2.2px;
-}
-.wlf-root .plan-new-suffix {
-  font-size: 16px; font-weight: 500; color: var(--wlf-text-2);
-}
-.wlf-root .plan-save {
-  background: var(--wlf-brand); color: #fff;
-  border-radius: var(--wlf-r-pill);
-  padding: 6px 12px; font-size: 12px; font-weight: 600;
-  white-space: nowrap; align-self: flex-start;
-  letter-spacing: -0.1px;
-  box-shadow: 0 4px 12px rgba(52, 126, 93, 0.3);
-}
-.wlf-root .plan-bullets { list-style: none; margin: 12px 0 0; padding: 0; }
-.wlf-root .plan-bullets li {
-  display: flex; align-items: flex-start; gap: 11px;
-  font-size: 14.5px; color: var(--wlf-text);
-  padding: 8px 0; line-height: 1.45;
-}
-.wlf-root .plan-tick {
-  color: var(--wlf-brand); font-weight: 700;
-  font-size: 12px; flex-shrink: 0; margin-top: 2px;
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 18px; height: 18px;
-  border-radius: 50%; background: var(--wlf-brand-soft);
-}
-.wlf-root .plan-divider { height: 1px; background: var(--wlf-border); margin: 18px 0; }
-.wlf-root .plan-meds-title {
-  font-size: 15px; font-weight: 600; color: var(--wlf-text);
-  margin-bottom: 12px; letter-spacing: -0.1px;
-}
-.wlf-root .plan-meds { display: flex; flex-direction: column; gap: 8px; }
-.wlf-root .plan-med-row {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 14px; color: var(--wlf-text);
-  padding: 12px 14px; background: var(--wlf-surface-sunk);
-  border-radius: var(--wlf-r-input);
-  transition: background 0.18s var(--wlf-ease), transform 0.12s var(--wlf-ease);
-}
-.wlf-root .plan-med-row:hover {
-  background: var(--wlf-brand-soft);
-  transform: translateX(2px);
-}
-.wlf-root .plan-med-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
-  background: var(--wlf-surface);
+.wlf-root .plan-detail-head strong {
   color: var(--wlf-brand-dark);
+  font-weight: 700;
+}
+
+/* Bullets */
+.wlf-root .plan-bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wlf-root .plan-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 14.5px;
+  color: var(--wlf-text);
+  padding: 8px 0;
+  line-height: 1.45;
+}
+
+.wlf-root .plan-tick {
+  color: var(--wlf-brand);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--wlf-brand-soft);
+}
+
+.wlf-root .plan-divider {
+  height: 1px;
+  background: var(--wlf-border);
+  margin: 16px 0 18px;
+}
+
+.wlf-root .plan-meds-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--wlf-text);
+  margin-bottom: 12px;
+  letter-spacing: -0.1px;
+}
+
+.wlf-root .plan-meds {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wlf-root .plan-med-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--wlf-text);
+  padding: 12px 14px;
+  background: var(--wlf-surface-sunk);
+  border-radius: var(--wlf-r-input);
+  transition: background 0.18s var(--wlf-ease);
+}
+.wlf-root .plan-med-row:hover { background: var(--wlf-brand-soft); }
+
+.wlf-root .plan-med-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  background: var(--wlf-surface);
   border: 1px solid var(--wlf-brand-soft);
 }
 .wlf-root .plan-med-label { flex: 1; font-weight: 500; }
 .wlf-root .plan-med-price {
-  font-size: 13px; font-weight: 600; color: var(--wlf-text-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wlf-text-2);
 }
-.wlf-root .cta.cta-plan {
-  background: var(--wlf-brand);
-  box-shadow: 0 1px 2px rgba(52, 126, 93, 0.18), 0 10px 24px -4px rgba(52, 126, 93, 0.4);
+
+/* Plan CTA already styled — keep your existing .cta.cta-plan rule */
+
+/* ─── Mobile tweaks ──────────────────────────────────── */
+@media (max-width: 480px) {
+  .wlf-root .plan-row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "radio info price"
+      ".     save save";
+    gap: 12px;
+    padding: 16px;
+  }
+  .wlf-root .plan-row-radio { grid-area: radio; }
+  .wlf-root .plan-row-info { grid-area: info; }
+  .wlf-root .plan-row-price { grid-area: price; }
+  .wlf-root .plan-row-save {
+    grid-area: save;
+    justify-self: end;
+  }
+  .wlf-root .plan-row-badge { right: 12px; }
 }
-.wlf-root .cta.cta-plan:not(:disabled):hover { background: var(--wlf-brand-dark); }
 
 /* ─── Stripe payment ─────────────────────────────────── */
 .wlf-root .pay-form { display: flex; flex-direction: column; flex: 1; }
