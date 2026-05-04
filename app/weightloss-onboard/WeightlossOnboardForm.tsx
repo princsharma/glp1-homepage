@@ -20,6 +20,7 @@ import {
   initialForm,
   noBackScreens,
 } from "./schema";
+import { submitToMautic } from "./mautic";
 import {
   ALCOHOL_FREQUENCY,
   BARIATRIC_PROCEDURES,
@@ -59,6 +60,20 @@ const BMI_CATEGORY_CARDS = [
   { key: "obese", name: "OBESE", range: "≥ 30" },
 ] as const;
 
+// Drives the header progress bar — order matters.
+// dHard / iThanks intentionally omitted (off-flow ends).
+const PROGRESS_ORDER: ScreenId[] = [
+  "s1", "s2", "s3", "iGood", "s20", "iRoad",
+  "s4", "s5", "s6",
+  "s7", "s7m", "s7b", "s7a", "s7c", "s7d", "s7e",
+  "s9", "s9b",
+  "s10", "s11",
+  "s12", "s13", "s13a", "s14", "s14b", "s15",
+  "s16", "s17", "s18",
+  "s19", "s21", "s22", "s23",
+  "sPlan", "sPay", "iConfirm",
+];
+
 export default function WeightlossOnboardForm() {
   // ───────────────────────────────────
   //  State + navigation
@@ -67,6 +82,14 @@ export default function WeightlossOnboardForm() {
   const [form, setForm] = useState<Form>(initialForm);
   const screenHistory = useRef<ScreenId[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Header progress (% complete based on PROGRESS_ORDER above).
+  const progressPercent = (() => {
+    if (screen === "dHard" || screen === "iThanks") return 0;
+    const idx = PROGRESS_ORDER.indexOf(screen);
+    if (idx === -1) return 0;
+    return Math.round(((idx + 1) / PROGRESS_ORDER.length) * 100);
+  })();
 
   const goTo = (next: ScreenId) => {
     screenHistory.current.push(screen);
@@ -83,6 +106,13 @@ export default function WeightlossOnboardForm() {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [screen]);
+
+  // Mautic submissions fire at exactly two points: when the email is captured
+  // on s20 (creates the contact), and when the journey ends — whether that is
+  // iConfirm (paid), iThanks (disqualified), or any other terminal screen.
+  const submitMauticOnEmailCapture = () => submitToMautic(form, "s20");
+  const submitMauticOnComplete = (overrides: Partial<Form>, step: ScreenId) =>
+    submitToMautic({ ...form, ...overrides }, step);
 
   // ───────────────────────────────────
   //  Form mutators
@@ -208,6 +238,7 @@ export default function WeightlossOnboardForm() {
 
   const selectedPlan = PLANS.find((plan) => plan.id === form.plan);
 
+  // HIPAA (consentH) is required; Telehealth/Terms (consentT) is optional.
   const emailScreenIsValid = isValidEmail(form.email) && form.consentH;
 
   const profileScreenIsValid =
@@ -240,6 +271,23 @@ export default function WeightlossOnboardForm() {
               <span className="contact-num">1 (888) 555-0123</span>
             </a>
           </div>
+
+          {/* Progress bar — fills as the user advances through PROGRESS_ORDER */}
+          {progressPercent > 0 && (
+            <div
+              className="progress-bar"
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Form completion progress"
+            >
+              <div
+                className="progress-fill"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          )}
 
           {/* ════════════════════════════════════════════
               GOALS & INSPIRATION (s1, s2)
@@ -453,7 +501,6 @@ export default function WeightlossOnboardForm() {
                     GLP-1 treatment. Let&apos;s find the best option for your
                     goals.
                   </div>
-                  
                 </div>
                 <button
                   type="button"
@@ -1567,6 +1614,7 @@ export default function WeightlossOnboardForm() {
                 planLabel={selectedPlan?.label ?? ""}
                 onSuccess={() => {
                   updateField("paid", true);
+                  submitMauticOnComplete({ paid: true }, "iConfirm");
                   goTo("iConfirm");
                 }}
               />
@@ -1639,12 +1687,13 @@ export default function WeightlossOnboardForm() {
                 className="cta"
                 style={{ maxWidth: 320, marginTop: 10 }}
                 disabled={!isValidEmail(form.email)}
-                onClick={() =>
+                onClick={() => {
+                  submitMauticOnComplete({}, "iThanks");
                   logSubmission(
                     "iThanks",
                     "Weight loss onboarding — disqualified lead",
-                  )
-                }
+                  );
+                }}
               >
                 Keep me updated
               </button>
@@ -1675,6 +1724,9 @@ export default function WeightlossOnboardForm() {
           )}
         </div>
       </div>
+
+      {/* Theme switcher — rendered once at the root so it appears on every screen */}
+      <ThemeSwitcher />
     </div>
   );
 }
@@ -1720,7 +1772,6 @@ function BariatricDateScreen({
       >
         Continue
       </button>
-      <ThemeSwitcher />
     </div>
   );
 }
