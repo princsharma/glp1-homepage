@@ -238,8 +238,7 @@ export default function WeightlossOnboardForm() {
 
   const selectedPlan = PLANS.find((plan) => plan.id === form.plan);
 
-  const emailScreenIsValid =
-    isValidEmail(form.email) && form.consentH && form.consentT;
+  const emailScreenIsValid = isValidEmail(form.email) && form.consentH;
 
   const profileScreenIsValid =
     isValidName(form.firstName) &&
@@ -330,7 +329,7 @@ export default function WeightlossOnboardForm() {
                 type="button"
                 className="cta"
                 disabled={form.s2.length === 0}
-                onClick={() => goTo("s3")}
+                onClick={() => goTo("s20")}
               >
                 Continue
               </button>
@@ -470,7 +469,17 @@ export default function WeightlossOnboardForm() {
                 type="button"
                 className="cta"
                 disabled={bmi === null || bmiError !== null}
-                onClick={() => goTo("iGood")}
+                onClick={() => {
+                  // BMI < 27 is a hard disqualification. Fire the Mautic
+                  // POST with disqualified=yes immediately so the lead is
+                  // captured even if the user closes the tab on dHard.
+                  if (bmi !== null && bmi < 27) {
+                    submitMauticOnComplete({}, "dHard");
+                    goTo("dHard");
+                  } else {
+                    goTo("iGood");
+                  }
+                }}
               >
                 Continue
               </button>
@@ -495,7 +504,7 @@ export default function WeightlossOnboardForm() {
                 <button
                   type="button"
                   className="icta"
-                  onClick={() => goTo("s20")}
+                  onClick={() => goTo("iRoad")}
                 >
                   Continue
                 </button>
@@ -1026,7 +1035,14 @@ export default function WeightlossOnboardForm() {
                 type="button"
                 className="cta"
                 disabled={!form.s13}
-                onClick={() => goTo(form.s13 === "Yes" ? "dHard" : "s13a")}
+                onClick={() => {
+                  if (form.s13 === "Yes") {
+                    submitMauticOnComplete({}, "dHard");
+                    goTo("dHard");
+                  } else {
+                    goTo("s13a");
+                  }
+                }}
               >
                 Continue
               </button>
@@ -1121,7 +1137,14 @@ export default function WeightlossOnboardForm() {
                 type="button"
                 className="cta"
                 disabled={!form.s15}
-                onClick={() => goTo(form.s15 === "Yes" ? "dHard" : "s16")}
+                onClick={() => {
+                  if (form.s15 === "Yes") {
+                    submitMauticOnComplete({}, "dHard");
+                    goTo("dHard");
+                  } else {
+                    goTo("s16");
+                  }
+                }}
               >
                 Continue
               </button>
@@ -1339,7 +1362,7 @@ export default function WeightlossOnboardForm() {
                 disabled={!emailScreenIsValid}
                 onClick={() => {
                   submitMauticOnEmailCapture();
-                  goTo("iRoad");
+                  goTo("s3");
                 }}
               >
                 Continue

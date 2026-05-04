@@ -63,9 +63,13 @@ export function buildMauticPayload(
     weightKg: form.weightKg,
   });
 
-  // Disqualified is derived from the safety screen answers, not the
-  // current step — the user moves past dHard to iThanks but is still DQ'd.
-  const disqualified = form.s13 === "Yes" || form.s15 === "Yes";
+  // Disqualified is derived from the data, not the current step — the user
+  // moves past dHard to iThanks but is still DQ'd. Three triggers: family
+  // history of MTC/MEN2, history of pancreatitis, or BMI below 27.
+  const disqualified =
+    form.s13 === "Yes" ||
+    form.s15 === "Yes" ||
+    (bmi !== null && bmi < 27);
 
   return {
     email: form.email,
