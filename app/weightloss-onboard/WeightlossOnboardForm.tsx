@@ -20,6 +20,7 @@ import {
   initialForm,
   noBackScreens,
 } from "./schema";
+import { submitToMautic } from "./mautic";
 import {
   ALCOHOL_FREQUENCY,
   BARIATRIC_PROCEDURES,
@@ -105,6 +106,13 @@ export default function WeightlossOnboardForm() {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [screen]);
+
+  // Mautic submissions fire at exactly two points: when the email is captured
+  // on s20 (creates the contact), and when the journey ends — whether that is
+  // iConfirm (paid), iThanks (disqualified), or any other terminal screen.
+  const submitMauticOnEmailCapture = () => submitToMautic(form, "s20");
+  const submitMauticOnComplete = (overrides: Partial<Form>, step: ScreenId) =>
+    submitToMautic({ ...form, ...overrides }, step);
 
   // ───────────────────────────────────
   //  Form mutators
@@ -1329,7 +1337,10 @@ export default function WeightlossOnboardForm() {
                 type="button"
                 className="cta"
                 disabled={!emailScreenIsValid}
-                onClick={() => goTo("iRoad")}
+                onClick={() => {
+                  submitMauticOnEmailCapture();
+                  goTo("iRoad");
+                }}
               >
                 Continue
               </button>
@@ -1579,6 +1590,7 @@ export default function WeightlossOnboardForm() {
                 planLabel={selectedPlan?.label ?? ""}
                 onSuccess={() => {
                   updateField("paid", true);
+                  submitMauticOnComplete({ paid: true }, "iConfirm");
                   goTo("iConfirm");
                 }}
               />
@@ -1651,12 +1663,13 @@ export default function WeightlossOnboardForm() {
                 className="cta"
                 style={{ maxWidth: 320, marginTop: 10 }}
                 disabled={!isValidEmail(form.email)}
-                onClick={() =>
+                onClick={() => {
+                  submitMauticOnComplete({}, "iThanks");
                   logSubmission(
                     "iThanks",
                     "Weight loss onboarding — disqualified lead",
-                  )
-                }
+                  );
+                }}
               >
                 Keep me updated
               </button>
