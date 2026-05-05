@@ -10,10 +10,14 @@ import {
   buildSurgeryListText,
   calculateBmi,
   eligibilityText,
+  isAtLeastAge,
   isValidEmail,
   isValidName,
   isValidPhone,
 } from "./utils";
+
+// Minimum age (in years) the user must be to proceed past the profile screen.
+const MIN_AGE_YEARS: number = 18;
 import {
   type Form,
   type ScreenId,
@@ -41,7 +45,7 @@ import {
   SAFETY_TREATMENTS,
   SEX_OPTIONS,
   SLEEP_HOURS,
-  SLOTS,
+  generateSlots,
   STRUGGLE_DURATIONS,
   SUGARY_DRINKS_PER_WEEK,
   type GlpMedication,
@@ -82,6 +86,21 @@ export default function WeightlossOnboardForm() {
   const [form, setForm] = useState<Form>(initialForm);
   const screenHistory = useRef<ScreenId[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Date constants for the date inputs. todayDate caps last-injection (s7c)
+  // at the present; maxDobDate is exactly MIN_AGE_YEARS years ago today and
+  // caps the DOB input (s21) so the calendar will not offer a date that
+  // would make the user under the minimum age. Both formatted YYYY-MM-DD
+  // using local timezone.
+  const todayDate = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  })();
+  const maxDobDate = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - MIN_AGE_YEARS);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  })();
 
   // Header progress (% complete based on PROGRESS_ORDER above).
   const progressPercent = (() => {
@@ -244,7 +263,8 @@ export default function WeightlossOnboardForm() {
   const profileScreenIsValid =
     isValidName(form.firstName) &&
     isValidName(form.lastName) &&
-    isValidPhone(form.phone);
+    isValidPhone(form.phone) &&
+    isAtLeastAge(form.dob, MIN_AGE_YEARS);
 
   // ───────────────────────────────────
   //  Render
@@ -779,6 +799,7 @@ export default function WeightlossOnboardForm() {
               <input
                 className="inp"
                 type="date"
+                max={todayDate}
                 value={form.glpLastInjection ?? ""}
                 onChange={(event) =>
                   updateField("glpLastInjection", event.target.value)
@@ -1445,6 +1466,7 @@ export default function WeightlossOnboardForm() {
                   className="inp"
                   style={{ margin: 0 }}
                   type="date"
+                  max={maxDobDate}
                   value={form.dob}
                   onChange={(event) => updateField("dob", event.target.value)}
                 />
@@ -1459,16 +1481,31 @@ export default function WeightlossOnboardForm() {
                   onChange={(event) => updateField("zip", event.target.value)}
                 />
               </div>
+              {form.dob.length > 0 && !isAtLeastAge(form.dob, MIN_AGE_YEARS) && (
+                <div className="field-err">
+                  You must be at least {MIN_AGE_YEARS} year
+                  {MIN_AGE_YEARS === 1 ? "" : "s"} old.
+                </div>
+              )}
               <input
                 className="inp"
                 type="tel"
+                inputMode="numeric"
                 placeholder="Phone number"
+                maxLength={12}
                 value={form.phone}
-                onChange={(event) => updateField("phone", event.target.value)}
+                onChange={(event) => {
+                  // Strip non-digits and cap at 12 digits, so manual paste
+                  // of a longer formatted number is also clamped.
+                  const digits = event.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 12);
+                  updateField("phone", digits);
+                }}
               />
               {form.phone.length > 0 && !isValidPhone(form.phone) && (
                 <div className="field-err">
-                  Please enter a valid phone number (at least 10 digits).
+                  Please enter a valid phone number (10–12 digits).
                 </div>
               )}
               <input
@@ -1553,7 +1590,7 @@ export default function WeightlossOnboardForm() {
                 with a licensed physician.
               </div>
               <div className="cal">
-                {SLOTS.map((slot) => {
+                {generateSlots().map((slot) => {
                   const slotId = `${slot.d}|${slot.t}`;
                   return (
                     <div

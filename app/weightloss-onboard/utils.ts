@@ -8,6 +8,21 @@ export const isValidName = (name: string) => name.trim().length >= 2;
 export const isValidPhone = (phone: string) =>
   phone.replace(/\D/g, "").length >= 10;
 
+// Returns true when the supplied YYYY-MM-DD birthdate puts the user at
+// `years`+ today (uses local date components, not UTC).
+export function isAtLeastAge(dob: string, years: number): boolean {
+  if (!dob) return false;
+  const parsed = new Date(dob);
+  if (Number.isNaN(parsed.getTime())) return false;
+  const today = new Date();
+  const cutoff = new Date(
+    today.getFullYear() - years,
+    today.getMonth(),
+    today.getDate(),
+  );
+  return parsed.getTime() <= cutoff.getTime();
+}
+
 export type BmiCategory = "under" | "healthy" | "over" | "obese";
 
 export function bmiCategory(bmi: number | null): BmiCategory | null {

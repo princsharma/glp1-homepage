@@ -225,11 +225,30 @@ export const MEDICATION_ADDONS: readonly MedicationOption[] = [
 
 export type Slot = { d: string; t: string };
 
-export const SLOTS: readonly Slot[] = [
-  { d: "Mon Apr 28", t: "9:00 AM" },
-  { d: "Mon Apr 28", t: "11:00 AM" },
-  { d: "Tue Apr 29", t: "10:00 AM" },
-  { d: "Tue Apr 29", t: "2:00 PM" },
-  { d: "Wed Apr 30", t: "9:30 AM" },
-  { d: "Thu May 1", t: "3:00 PM" },
+// Builds a rolling list of consultation slots starting from today.
+// Skips weekends, takes the next 3 weekdays, and offers 2 time slots per day.
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
+
+export function generateSlots(): Slot[] {
+  const slots: Slot[] = [];
+  const today = new Date();
+  let offset = 0;
+  let added = 0;
+  while (added < 3 && offset < 14) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + offset);
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) {
+      const label = `${DAY_NAMES[dow]} ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
+      slots.push({ d: label, t: "9:00 AM" });
+      slots.push({ d: label, t: "2:00 PM" });
+      added += 1;
+    }
+    offset += 1;
+  }
+  return slots;
+}
