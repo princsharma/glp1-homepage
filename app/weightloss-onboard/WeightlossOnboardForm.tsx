@@ -18,6 +18,25 @@ import {
 
 // Minimum age (in years) the user must be to proceed past the profile screen.
 const MIN_AGE_YEARS: number = 18;
+
+// Photo upload limits — applied to vial-photo (s7d) and ID-photo (s7e) inputs.
+const MAX_UPLOAD_MB = 10;
+const ALLOWED_IMAGE_ACCEPT =
+  "image/jpeg,image/png,image/heic,image/heif,image/webp";
+const ALLOWED_IMAGE_EXTS = ["jpg", "jpeg", "png", "heic", "heif", "webp"];
+
+function validateImageUpload(file: File | undefined): string | null {
+  if (!file) return null;
+  const sizeMB = file.size / (1024 * 1024);
+  if (sizeMB > MAX_UPLOAD_MB) {
+    return `File is too large (${sizeMB.toFixed(1)} MB). Max ${MAX_UPLOAD_MB} MB.`;
+  }
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (!ALLOWED_IMAGE_EXTS.includes(ext)) {
+    return "Please upload a JPG, PNG, HEIC, or WEBP image.";
+  }
+  return null;
+}
 import {
   type Form,
   type ScreenId,
@@ -84,6 +103,9 @@ export default function WeightlossOnboardForm() {
   // ───────────────────────────────────
   const [screen, setScreen] = useState<ScreenId>("s1");
   const [form, setForm] = useState<Form>(initialForm);
+  // Inline error for the photo upload screens (s7d, s7e). Cleared on every
+  // screen change via the scroll-reset effect below.
+  const [uploadError, setUploadError] = useState<string>("");
   const screenHistory = useRef<ScreenId[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -124,6 +146,7 @@ export default function WeightlossOnboardForm() {
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    setUploadError("");
   }, [screen]);
 
   // Mautic submissions fire at exactly two points: when the email is captured
@@ -828,18 +851,26 @@ export default function WeightlossOnboardForm() {
                 ⬆ Upload file
                 <input
                   type="file"
-                  accept="image/*"
+                  accept={ALLOWED_IMAGE_ACCEPT}
                   style={{ display: "none" }}
-                  onChange={(event) =>
-                    updateField(
-                      "vialPhotoName",
-                      event.target.files?.[0]?.name ?? "",
-                    )
-                  }
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (!file) return;
+                    const err = validateImageUpload(file);
+                    if (err) {
+                      setUploadError(err);
+                      return;
+                    }
+                    setUploadError("");
+                    updateField("vialPhotoName", file.name);
+                  }}
                 />
               </label>
               {form.vialPhotoName && (
                 <div className="upload-name">✓ {form.vialPhotoName}</div>
+              )}
+              {uploadError && (
+                <div className="field-err">{uploadError}</div>
               )}
               <button
                 type="button"
@@ -870,34 +901,47 @@ export default function WeightlossOnboardForm() {
               {form.photoIdName && (
                 <div className="upload-name">✓ {form.photoIdName}</div>
               )}
+              {uploadError && (
+                <div className="field-err">{uploadError}</div>
+              )}
               <div className="id-actions">
                 <label className="cta2 id-btn">
                   Select photo
                   <input
                     type="file"
-                    accept="image/*"
+                    accept={ALLOWED_IMAGE_ACCEPT}
                     style={{ display: "none" }}
-                    onChange={(event) =>
-                      updateField(
-                        "photoIdName",
-                        event.target.files?.[0]?.name ?? "",
-                      )
-                    }
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (!file) return;
+                      const err = validateImageUpload(file);
+                      if (err) {
+                        setUploadError(err);
+                        return;
+                      }
+                      setUploadError("");
+                      updateField("photoIdName", file.name);
+                    }}
                   />
                 </label>
                 <label className="cta cta-cap id-btn">
                   Take photo
                   <input
                     type="file"
-                    accept="image/*"
+                    accept={ALLOWED_IMAGE_ACCEPT}
                     capture="environment"
                     style={{ display: "none" }}
-                    onChange={(event) =>
-                      updateField(
-                        "photoIdName",
-                        event.target.files?.[0]?.name ?? "",
-                      )
-                    }
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (!file) return;
+                      const err = validateImageUpload(file);
+                      if (err) {
+                        setUploadError(err);
+                        return;
+                      }
+                      setUploadError("");
+                      updateField("photoIdName", file.name);
+                    }}
                   />
                 </label>
               </div>
