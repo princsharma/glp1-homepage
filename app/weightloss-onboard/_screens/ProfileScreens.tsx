@@ -265,7 +265,7 @@ export function S22() {
       <button
         type="button"
         className="cta"
-        onClick={() => goTo("s23")}
+        onClick={() => goTo("s22b")}
       >
         Continue
       </button>

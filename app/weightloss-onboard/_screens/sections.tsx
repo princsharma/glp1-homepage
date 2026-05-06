@@ -36,7 +36,7 @@ export const SECTION_SCREENS: Record<SectionKey, ScreenId[]> = {
   medical:   ["s10", "s11"],
   safety:    ["s12", "s13", "s13a", "s14", "s14b", "s15"],
   lifestyle: ["s16", "s17", "s18"],
-  profile:   ["s19", "s21", "s22", "s23"],
+  profile:   ["s19", "s21", "s22", "s22b", "s23"],
 };
 
 export const SCREEN_TO_SECTION: Partial<Record<ScreenId, SectionKey>> = (() => {

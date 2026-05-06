@@ -3278,3 +3278,198 @@
   color: var(--bmi-obese-dark);
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
+/* ────────────────────────────────────────────
+   Doctor introduction screen (s22b)
+   ──────────────────────────────────────────── */
+.wlf-root .doc-sc {
+  align-items: center;
+  text-align: center;
+}
+.wlf-root .doc-q {
+  text-align: center;
+}
+.wlf-root .doc-qs {
+  text-align: center;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wlf-root .doc-card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin: 18px auto 22px;
+  padding: 22px 22px 22px;
+  background: var(--wlf-surface);
+  border: 1px solid var(--wlf-border);
+  border-radius: var(--wlf-r-card);
+  box-shadow: var(--wlf-shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms var(--wlf-ease),
+    box-shadow 180ms var(--wlf-ease),
+    transform 180ms var(--wlf-ease);
+}
+.wlf-root .doc-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 90px;
+  background: linear-gradient(
+    180deg,
+    var(--wlf-brand-soft) 0%,
+    transparent 100%
+  );
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 180ms var(--wlf-ease);
+}
+.wlf-root .doc-card:hover {
+  border-color: var(--wlf-brand-light);
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 2px rgba(20, 17, 13, 0.04),
+    0 16px 36px -8px rgba(52, 126, 93, 0.18);
+}
+.wlf-root .doc-card:focus-visible {
+  outline: none;
+  box-shadow: var(--wlf-shadow-card), var(--wlf-ring-focus);
+}
+.wlf-root .doc-card.sel {
+  border-color: var(--wlf-brand);
+  box-shadow:
+    0 0 0 2px var(--wlf-brand) inset,
+    0 1px 2px rgba(20, 17, 13, 0.04),
+    0 16px 36px -8px rgba(52, 126, 93, 0.22);
+}
+.wlf-root .doc-card.sel::before {
+  opacity: 1;
+}
+
+.wlf-root .doc-check {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--wlf-surface);
+  border: 1.5px solid var(--wlf-border-strong);
+  color: transparent;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  z-index: 2;
+  transition: background 160ms var(--wlf-ease),
+    border-color 160ms var(--wlf-ease),
+    color 160ms var(--wlf-ease),
+    transform 160ms var(--wlf-ease);
+}
+.wlf-root .doc-card.sel .doc-check {
+  background: var(--wlf-brand);
+  border-color: var(--wlf-brand);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.wlf-root .doc-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding-right: 36px;
+  z-index: 1;
+}
+
+.wlf-root .doc-photo {
+  position: relative;
+  display: block;
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--wlf-surface);
+  box-shadow:
+    0 0 0 3px var(--wlf-brand-soft),
+    0 8px 22px -6px rgba(20, 17, 13, 0.18);
+  background: var(--wlf-surface-sunk);
+}
+.wlf-root .doc-photo-img {
+  object-fit: cover;
+}
+
+.wlf-root .doc-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 4px;
+  min-width: 0;
+}
+
+.wlf-root .doc-name {
+  display: block;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--wlf-text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.wlf-root .doc-creds {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wlf-brand-dark);
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
+
+.wlf-root .doc-divider {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 18px 0 16px;
+  background: var(--wlf-border);
+  border-radius: 2px;
+}
+
+.wlf-root .doc-bio {
+  display: block;
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--wlf-text-2);
+  text-align: left;
+  width: 100%;
+}
+
+.wlf-root .doc-tags {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 6px;
+}
+.wlf-root .doc-tag {
+  display: inline-block;
+  padding: 5px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--wlf-brand-dark);
+  background: var(--wlf-brand-soft);
+  border-radius: var(--wlf-r-pill);
+  border: 1px solid rgba(52, 126, 93, 0.18);
+}

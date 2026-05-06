@@ -6,7 +6,7 @@ export const screenIds = [
   "s9", "s9b",
   "s10", "s11", "s12", "s13", "s13a", "s14", "s14b", "s15",
   "s16", "s17", "s18", "s19", "s20",
-  "s21", "s22", "s23", "sPlan", "sPay",
+  "s21", "s22", "s22b", "s23", "sPlan", "sPay",
   "iConfirm", "iThanks", "dHard",
 ] as const;
 
@@ -85,6 +85,7 @@ export const formSchema = z.object({
   allergies: z.string(),
   pharmacy: z.string(),
 
+  doctor: z.string(),
   slot: z.string(),
   plan: z.string(),
   paid: z.boolean(),
@@ -149,6 +150,7 @@ export const initialForm: Form = {
   meds: "",
   allergies: "",
   pharmacy: "",
+  doctor: "",
   slot: "",
   plan: "1m",
   paid: false,

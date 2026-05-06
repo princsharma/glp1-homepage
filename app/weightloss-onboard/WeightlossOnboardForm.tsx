@@ -44,6 +44,7 @@ import {
   S21,
   S22,
 } from "./_screens/ProfileScreens";
+import S22bDoctor from "./_screens/DoctorIntroScreen";
 import S23Booking from "./_screens/S23Booking";
 import { SPlan, SPay } from "./_screens/PlanPayScreens";
 import { IConfirm, DHard, IThanks } from "./_screens/EndStateScreens";
@@ -58,7 +59,7 @@ const PROGRESS_ORDER: ScreenId[] = [
   "s10", "s11",
   "s12", "s13", "s13a", "s14", "s14b", "s15",
   "s16", "s17", "s18",
-  "s19", "s21", "s22", "s23",
+  "s19", "s21", "s22", "s22b", "s23",
   "sPlan", "sPay", "iConfirm",
 ];
 
@@ -95,6 +96,7 @@ const SCREEN_COMPONENTS: Partial<Record<ScreenId, () => JSX.Element>> = {
   s20: S20Email,
   s21: S21,
   s22: S22,
+  s22b: S22bDoctor,
   s23: S23Booking,
   sPlan: SPlan,
   sPay: SPay,

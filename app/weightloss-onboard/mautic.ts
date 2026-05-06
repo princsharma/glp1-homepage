@@ -115,6 +115,7 @@ export function buildMauticPayload(
     current_meds: form.meds,
     allergies: form.allergies,
     pharmacy: form.pharmacy,
+    selected_doctor: form.doctor,
     consultation_slot: form.slot ? form.slot.replace("|", " · ") : "",
     selected_plan: form.plan,
     paid: form.paid ? "yes" : "no",
