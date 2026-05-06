@@ -1983,21 +1983,59 @@ export default function WeightlossOnboardForm() {
               <div className="qs">
                 Appointments are 15–20 minutes via secure video call. Pick the slot that works best for you.
               </div>
-              <div className="cal">
-                {generateSlots().map((slot) => {
-                  const slotId = `${slot.d}|${slot.t}`;
-                  return (
-                    <div
-                      key={slotId}
-                      className={`cs ${form.slot === slotId ? "sel" : ""}`}
-                      onClick={() => updateField("slot", slotId)}
-                    >
-                      <div className="csd">{slot.d}</div>
-                      <div className="cst">{slot.t}</div>
-                    </div>
-                  );
-                })}
+              <div className="cal2">
+                {(() => {
+                  const slotsList = generateSlots();
+                  const days: string[] = [];
+                  const byDay = new Map<string, typeof slotsList[number][]>();
+                  slotsList.forEach((slot) => {
+                    if (!byDay.has(slot.d)) {
+                      byDay.set(slot.d, []);
+                      days.push(slot.d);
+                    }
+                    byDay.get(slot.d)!.push(slot);
+                  });
+                  return days.map((day) => {
+                    const slots = byDay.get(day)!;
+                    return (
+                      <div key={day} className="cal2-day">
+                        <div className="cal2-day-head">
+                          <span className="cal2-day-name">{day}</span>
+                          <span className="cal2-day-count">
+                            {slots.length} slot{slots.length === 1 ? "" : "s"}
+                          </span>
+                        </div>
+                        <div className="cal2-times">
+                          {slots.map((slot) => {
+                            const slotId = `${slot.d}|${slot.t}`;
+                            const isSelected = form.slot === slotId;
+                            return (
+                              <button
+                                key={slotId}
+                                type="button"
+                                className={`cal2-time ${isSelected ? "sel" : ""}`}
+                                onClick={() => updateField("slot", slotId)}
+                              >
+                                {slot.t}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
+
+              {form.slot && (
+                <div className="cal2-confirm">
+                  <span className="cal2-confirm-icon">✓</span>
+                  <span>
+                    You picked <strong>{form.slot.replace("|", " · ")}</strong>
+                  </span>
+                </div>
+              )}
+
               <button
                 type="button"
                 className="cta"
