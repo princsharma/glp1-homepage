@@ -70,7 +70,6 @@ import {
   type GlpMedication,
   WATER_INTAKE,
   WEIGHT_DIAGNOSES,
-  WEIGHT_GOALS,
   YES_NO,
 } from "./data";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
@@ -82,6 +81,70 @@ const BMI_CATEGORY_CARDS = [
   { key: "over", name: "OVER", range: "25 — 29.9" },
   { key: "obese", name: "OBESE", range: "≥ 30" },
 ] as const;
+
+// Weight goal options shown on the welcome screen with a friendly description.
+// The `value` must match the strings in WEIGHT_GOALS so form.s1 stays compatible
+// with the existing schema and Mautic mapping.
+const WEIGHT_GOAL_CARDS = [
+  { value: "1–15 lbs.", desc: "Slim down. Tone up. Stay on track." },
+  { value: "16–50 lbs.", desc: "Lose weight & keep it off — no more yo-yo cycles." },
+  { value: "50+ lbs.", desc: "Bigger goal? We'll match you with the right plan." },
+  { value: "I’m not sure yet", desc: "That's okay — we'll help you figure it out." },
+] as const;
+
+// Section metadata — drives the prominent section badge so each chapter feels
+// distinct. The badge appears on the FIRST screen of each section.
+type SectionKey =
+  | "weight"
+  | "meds"
+  | "id"
+  | "bariatric"
+  | "medical"
+  | "safety"
+  | "lifestyle"
+  | "profile";
+
+// The eight chapters shown in the persistent stepper at the top of every
+// in-section screen. Order matters — this is what users see left-to-right.
+const SECTIONS_ORDER: SectionKey[] = [
+  "weight", "meds", "id", "bariatric",
+  "medical", "safety", "lifestyle", "profile",
+];
+
+const SECTION_INFO: Record<SectionKey, { label: string; short: string }> = {
+  weight:    { label: "Weight history",    short: "Weight" },
+  meds:      { label: "Medication history", short: "Meds" },
+  id:        { label: "Identity",           short: "ID" },
+  bariatric: { label: "Surgical history",   short: "Surgery" },
+  medical:   { label: "Medical history",    short: "Medical" },
+  safety:    { label: "Safety screening",   short: "Safety" },
+  lifestyle: { label: "Lifestyle",          short: "Lifestyle" },
+  profile:   { label: "Almost done",        short: "Wrap-up" },
+};
+
+// Maps each in-flow screen to its section + position within the section.
+// Schedule (s23) is folded into "profile" so we keep a tidy 8 sections.
+const SECTION_SCREENS: Record<SectionKey, ScreenId[]> = {
+  weight:    ["s4", "s5", "s6"],
+  meds:      ["s7", "s7m", "s7b", "s7a", "s7c", "s7d"],
+  id:        ["s7e"],
+  bariatric: ["s9", "s9b"],
+  medical:   ["s10", "s11"],
+  safety:    ["s12", "s13", "s13a", "s14", "s14b", "s15"],
+  lifestyle: ["s16", "s17", "s18"],
+  profile:   ["s19", "s21", "s22", "s23"],
+};
+
+// Reverse map: any screen → its section. Built once at module load.
+const SCREEN_TO_SECTION: Partial<Record<ScreenId, SectionKey>> = (() => {
+  const map: Partial<Record<ScreenId, SectionKey>> = {};
+  (Object.keys(SECTION_SCREENS) as SectionKey[]).forEach((section) => {
+    SECTION_SCREENS[section].forEach((screenId) => {
+      map[screenId] = section;
+    });
+  });
+  return map;
+})();
 
 // Drives the header progress bar — order matters.
 // dHard / iThanks intentionally omitted (off-flow ends).
@@ -315,8 +378,10 @@ export default function WeightlossOnboardForm() {
             </a>
           </div>
 
-          {/* Progress bar — fills as the user advances through PROGRESS_ORDER */}
-          {progressPercent > 0 && (
+          {/* Top progress bar — only shows on screens WITHOUT the section
+              stepper (welcome, BMI, email, interstitials, plan/pay).
+              In-section screens get the dedicated stepper instead. */}
+          {progressPercent > 0 && !SCREEN_TO_SECTION[screen] && (
             <div
               className="progress-bar"
               role="progressbar"
@@ -332,51 +397,130 @@ export default function WeightlossOnboardForm() {
             </div>
           )}
 
+          {/* Persistent section stepper — shown on every in-section screen so
+              the user always knows which chapter they're in and how far through.
+              Skipped on welcome (s1, s2), email (s20), BMI (s3), interstitials,
+              plan/pay, and end states. */}
+          {SCREEN_TO_SECTION[screen] && (
+            <SectionStepper
+              section={SCREEN_TO_SECTION[screen]!}
+              currentScreen={screen}
+            />
+          )}
+
           {/* ════════════════════════════════════════════
               GOALS & INSPIRATION (s1, s2)
+              Welcome hero layout — image-led, editorial title,
+              then a white card with the options.
               ════════════════════════════════════════════ */}
           {screen === "s1" && (
-            <div className="sc">
-              <div className="q">How much weight would you like to lose?</div>
-              <Radio
-                options={WEIGHT_GOALS}
-                value={form.s1}
-                onSelect={(value) => updateField("s1", value)}
-              />
-              <div className="acct">
-                Already have an account? <a href="#">Log in</a>
+            <div className="welcome">
+              <div className="welcome-hero">
+                <div className="welcome-hero-text">
+                  <span className="welcome-pill">
+                    <span className="welcome-pill-dot" />
+                    2 minute quiz
+                  </span>
+                  <h1 className="welcome-title">
+                    Let&apos;s <em>personalize</em><br />your treatment
+                  </h1>
+                  <p className="welcome-sub">
+                    Answer a few quick questions to match you with the right plan.
+                  </p>
+                </div>
+                <div className="welcome-hero-art" aria-hidden>
+                  <div className="welcome-vial">
+                    <div className="welcome-vial-cap" />
+                    <div className="welcome-vial-body">
+                      <div className="welcome-vial-label">GLP-1</div>
+                      <div className="welcome-vial-sub">Compounded</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button
-                type="button"
-                className="cta"
-                disabled={!form.s1}
-                onClick={() => goTo("s2")}
-              >
-                Continue
-              </button>
+
+              <div className="welcome-card">
+                <div className="welcome-q">How much weight would you like to lose?</div>
+                <div className="welcome-opts">
+                  {WEIGHT_GOAL_CARDS.map((card) => {
+                    const isSelected = form.s1 === card.value;
+                    return (
+                      <button
+                        key={card.value}
+                        type="button"
+                        className={`welcome-opt ${isSelected ? "sel" : ""}`}
+                        onClick={() => updateField("s1", card.value)}
+                      >
+                        <span className="welcome-opt-text">
+                          <span className="welcome-opt-title">{card.value}</span>
+                          <span className="welcome-opt-desc">{card.desc}</span>
+                        </span>
+                        <span className="welcome-opt-arrow" aria-hidden>→</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  className="cta welcome-cta"
+                  disabled={!form.s1}
+                  onClick={() => goTo("s2")}
+                >
+                  Continue
+                </button>
+                <div className="welcome-foot">
+                  Already a member? <a href="#">Sign In</a>
+                </div>
+              </div>
             </div>
           )}
 
           {screen === "s2" && (
-            <div className="sc">
-              <div className="q">What&apos;s making you want to start now?</div>
-              <div className="qs">Select all that apply.</div>
-              <Multi
-                options={INSPIRATIONS}
-                values={form.s2}
-                onToggle={(value) => toggleValue("s2", value)}
-              />
-              <div className="acct">
-                Already have an account? <a href="#">Log in</a>
+            <div className="welcome">
+              <div className="welcome-hero">
+                <div className="welcome-hero-text">
+                  <span className="welcome-pill">
+                    <span className="welcome-pill-dot" />
+                    Almost there
+                  </span>
+                  <h1 className="welcome-title">
+                    What&apos;s <em>driving you</em><br />right now?
+                  </h1>
+                  <p className="welcome-sub">
+                    Tell us what matters most so we can tailor your plan.
+                  </p>
+                </div>
+                <div className="welcome-hero-art" aria-hidden>
+                  <div className="welcome-vial">
+                    <div className="welcome-vial-cap" />
+                    <div className="welcome-vial-body">
+                      <div className="welcome-vial-label">GLP-1</div>
+                      <div className="welcome-vial-sub">Compounded</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button
-                type="button"
-                className="cta"
-                disabled={form.s2.length === 0}
-                onClick={() => goTo("s20")}
-              >
-                Continue
-              </button>
+
+              <div className="welcome-card">
+                <div className="welcome-q">What&apos;s making you want to start now?</div>
+                <div className="welcome-q-sub">Select all that apply.</div>
+                <Multi
+                  options={INSPIRATIONS}
+                  values={form.s2}
+                  onToggle={(value) => toggleValue("s2", value)}
+                />
+                <button
+                  type="button"
+                  className="cta welcome-cta"
+                  disabled={form.s2.length === 0}
+                  onClick={() => goTo("s20")}
+                >
+                  Continue
+                </button>
+                <div className="welcome-foot">
+                  Already a member? <a href="#">Sign In</a>
+                </div>
+              </div>
             </div>
           )}
 
@@ -384,129 +528,162 @@ export default function WeightlossOnboardForm() {
               BMI (s3) → eligibility interstitial (iGood)
               ════════════════════════════════════════════ */}
           {screen === "s3" && (
-            <div className="sc">
-              <div className="q">What is your current height and weight?</div>
-              <div
-                className="acct"
-                style={{ textAlign: "left", margin: "0 0 16px" }}
-              >
-                Already have an account? <a href="#">Log in</a>
+            <div className="sc bmi-screen">
+              <div className="bmi-eyebrow">Step 1 · Eligibility check</div>
+              <div className="q bmi-q">Let&apos;s check if GLP-1 is right for you</div>
+              <div className="qs bmi-qs">
+                Your height and weight help us calculate your BMI — a key factor in eligibility.
               </div>
 
-              <div className="unit-toggle">
-                <button
-                  type="button"
-                  className={form.bmiUnit === "metric" ? "active" : ""}
-                  onClick={() => setBmiUnit("metric")}
-                >
-                  Metric
-                </button>
-                <button
-                  type="button"
-                  className={form.bmiUnit === "imperial" ? "active" : ""}
-                  onClick={() => setBmiUnit("imperial")}
-                >
-                  Imperial
-                </button>
-              </div>
-
-              {form.bmiUnit === "metric" ? (
-                <div className="r2">
-                  <input
-                    className="inp"
-                    style={{ margin: 0 }}
-                    type="number"
-                    inputMode="numeric"
-                    min={1}
-                    max={500}
-                    placeholder="Weight (kg)"
-                    value={form.weightKg}
-                    onChange={(event) =>
-                      updateField("weightKg", event.target.value)
-                    }
-                  />
-                  <input
-                    className="inp"
-                    style={{ margin: 0 }}
-                    type="number"
-                    inputMode="numeric"
-                    min={61}
-                    max={274}
-                    placeholder="Height (cm)"
-                    value={form.heightCm}
-                    onChange={(event) =>
-                      updateField("heightCm", event.target.value)
-                    }
-                  />
-                </div>
-              ) : (
-                <>
-                  <div className="r2">
-                    <input
-                      className="inp"
-                      style={{ margin: 0 }}
-                      type="number"
-                      inputMode="numeric"
-                      min={2}
-                      max={9}
-                      placeholder="Height (feet)"
-                      value={form.heightFt}
-                      onChange={(event) =>
-                        updateField("heightFt", event.target.value)
-                      }
-                    />
-                    <input
-                      className="inp"
-                      style={{ margin: 0 }}
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      max={11}
-                      placeholder="Height (inches)"
-                      value={form.heightIn}
-                      onChange={(event) =>
-                        updateField("heightIn", event.target.value)
-                      }
-                    />
-                  </div>
-                  <input
-                    className="inp"
-                    type="number"
-                    inputMode="numeric"
-                    min={1}
-                    max={1100}
-                    placeholder="Weight (pounds)"
-                    value={form.weightLbs}
-                    onChange={(event) =>
-                      updateField("weightLbs", event.target.value)
-                    }
-                  />
-                </>
-              )}
-
-              {bmiError && <div className="field-err">{bmiError}</div>}
-
-              <BmiGauge
-                bmi={bmiError ? null : bmi}
-                category={bmiError ? null : currentBmiCategory}
-              />
-
-              {bmi !== null && !bmiError && (
-                <div className="bmi-pill" style={{ textAlign: "center" }}>
-                  {eligibilityText(bmi)}
-                </div>
-              )}
-
-              <div className="cat-row">
-                {BMI_CATEGORY_CARDS.map((category) => (
-                  <div
-                    key={category.key}
-                    className={`cat-card ${currentBmiCategory === category.key ? "active" : ""}`}
+              <div className="bmi-shell">
+                <div className="unit-toggle bmi-toggle">
+                  <button
+                    type="button"
+                    className={form.bmiUnit === "imperial" ? "active" : ""}
+                    onClick={() => setBmiUnit("imperial")}
                   >
-                    <div className="cat-name">{category.name}</div>
-                    <div className="cat-range">{category.range}</div>
+                    Imperial (ft / lbs)
+                  </button>
+                  <button
+                    type="button"
+                    className={form.bmiUnit === "metric" ? "active" : ""}
+                    onClick={() => setBmiUnit("metric")}
+                  >
+                    Metric (cm / kg)
+                  </button>
+                </div>
+
+                {form.bmiUnit === "metric" ? (
+                  <div className="bmi-fields">
+                    <div className="bmi-field">
+                      <label className="bmi-field-label">Height</label>
+                      <div className="bmi-field-input">
+                        <input
+                          className="inp bmi-inp"
+                          type="number"
+                          inputMode="numeric"
+                          min={61}
+                          max={274}
+                          placeholder="0"
+                          value={form.heightCm}
+                          onChange={(event) =>
+                            updateField("heightCm", event.target.value)
+                          }
+                        />
+                        <span className="bmi-unit">cm</span>
+                      </div>
+                    </div>
+                    <div className="bmi-field">
+                      <label className="bmi-field-label">Weight</label>
+                      <div className="bmi-field-input">
+                        <input
+                          className="inp bmi-inp"
+                          type="number"
+                          inputMode="numeric"
+                          min={1}
+                          max={500}
+                          placeholder="0"
+                          value={form.weightKg}
+                          onChange={(event) =>
+                            updateField("weightKg", event.target.value)
+                          }
+                        />
+                        <span className="bmi-unit">kg</span>
+                      </div>
+                    </div>
                   </div>
-                ))}
+                ) : (
+                  <div className="bmi-fields">
+                    <div className="bmi-field">
+                      <label className="bmi-field-label">Height</label>
+                      <div className="bmi-field-pair">
+                        <div className="bmi-field-input">
+                          <input
+                            className="inp bmi-inp"
+                            type="number"
+                            inputMode="numeric"
+                            min={2}
+                            max={9}
+                            placeholder="0"
+                            value={form.heightFt}
+                            onChange={(event) =>
+                              updateField("heightFt", event.target.value)
+                            }
+                          />
+                          <span className="bmi-unit">ft</span>
+                        </div>
+                        <div className="bmi-field-input">
+                          <input
+                            className="inp bmi-inp"
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            max={11}
+                            placeholder="0"
+                            value={form.heightIn}
+                            onChange={(event) =>
+                              updateField("heightIn", event.target.value)
+                            }
+                          />
+                          <span className="bmi-unit">in</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bmi-field">
+                      <label className="bmi-field-label">Weight</label>
+                      <div className="bmi-field-input">
+                        <input
+                          className="inp bmi-inp"
+                          type="number"
+                          inputMode="numeric"
+                          min={1}
+                          max={1100}
+                          placeholder="0"
+                          value={form.weightLbs}
+                          onChange={(event) =>
+                            updateField("weightLbs", event.target.value)
+                          }
+                        />
+                        <span className="bmi-unit">lbs</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {bmiError && <div className="field-err">{bmiError}</div>}
+
+                <div
+                  className={`bmi-gauge-shell${
+                    currentBmiCategory && !bmiError
+                      ? ` bmi-gauge-shell-${currentBmiCategory}`
+                      : ""
+                  }`}
+                >
+                  <BmiGauge
+                    bmi={bmiError ? null : bmi}
+                    category={bmiError ? null : currentBmiCategory}
+                  />
+                </div>
+
+                {bmi !== null && !bmiError && (
+                  <div
+                    className={`bmi-pill bmi-pill-center bmi-pill-${currentBmiCategory ?? "none"}`}
+                  >
+                    {eligibilityText(bmi)}
+                  </div>
+                )}
+
+                <div className="cat-row">
+                  {BMI_CATEGORY_CARDS.map((category) => (
+                    <div
+                      key={category.key}
+                      className={`cat-card cat-card-${category.key} ${currentBmiCategory === category.key ? "active" : ""}`}
+                    >
+                      <div className="cat-name">{category.name}</div>
+                      <div className="cat-range">{category.range}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <button
@@ -530,61 +707,240 @@ export default function WeightlossOnboardForm() {
             </div>
           )}
 
-          {screen === "iGood" && (
-            <div className="inter">
-              <div className="ibg" />
-              <div className="ic center">
-                {/* <div className="center_banner mb-20">
-                    <img src="images/all-good.png" alt="" />
-                  </div> */}
-                <div className="ic-body">
-                  <div className="ititle">Good news!</div>
-                  <div className="ibody">
-                    Based on this info, <strong>you may be eligible</strong> for
-                    GLP-1 treatment. Let&apos;s find the best option for your
-                    goals.
+          {screen === "iGood" && (() => {
+            // Compute projection inputs from data the user has already entered.
+            // (s3 captured current weight, s1 captured target loss range.)
+            const currentLbs = getCurrentLbs(form);
+            const lossLbs = estimateLossLbs(form, currentLbs);
+            const goalLbs = currentLbs - lossLbs;
+            const showChart =
+              currentLbs > 0 && goalLbs > 0 && goalLbs < currentLbs;
+
+            return (
+              <div className="inter inter-good">
+                <div className="ibg" />
+                <div className="ic center">
+                  <div className="ic-body">
+                    <div className="ititle">Good news!</div>
+                    <div className="ibody">
+                      Based on this info, <strong>you may be eligible</strong>{" "}
+                      for GLP-1 treatment. Here&apos;s what your journey could
+                      look like:
+                    </div>
+
+                    {showChart && (
+                      <WeightProjection
+                        currentLbs={currentLbs}
+                        goalLbs={goalLbs}
+                      />
+                    )}
                   </div>
+                  <button
+                    type="button"
+                    className="icta"
+                    onClick={() => goTo("iRoad")}
+                  >
+                    Continue
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="icta"
-                  onClick={() => goTo("iRoad")}
-                >
-                  Continue
-                </button>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* ════════════════════════════════════════════
               ROADMAP INTERSTITIAL (iRoad)
               ════════════════════════════════════════════ */}
           {screen === "iRoad" && (
-            <div className="inter">
+            <div className="inter inter-road">
               <div className="ibg" />
               <div className="ic center">
                 <div className="ic-body">
-                  <div className="ititle" style={{ fontSize: 27, marginBottom: 8 }}>
+                  {/* Animated hero — 4 milestone dots connected by a path
+                      that draws itself, each dot lights up in sequence. */}
+                  <div className="ir-hero" aria-hidden>
+                    <svg
+                      className="ir-hero-svg"
+                      viewBox="0 0 380 120"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <linearGradient id="irPath" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="var(--wlf-brand)" />
+                          <stop offset="100%" stopColor="var(--wlf-brand-light)" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Soft connecting path between milestones */}
+                      <path
+                        d="M 50 60 C 110 60, 130 60, 160 60 S 230 60, 270 60 S 340 60, 360 60"
+                        stroke="var(--wlf-border-strong)"
+                        strokeWidth="2"
+                        strokeDasharray="3 5"
+                        fill="none"
+                        strokeLinecap="round"
+                      />
+
+                      {/* Animated bright path that draws over the dotted line */}
+                      <path
+                        className="ir-hero-path"
+                        d="M 50 60 C 110 60, 130 60, 160 60 S 230 60, 270 60 S 340 60, 360 60"
+                        stroke="url(#irPath)"
+                        strokeWidth="2.5"
+                        fill="none"
+                        strokeLinecap="round"
+                        pathLength={1}
+                      />
+
+                      {/* 4 milestone circles */}
+                      {[
+                        { cx: 50,  delay: "0s",   icon: "♡",  size: 14 },
+                        { cx: 153, delay: "0.6s", icon: "✓",  size: 14 },
+                        { cx: 256, delay: "1.2s", icon: "📅", size: 12 },
+                        { cx: 360, delay: "1.8s", icon: "★",  size: 14 },
+                      ].map((m, i) => (
+                        <g key={i} className="ir-hero-node" style={{ animationDelay: m.delay }}>
+                          {/* Outer halo (animates on activation) */}
+                          <circle
+                            cx={m.cx} cy="60" r="22"
+                            fill="var(--wlf-brand-soft)"
+                            className="ir-hero-halo"
+                            style={{ animationDelay: m.delay }}
+                          />
+                          {/* Main milestone bubble */}
+                          <circle
+                            cx={m.cx} cy="60" r="14"
+                            fill="var(--wlf-brand)"
+                            stroke="#fff"
+                            strokeWidth="2.5"
+                            className="ir-hero-dot"
+                            style={{ animationDelay: m.delay }}
+                          />
+                          {/* Icon inside */}
+                          <text
+                            x={m.cx} y="65"
+                            textAnchor="middle"
+                            fontSize={m.size}
+                            fill="#fff"
+                            fontWeight="700"
+                            className="ir-hero-icon"
+                            style={{ animationDelay: m.delay }}
+                          >
+                            {m.icon}
+                          </text>
+                        </g>
+                      ))}
+                    </svg>
+                  </div>
+
+                  <div className="ititle ir-title">
                     Great! Now a few questions
                   </div>
-                  <div className="ibody" style={{ fontSize: 14, marginBottom: 22 }}>
-                    First, answer health questions and see your treatment options.
+                  <div className="ibody ir-sub">
+                    Here&apos;s what&apos;s next on your journey to a personalised plan.
                   </div>
-                  <div className="rm">
-                    <div className="rms">
-                      <div className="rmi a">♥</div>
-                      <div className="rmt">
-                        <div className="rmlab">
-                          Health history and treatment options
+
+                  {/* Enhanced 4-step roadmap. Each step has hover lift +
+                      icon glow. Active step is highlighted; future steps
+                      are softer. */}
+                  <div className="ir-steps">
+                    <div className="ir-step is-active">
+                      <div className="ir-step-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                      </div>
+                      <div className="ir-step-text">
+                        <div className="ir-step-row">
+                          <span className="ir-step-title">Health questions</span>
+                          <span className="ir-step-pill">3–4 min</span>
                         </div>
-                        <span className="rmpill">3–4 minutes</span>
+                        <div className="ir-step-desc">
+                          Answer a few questions about your goals and history.
+                        </div>
                       </div>
                     </div>
-                    <div className="rms">
-                      <div className="rmi i">📅</div>
-                      <div className="rmt">
-                        <div className="rmlab d">Book your consultation</div>
+
+                    <div className="ir-step">
+                      <div className="ir-step-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 12l2 2 4-4" />
+                          <circle cx="12" cy="12" r="10" />
+                        </svg>
                       </div>
+                      <div className="ir-step-text">
+                        <div className="ir-step-row">
+                          <span className="ir-step-title">See your match</span>
+                          <span className="ir-step-pill ir-step-pill-soft">Instant</span>
+                        </div>
+                        <div className="ir-step-desc">
+                          Get matched with a treatment plan tailored to you.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="ir-step">
+                      <div className="ir-step-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="4" width="18" height="18" rx="2" />
+                          <path d="M16 2v4M8 2v4M3 10h18" />
+                        </svg>
+                      </div>
+                      <div className="ir-step-text">
+                        <div className="ir-step-row">
+                          <span className="ir-step-title">Book consultation</span>
+                          <span className="ir-step-pill ir-step-pill-soft">15 min</span>
+                        </div>
+                        <div className="ir-step-desc">
+                          Pick a time that works — meet your physician on video.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="ir-step">
+                      <div className="ir-step-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      </div>
+                      <div className="ir-step-text">
+                        <div className="ir-step-row">
+                          <span className="ir-step-title">Start your plan</span>
+                          <span className="ir-step-pill ir-step-pill-soft">2–3 days</span>
+                        </div>
+                        <div className="ir-step-desc">
+                          Receive medication shipped discreetly to your door.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Trust row — small reassurance points */}
+                  <div className="ir-trust">
+                    <div className="ir-trust-item">
+                      <span className="ir-trust-icon" aria-hidden>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                      </span>
+                      Licensed physicians
+                    </div>
+                    <div className="ir-trust-item">
+                      <span className="ir-trust-icon" aria-hidden>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="11" width="18" height="11" rx="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      </span>
+                      HIPAA secure
+                    </div>
+                    <div className="ir-trust-item">
+                      <span className="ir-trust-icon" aria-hidden>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+                          <path d="M12 7v5l3 2" />
+                        </svg>
+                      </span>
+                      Cancel anytime
                     </div>
                   </div>
                 </div>
@@ -604,7 +960,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s4" && (
             <div className="sc">
-              <div className="slabel">Weight history</div>
               <div className="q">
                 Can you share a little about your weight journey so far?
               </div>
@@ -665,7 +1020,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s5" && (
             <div className="sc">
-              <div className="slabel">Weight history</div>
               <div className="q">
                 How long has your weight been a concern for you?
               </div>
@@ -687,7 +1041,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s6" && (
             <div className="sc">
-              <div className="slabel">Weight history</div>
               <div className="q">What have you tried before to lose weight?</div>
               <div className="qs">Select all that apply.</div>
               <Multi
@@ -711,7 +1064,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s7" && (
             <div className="sc">
-              <div className="slabel">Medication history</div>
               <div className="q">
                 Have you taken any GLP-1 medications before or are you taking one now?
               </div>
@@ -733,7 +1085,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s7m" && (
             <div className="sc">
-              <div className="slabel">Medication history</div>
               <div className="q">
                 Which GLP-1 medication have you used or currently using?
               </div>
@@ -759,7 +1110,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s7b" && (
             <div className="sc">
-              <div className="slabel">Medication history</div>
               <div className="q">
                 What dose of {form.glpMed} are you taking or have you taken?
               </div>
@@ -793,7 +1143,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s7a" && (
             <div className="sc">
-              <div className="slabel">Medication history</div>
               <div className="q">
                 How was your experience with GLP-1 medications?
               </div>
@@ -815,7 +1164,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s7c" && (
             <div className="sc">
-              <div className="slabel">Medication history</div>
               <div className="q">
                 What was the date of your last injection (Month/Day/Year)?
               </div>
@@ -841,7 +1189,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s7d" && (
             <div className="sc">
-              <div className="slabel">Medication history</div>
               <div className="q" style={{ fontSize: 17, fontWeight: 600 }}>
                 If you have a photo of your current medication or prescription,
                 you can upload it here. Please make sure your name and dosing
@@ -884,29 +1231,48 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s7e" && (
             <div className="sc">
-              <div className="q">ID Upload</div>
+              <div className="q">Upload your photo ID</div>
               <div className="qs">
-                Please upload a government-issued photo ID
+                A government-issued ID (driver&apos;s license, passport, or state ID) helps verify your identity.
               </div>
-              <div className="id-illus" aria-hidden>🪪</div>
-              <div className="tips-card">
-                <div className="tips-title">Tips for a good photo</div>
-                <div className="tips-item">✓ Clearly shows your entire ID</div>
-                <div className="tips-item">✓ Is not cropped, blurry, or dark</div>
-                <div className="tips-note">
-                  🔒 Your photos will not be shared with anyone except your
-                  healthcare team.
+
+              <div className="id-card">
+                <div className="id-card-illus" aria-hidden>
+                  <svg viewBox="0 0 64 48" width="56" height="42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="60" height="44" rx="6" stroke="currentColor" strokeWidth="2.5" />
+                    <circle cx="18" cy="22" r="6" stroke="currentColor" strokeWidth="2.5" />
+                    <path d="M10 38c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                    <line x1="34" y1="16" x2="56" y2="16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                    <line x1="34" y1="24" x2="56" y2="24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                    <line x1="34" y1="32" x2="48" y2="32" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <div className="id-card-tips">
+                  <div className="id-tip">
+                    <span className="id-tip-icon">✓</span>
+                    <span>Clearly shows your entire ID</span>
+                  </div>
+                  <div className="id-tip">
+                    <span className="id-tip-icon">✓</span>
+                    <span>Not cropped, blurry, or dark</span>
+                  </div>
+                  <div className="id-tip">
+                    <span className="id-tip-icon">🔒</span>
+                    <span>Only your healthcare team will see this</span>
+                  </div>
                 </div>
               </div>
+
               {form.photoIdName && (
                 <div className="upload-name">✓ {form.photoIdName}</div>
               )}
               {uploadError && (
                 <div className="field-err">{uploadError}</div>
               )}
+
               <div className="id-actions">
                 <label className="cta2 id-btn">
-                  Select photo
+                  📁 Select photo
                   <input
                     type="file"
                     accept={ALLOWED_IMAGE_ACCEPT}
@@ -924,8 +1290,8 @@ export default function WeightlossOnboardForm() {
                     }}
                   />
                 </label>
-                <label className="cta cta-cap id-btn">
-                  Take photo
+                <label className="cta2 id-btn id-btn-primary">
+                  📷 Take photo
                   <input
                     type="file"
                     accept={ALLOWED_IMAGE_ACCEPT}
@@ -961,7 +1327,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s9" && (
             <div className="sc">
-              <div className="slabel">Weight history</div>
               <div className="q">
                 Have you had any weight loss surgery in the past?
               </div>
@@ -1004,7 +1369,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s10" && (
             <div className="sc">
-              <div className="slabel">Medical history</div>
               <div className="q">
                 Have you been diagnosed with any of these health conditions?
               </div>
@@ -1029,7 +1393,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s11" && (
             <div className="sc">
-              <div className="slabel">Medical history</div>
               <div className="q">
                 Do you have any other health conditions we should know about?
               </div>
@@ -1064,7 +1427,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s12" && (
             <div className="sc">
-              <div className="slabel">Safety screening</div>
               <div className="q">
                 Are you currently dealing with any of the following?
               </div>
@@ -1087,7 +1449,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s13" && (
             <div className="sc">
-              <div className="slabel">Safety screening</div>
               <div className="q">
                 Have you or a close family member had medullary thyroid cancer
                 or MEN2 syndrome?
@@ -1117,7 +1478,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s13a" && (
             <div className="sc">
-              <div className="slabel">Safety screening</div>
               <div className="q">What was your sex assigned at birth?</div>
               <Radio
                 options={SEX_OPTIONS}
@@ -1140,7 +1500,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s14" && (
             <div className="sc">
-              <div className="slabel">Safety screening</div>
               <div className="q">
                 Are you pregnant, planning to become pregnant, or breastfeeding?
               </div>
@@ -1162,7 +1521,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s14b" && (
             <div className="sc">
-              <div className="slabel">Safety screening</div>
               <div className="q consent-warn">
                 By selecting &ldquo;I Understand&rdquo; you understand that any
                 prescribed treatment must be discontinued prior to attempting
@@ -1192,7 +1550,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s15" && (
             <div className="sc">
-              <div className="slabel">Safety screening</div>
               <div className="q">Have you ever had pancreatitis?</div>
               <Radio
                 options={NO_YES}
@@ -1222,7 +1579,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s16" && (
             <div className="sc">
-              <div className="slabel">Lifestyle</div>
               <div className="q">
                 How many alcoholic drinks do you have in a week?
               </div>
@@ -1244,7 +1600,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s17" && (
             <div className="sc">
-              <div className="slabel">Lifestyle</div>
               <div className="q">Do you use any recreational drugs?</div>
               <div className="qs">Your answer is private.</div>
               <Multi
@@ -1280,7 +1635,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s18" && (
             <div className="sc">
-              <div className="slabel">Lifestyle</div>
               <div className="q">
                 Can you tell us a bit about your daily routine and habits?
               </div>
@@ -1355,7 +1709,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s19" && (
             <div className="sc">
-              <div className="slabel">Profile</div>
               <div className="q">What is your ethnicity?</div>
               <div className="qs">
                 We ask this to better tailor treatment options to you.
@@ -1467,7 +1820,6 @@ export default function WeightlossOnboardForm() {
               ════════════════════════════════════════════ */}
           {screen === "s21" && (
             <div className="sc">
-              <div className="slabel">Your profile</div>
               <div className="q">Complete your profile</div>
               <div className="qs">
                 Your healthcare team will need this for treatment and
@@ -1574,7 +1926,6 @@ export default function WeightlossOnboardForm() {
 
           {screen === "s22" && (
             <div className="sc">
-              <div className="slabel">Medications</div>
               <div className="q">
                 Are you currently taking any medications or supplements?
               </div>
@@ -1627,11 +1978,10 @@ export default function WeightlossOnboardForm() {
           {screen === "s23" && (
             <div className="sc">
               <div className="q">
-                When would you like to schedule your consultation?
+                When would you like to meet your physician?
               </div>
               <div className="qs">
-                Choose a time that works for you. Appointments are 15–20 minutes
-                with a licensed physician.
+                Appointments are 15–20 minutes via secure video call. Pick the slot that works best for you.
               </div>
               <div className="cal">
                 {generateSlots().map((slot) => {
@@ -1748,7 +2098,141 @@ export default function WeightlossOnboardForm() {
 
           {screen === "dHard" && (
             <div className="disq">
-              <div className="di">🩺</div>
+              {/* Big animated safety illustration. Multiple layers move
+                  independently — halo breathes, dotted ring rotates,
+                  heart beats, pulse line sweeps across the monitor view,
+                  and sparkles drift around. Hover intensifies the rhythm. */}
+              <div className="di-art" aria-hidden>
+                <svg
+                  className="di-svg"
+                  viewBox="0 0 320 280"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <linearGradient id="diHeart" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="var(--wlf-brand-light)" />
+                      <stop offset="100%" stopColor="var(--wlf-brand)" />
+                    </linearGradient>
+                    <radialGradient id="diHalo" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="var(--wlf-brand-soft)" stopOpacity="0.95" />
+                      <stop offset="60%" stopColor="var(--wlf-brand-soft)" stopOpacity="0.45" />
+                      <stop offset="100%" stopColor="var(--wlf-brand-soft)" stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="diMedallion" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="rgba(255,255,255,0.92)" />
+                      <stop offset="100%" stopColor="var(--wlf-brand-soft)" stopOpacity="0.5" />
+                    </linearGradient>
+                    <clipPath id="diMedallionClip">
+                      <circle cx="160" cy="140" r="92" />
+                    </clipPath>
+                  </defs>
+
+                  {/* Layer 1 — soft halo (breathes) */}
+                  <circle
+                    className="di-halo"
+                    cx="160" cy="140" r="140"
+                    fill="url(#diHalo)"
+                  />
+
+                  {/* Layer 2 — outer dotted ring (slowly rotates) */}
+                  <circle
+                    className="di-ring"
+                    cx="160" cy="140" r="118"
+                    fill="none"
+                    stroke="var(--wlf-brand-light)"
+                    strokeWidth="1.5"
+                    strokeDasharray="2 8"
+                    opacity="0.5"
+                  />
+
+                  {/* Layer 3 — sparkle particles (scattered, twinkle) */}
+                  <g className="di-sparkles">
+                    <circle className="di-spark di-spark-1" cx="58"  cy="56"  r="3" fill="var(--wlf-brand-light)" />
+                    <circle className="di-spark di-spark-2" cx="262" cy="68"  r="2.5" fill="var(--wlf-brand)" />
+                    <circle className="di-spark di-spark-3" cx="284" cy="200" r="3" fill="var(--wlf-brand-light)" />
+                    <circle className="di-spark di-spark-4" cx="42"  cy="218" r="2.5" fill="var(--wlf-brand)" />
+                    <circle className="di-spark di-spark-5" cx="206" cy="36"  r="2" fill="var(--wlf-brand-light)" />
+                    <circle className="di-spark di-spark-6" cx="36"  cy="138" r="2" fill="var(--wlf-brand)" />
+                    <circle className="di-spark di-spark-7" cx="288" cy="142" r="2.5" fill="var(--wlf-brand-light)" />
+                  </g>
+
+                  {/* Layer 4 — inner medallion card */}
+                  <circle
+                    cx="160" cy="140" r="92"
+                    fill="url(#diMedallion)"
+                    stroke="rgba(52, 126, 93, 0.14)"
+                    strokeWidth="1"
+                  />
+
+                  {/* Layer 5 — pulse waveform (clipped to medallion) */}
+                  <g clipPath="url(#diMedallionClip)">
+                    {/* faint base line, always visible */}
+                    <path
+                      d="M 60 178 L 108 178 L 118 162 L 132 200 L 146 178 L 174 178 L 184 168 L 194 190 L 204 178 L 260 178"
+                      stroke="var(--wlf-brand-dark)"
+                      strokeWidth="1.8"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.18"
+                    />
+                    {/* bright sweep, animated */}
+                    <path
+                      className="di-pulse"
+                      d="M 60 178 L 108 178 L 118 162 L 132 200 L 146 178 L 174 178 L 184 168 L 194 190 L 204 178 L 260 178"
+                      stroke="var(--wlf-brand)"
+                      strokeWidth="2.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      pathLength={1}
+                    />
+                  </g>
+
+                  {/* Layer 6 — heart with heartbeat */}
+                  <g className="di-heart-wrap" transform="translate(160 124)">
+                    <g className="di-heart">
+                      {/* soft shadow that breathes with the heart */}
+                      <ellipse
+                        className="di-heart-shadow"
+                        cx="0" cy="40" rx="38" ry="5"
+                        fill="var(--wlf-brand-dark)"
+                        opacity="0.12"
+                      />
+                      {/* the heart shape */}
+                      <path
+                        d="M 0 22 C -50 -8, -50 -43, -20 -43 C -10 -43, -2 -36, 0 -26 C 2 -36, 10 -43, 20 -43 C 50 -43, 50 -8, 0 22 Z"
+                        fill="url(#diHeart)"
+                      />
+                      {/* soft highlight curve */}
+                      <path
+                        d="M -28 -28 Q -24 -36, -14 -36"
+                        stroke="rgba(255,255,255,0.55)"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        fill="none"
+                      />
+                    </g>
+                  </g>
+
+                  {/* Layer 7 — small floating ripple rings (continuous) */}
+                  <circle
+                    className="di-ripple di-ripple-1"
+                    cx="160" cy="140" r="92"
+                    fill="none"
+                    stroke="var(--wlf-brand)"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    className="di-ripple di-ripple-2"
+                    cx="160" cy="140" r="92"
+                    fill="none"
+                    stroke="var(--wlf-brand)"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+
               <div className="dt">We want to keep you safe</div>
               <div className="db">
                 Based on your answers, GLP-1 medications may not be appropriate
@@ -1786,7 +2270,124 @@ export default function WeightlossOnboardForm() {
               <div className="ibg" />
               <div className="ic center">
                 <div className="ic-body">
-                  <div className="iconfirm-tick">✓</div>
+                  {/* Big animated celebration illustration — checkmark badge
+                      with halo, dotted ring, sparkles and ripples. The check
+                      draws itself on mount, then the badge enters a gentle
+                      continuous pulse. */}
+                  <div className="th-art" aria-hidden>
+                    <svg
+                      className="th-svg"
+                      viewBox="0 0 320 280"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <linearGradient id="thBadge" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="var(--wlf-brand-light)" />
+                          <stop offset="100%" stopColor="var(--wlf-brand)" />
+                        </linearGradient>
+                        <radialGradient id="thHalo" cx="50%" cy="50%" r="50%">
+                          <stop offset="0%" stopColor="var(--wlf-brand-soft)" stopOpacity="0.95" />
+                          <stop offset="60%" stopColor="var(--wlf-brand-soft)" stopOpacity="0.45" />
+                          <stop offset="100%" stopColor="var(--wlf-brand-soft)" stopOpacity="0" />
+                        </radialGradient>
+                        <linearGradient id="thMedallion" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="rgba(255,255,255,0.92)" />
+                          <stop offset="100%" stopColor="var(--wlf-brand-soft)" stopOpacity="0.5" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Halo — breathing */}
+                      <circle
+                        className="th-halo"
+                        cx="160" cy="140" r="140"
+                        fill="url(#thHalo)"
+                      />
+
+                      {/* Dotted ring — slow rotation */}
+                      <circle
+                        className="th-ring"
+                        cx="160" cy="140" r="118"
+                        fill="none"
+                        stroke="var(--wlf-brand-light)"
+                        strokeWidth="1.5"
+                        strokeDasharray="2 8"
+                        opacity="0.55"
+                      />
+
+                      {/* Sparkles — twinkling staggered */}
+                      <g>
+                        <circle className="th-spark th-spark-1" cx="58"  cy="56"  r="3"   fill="var(--wlf-brand-light)" />
+                        <circle className="th-spark th-spark-2" cx="262" cy="68"  r="2.5" fill="var(--wlf-brand)" />
+                        <circle className="th-spark th-spark-3" cx="284" cy="200" r="3"   fill="var(--wlf-brand-light)" />
+                        <circle className="th-spark th-spark-4" cx="42"  cy="218" r="2.5" fill="var(--wlf-brand)" />
+                        <circle className="th-spark th-spark-5" cx="206" cy="36"  r="2"   fill="var(--wlf-brand-light)" />
+                        <circle className="th-spark th-spark-6" cx="36"  cy="138" r="2"   fill="var(--wlf-brand)" />
+                        <circle className="th-spark th-spark-7" cx="288" cy="142" r="2.5" fill="var(--wlf-brand-light)" />
+                      </g>
+
+                      {/* Inner medallion */}
+                      <circle
+                        cx="160" cy="140" r="92"
+                        fill="url(#thMedallion)"
+                        stroke="rgba(52, 126, 93, 0.14)"
+                        strokeWidth="1"
+                      />
+
+                      {/* Celebratory rays bursting from the badge */}
+                      <g className="th-rays" stroke="var(--wlf-brand)" strokeWidth="3" strokeLinecap="round">
+                        <line className="th-ray th-ray-1" x1="160" y1="68"  x2="160" y2="84"  />
+                        <line className="th-ray th-ray-2" x1="206" y1="80"  x2="196" y2="93"  />
+                        <line className="th-ray th-ray-3" x1="232" y1="124" x2="217" y2="129" />
+                        <line className="th-ray th-ray-4" x1="232" y1="156" x2="217" y2="151" />
+                        <line className="th-ray th-ray-5" x1="206" y1="200" x2="196" y2="187" />
+                        <line className="th-ray th-ray-6" x1="160" y1="212" x2="160" y2="196" />
+                        <line className="th-ray th-ray-7" x1="114" y1="200" x2="124" y2="187" />
+                        <line className="th-ray th-ray-8" x1="88"  y1="156" x2="103" y2="151" />
+                        <line className="th-ray th-ray-9" x1="88"  y1="124" x2="103" y2="129" />
+                        <line className="th-ray th-ray-10" x1="114" y1="80"  x2="124" y2="93"  />
+                      </g>
+
+                      {/* Big check badge */}
+                      <g className="th-badge-wrap" transform="translate(160 140)">
+                        <g className="th-badge">
+                          {/* Soft drop shadow */}
+                          <ellipse cx="0" cy="58" rx="48" ry="6" fill="var(--wlf-brand-dark)" opacity="0.14" />
+                          {/* Main badge circle */}
+                          <circle r="56" fill="url(#thBadge)" />
+                          {/* Highlight on the top */}
+                          <ellipse cx="0" cy="-22" rx="36" ry="14" fill="rgba(255,255,255,0.22)" />
+                          {/* The check mark — draws itself */}
+                          <path
+                            className="th-check"
+                            d="M -22 2 L -8 18 L 24 -18"
+                            stroke="#FFFFFF"
+                            strokeWidth="7"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            fill="none"
+                            pathLength={1}
+                          />
+                        </g>
+                      </g>
+
+                      {/* Ripple rings */}
+                      <circle
+                        className="th-ripple th-ripple-1"
+                        cx="160" cy="140" r="92"
+                        fill="none"
+                        stroke="var(--wlf-brand)"
+                        strokeWidth="2"
+                      />
+                      <circle
+                        className="th-ripple th-ripple-2"
+                        cx="160" cy="140" r="92"
+                        fill="none"
+                        stroke="var(--wlf-brand)"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </div>
+
                   <div
                     className="ititle"
                     style={{ fontSize: 26, marginBottom: 10 }}
@@ -1815,6 +2416,273 @@ export default function WeightlossOnboardForm() {
 // ─────────────────────────────────────────
 //  Inline screen components
 // ─────────────────────────────────────────
+
+// SectionStepper — horizontal row of pill buttons connected by dotted
+// lines, one per section. The active section is filled with brand green;
+// completed sections are filled but slightly softer; upcoming sections
+// are outlined and muted. No icons, no extra text — just clean pills.
+type SectionStepperProps = {
+  section: SectionKey;
+  currentScreen: ScreenId;
+};
+
+function SectionStepper({ section, currentScreen: _currentScreen }: SectionStepperProps) {
+  const currentIdx = SECTIONS_ORDER.indexOf(section);
+
+  return (
+    <div className="step-pills" aria-label="Form progress">
+      <div className="step-pills-track">
+        {SECTIONS_ORDER.map((sec, i) => {
+          const status =
+            i < currentIdx ? "done" : i === currentIdx ? "active" : "todo";
+          const isLast = i === SECTIONS_ORDER.length - 1;
+          return (
+            <div key={sec} className="step-pills-cell">
+              <div
+                className={`step-pill step-pill-${status}`}
+                aria-current={status === "active" ? "step" : undefined}
+              >
+                {status === "done" && (
+                  <span className="step-pill-check" aria-hidden>
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="5 12.5 10 17 19 7.5" />
+                    </svg>
+                  </span>
+                )}
+                <span className="step-pill-label">
+                  {SECTION_INFO[sec].short}
+                </span>
+              </div>
+              {!isLast && (
+                <div
+                  className={`step-pills-line ${i < currentIdx ? "is-done" : ""}`}
+                  aria-hidden
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+//  WeightProjection — motivational chart card shown on the iGood
+//  interstitial. Compares "GLP-1 alone" baseline vs the user's
+//  personalised plan trajectory across a 3-month window.
+//  All math is derived from data the user has already entered:
+//    • current weight from s3 (BMI screen)
+//    • target loss range from s1 (e.g. "16–50 lbs.")
+//  No new schema fields needed.
+// ─────────────────────────────────────────
+
+// Convert the user's stored weight to lbs regardless of the unit they used
+function getCurrentLbs(form: Form): number {
+  if (form.bmiUnit === "imperial") {
+    return parseFloat(form.weightLbs) || 0;
+  }
+  const kg = parseFloat(form.weightKg) || 0;
+  return kg * 2.20462;
+}
+
+// Estimate target loss in lbs from the s1 selection. Uses range midpoints.
+function estimateLossLbs(form: Form, currentLbs: number): number {
+  switch (form.s1) {
+    case "1–15 lbs.":
+      return 8;
+    case "16–50 lbs.":
+      return 33;
+    case "50+ lbs.":
+      // 50+ scales with current weight — bigger people likely have a bigger goal
+      return Math.min(Math.max(60, currentLbs * 0.18), 130);
+    default:
+      // "I'm not sure yet" or unset — show ~10% of current weight as a friendly default
+      return Math.max(8, currentLbs * 0.1);
+  }
+}
+
+type WeightProjectionProps = {
+  currentLbs: number;
+  goalLbs: number;
+};
+
+function WeightProjection({ currentLbs, goalLbs }: WeightProjectionProps) {
+  const lossLbs = Math.max(1, Math.round(currentLbs - goalLbs));
+  const months = 3;
+
+  // End date label (3 months from today)
+  const endDate = new Date();
+  endDate.setMonth(endDate.getMonth() + months);
+  const endDateStr = endDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
+  // SVG layout
+  const W = 600;
+  const H = 260;
+  const PAD_X = 36;
+  const PAD_TOP = 70;     // space at top for the start-weight pill
+  const PAD_BOTTOM = 70;  // space at bottom for x-axis labels + goal pill
+
+  // Y-axis weight range (with a little headroom above current and below goal)
+  const wMax = currentLbs;
+  const wMin = goalLbs - lossLbs * 0.08;
+
+  const wToY = (w: number): number => {
+    const inner = H - PAD_TOP - PAD_BOTTOM;
+    return PAD_TOP + ((wMax - w) / (wMax - wMin)) * inner;
+  };
+
+  // X positions
+  const x0 = PAD_X;
+  const xMid = W * 0.5;
+  const xEnd = W - PAD_X;
+
+  // Y positions
+  const yStart = wToY(currentLbs);
+  const yEnd = wToY(goalLbs);
+
+  // "GLP-1 alone" path — ends ~60% of the way to goal (showing personalised
+  // plan beats medication alone)
+  const glpEndLbs = currentLbs - lossLbs * 0.6;
+  const yGlpEnd = wToY(glpEndLbs);
+
+  // Smooth cubic bezier curves
+  const ourPath = `M ${x0},${yStart} C ${x0 + 140},${yStart} ${xEnd - 220},${yEnd + 18} ${xEnd},${yEnd}`;
+  const glpPath = `M ${x0},${yStart} C ${x0 + 120},${yStart - 4} ${xEnd - 180},${yGlpEnd + 30} ${xEnd},${yGlpEnd}`;
+
+  return (
+    <div className="proj-card">
+      {/* Decorative blobs */}
+      <div className="proj-blob proj-blob-a" aria-hidden />
+      <div className="proj-blob proj-blob-b" aria-hidden />
+
+      <div className="proj-head">
+        <h2 className="proj-title">
+          Lose <strong>{lossLbs} lbs</strong>
+          <br />
+          in <span className="proj-pill">{months} months</span>
+        </h2>
+        <p className="proj-sub">
+          Members with your profile have hit this goal. Your dose, plan &amp;
+          timeline are calibrated to match.
+        </p>
+      </div>
+
+      <div className="proj-chart">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Vertical guide lines — fade in early */}
+          <line
+            className="proj-guide"
+            x1={x0} y1={yStart + 32} x2={x0} y2={H - PAD_BOTTOM + 16}
+            stroke="rgba(255,255,255,0.18)" strokeWidth="1" strokeDasharray="3 4"
+          />
+          <line
+            className="proj-guide proj-guide-2"
+            x1={xMid} y1={PAD_TOP - 10} x2={xMid} y2={H - PAD_BOTTOM + 16}
+            stroke="rgba(255,255,255,0.18)" strokeWidth="1" strokeDasharray="3 4"
+          />
+          <line
+            className="proj-guide proj-guide-3"
+            x1={xEnd} y1={yEnd - 10} x2={xEnd} y2={H - PAD_BOTTOM + 16}
+            stroke="rgba(255,255,255,0.18)" strokeWidth="1" strokeDasharray="3 4"
+          />
+
+          {/* GLP-1 alone curve (lighter, higher endpoint) */}
+          <path
+            className="proj-curve proj-curve-glp"
+            d={glpPath}
+            fill="none"
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray="6 5"
+            pathLength={1}
+          />
+          {/* GLP-1 alone endpoint marker */}
+          <g className="proj-glp-marker">
+            <circle cx={xEnd} cy={yGlpEnd} r="6" fill="rgba(255,255,255,0.85)" />
+            <circle cx={xEnd} cy={yGlpEnd} r="11" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
+            <text
+              x={xEnd - 16}
+              y={yGlpEnd - 12}
+              fill="rgba(255,255,255,0.9)"
+              fontSize="11"
+              fontWeight="600"
+              textAnchor="end"
+            >
+              GLP-1 Alone
+            </text>
+          </g>
+
+          {/* Our plan curve (solid, full descent) */}
+          <path
+            className="proj-curve proj-curve-ours"
+            d={ourPath}
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            pathLength={1}
+          />
+
+          {/* X-axis labels */}
+          <text className="proj-axis" x={x0} y={H - 14} fill="rgba(255,255,255,0.7)" fontSize="11.5" textAnchor="middle" fontWeight="500">
+            Today
+          </text>
+          <text className="proj-axis proj-axis-2" x={xMid} y={H - 14} fill="rgba(255,255,255,0.7)" fontSize="11.5" textAnchor="middle" fontWeight="500">
+            1.5 mo
+          </text>
+          <text className="proj-axis proj-axis-3" x={xEnd} y={H - 14} fill="rgba(255,255,255,0.7)" fontSize="11.5" textAnchor="middle" fontWeight="500">
+            {endDateStr}
+          </text>
+
+          {/* Start point pill — current weight */}
+          <g transform={`translate(${x0}, ${yStart})`}>
+            <g className="proj-pill-start">
+              <circle r="4" fill="#FFFFFF" />
+              <g transform="translate(0, -42)">
+                <rect x="-30" y="-18" width="60" height="36" rx="18" fill="#1b4332" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+                <text y="-2" textAnchor="middle" fill="#FFFFFF" fontSize="13" fontWeight="700">
+                  {Math.round(currentLbs)}
+                </text>
+                <text y="11" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="9" fontWeight="500" letterSpacing="0.5">
+                  Lbs
+                </text>
+              </g>
+            </g>
+          </g>
+
+          {/* End point pill — goal weight (the hero moment) */}
+          <g transform={`translate(${xEnd}, ${yEnd})`}>
+            <g className="proj-pill-end">
+              <circle r="5" fill="#FFFFFF" />
+              <g transform="translate(-72, 14)">
+                <rect x="0" y="0" width="144" height="58" rx="20" fill="#1b4332" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+                <text x="72" y="16" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="10.5" fontStyle="italic" fontWeight="600">
+                  Ongo
+                </text>
+                <text x="72" y="36" textAnchor="middle" fill="#FFFFFF" fontSize="18" fontWeight="700">
+                  {Math.round(goalLbs)}
+                  <tspan fontSize="10" fontWeight="500" fill="rgba(255,255,255,0.75)" dx="3"> Lbs</tspan>
+                </text>
+                <text x="72" y="50" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="10" fontWeight="500">
+                  Your goal
+                </text>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
+}
 
 // s9b — asks the surgery date and adapts its question to whichever procedure(s) the user selected.
 type BariatricDateScreenProps = {
