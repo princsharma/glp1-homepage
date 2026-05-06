@@ -6,21 +6,21 @@ const steps = [
     title: "Start with a Free Intake Call",
     caption: "Discuss your medication preferences",
     imageAlt: "Mobile app screen showing weight loss goal questions",
-    imageSrc: "/images/Get pre-approved online_1.webp",
+    imageSrc: "/images/step-a.webp",
   },
   {
     number: "Step 2",
     title: "Consult with a Licensed Doctor",
     caption: "Determine your eligibility",
     imageAlt: "Healthcare provider in white coat",
-    imageSrc: "/images/Meet with your US-based provider_1.webp",
+    imageSrc: "/images/step-b.webp",
   },
   {
     number: "Step 3",
     title: "Receive a Personalized Treatment Plan",
     caption: "If appropriate, start your treatment",
     imageAlt: "Hands receiving a delivery box",
-    imageSrc: "/images/Receive your prescription_1.webp",
+    imageSrc: "/images/step-c.webp",
   },
 ];
 

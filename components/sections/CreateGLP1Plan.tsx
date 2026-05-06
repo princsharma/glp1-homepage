@@ -8,7 +8,8 @@ type Medication = {
   name: string;
   isNew?: boolean;
   benefits: string[];
-  imageSrc: string;
+  imageSrc?: string;
+  videoSrc?: string;
 };
 
 const MEDICATIONS: Medication[] = [
@@ -17,39 +18,39 @@ const MEDICATIONS: Medication[] = [
     name: "Wegovy®",
     isNew: true,
     benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
-    imageSrc: "/medications/wegovy-pill.png",
+    videoSrc: "/images/wegovy-inj.mp4",
   },
   {
     id: "zepbound",
     name: "Zepbound®",
     isNew: true,
     benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
-    imageSrc: "/medications/foundaya.png",
+    videoSrc: "/images/zepbound-inj.mp4",
   },
   {
     id: "ozempic",
     name: "Ozempic®",
     benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
-    imageSrc: "/medications/wegovy.png",
+    videoSrc: "/images/ozmepic-inj.mp4",
   },
   {
     id: "mounjaro",
     name: "Mounjaro®",
     isNew: true,
     benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
-    imageSrc: "/medications/kwikpen.png",
+    videoSrc: "/images/ozmepic-inj.mp4",
   },
   {
     id: "rybelsus",
     name: "Rybelsus®",
     benefits: ["FDA Approved", "Dosing : Once-daily tablet"],
-    imageSrc: "/medications/zepbound-vial.png",
+    videoSrc: "/images/ryb-tab.mp4",
   },
   {
     id: "liraglutide",
     name: "Liraglutide",
     benefits: ["FDA Approved", "Dosing : Once-daily injection"],
-    imageSrc: "/medications/zepbound.png",
+    videoSrc: "/images/liraglutide-inj.mp4",
   },
 ];
 
@@ -108,7 +109,29 @@ export default function CreateGLP1Plan() {
 
           {/* RIGHT — preview card */}
           <aside className={styles.preview}>
-            <ul className={styles.benefitList}>
+            
+
+          <div className={styles.previewImageWrap}>
+  {selected.videoSrc ? (
+    <video
+      key={selected.id}
+      className={styles.previewImage}
+      autoPlay
+      muted
+      loop
+      playsInline
+    >
+      <source src={selected.videoSrc} type="video/mp4" />
+    </video>
+  ) : (
+    <img
+      src={selected.imageSrc}
+      alt={selected.name}
+      className={styles.previewImage}
+    />
+  )}
+</div>
+<ul className={styles.benefitList}>
               {selected.benefits.map((benefit) => (
                 <li key={benefit} className={styles.benefitItem}>
                   <span className={styles.benefitCheck} aria-hidden="true">
@@ -118,15 +141,6 @@ export default function CreateGLP1Plan() {
                 </li>
               ))}
             </ul>
-
-            <div className={styles.previewImageWrap}>
-              <img
-                src={selected.imageSrc}
-                alt={selected.name}
-                className={styles.previewImage}
-              />
-            </div>
-
             <div className={styles.previewFooter}>
               <h3 className={styles.previewName}>{selected.name}</h3>
               <button className={styles.ctaButton}>Get Started</button>

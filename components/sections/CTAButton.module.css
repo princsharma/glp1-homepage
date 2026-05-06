@@ -40,7 +40,7 @@
 }
 
 /* ============================================
-   CARD — image + content
+   CARD
    ============================================ */
 .card {
   position: relative;
@@ -55,22 +55,140 @@
   text-align: left;
 }
 
-.cardImageWrap {
+/* ============================================
+   BEFORE/AFTER COMPARE SLIDER
+   ============================================ */
+.compareWrap {
+  position: relative;
   width: 100%;
   height: 100%;
-  min-height: 380px;
+  min-height: 460px;
   border-radius: 16px;
   overflow: hidden;
-  background-color: var(--gradient-purple);
+  background-color: var(--color-surface-alt);
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
-.cardImage {
+.compareImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;
 }
 
+/* Container that clips the BEFORE image to show only the left portion */
+.beforeClip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  /* The width changes via inline style based on slider position */
+  pointer-events: none;
+}
+
+/* Inside the clip, the BEFORE image is rendered at full container size,
+   but the clip's width crops it. We need to make the image stay anchored
+   to the LEFT edge of the actual container, not the clip box. */
+.beforeClip .compareImage {
+  width: var(--full-width, 100%);
+  max-width: none;
+}
+
+/* Labels */
+.labelBefore,
+.labelAfter {
+  position: absolute;
+  top: 1rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--color-surface);
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.labelBefore {
+  left: 1rem;
+}
+
+.labelAfter {
+  right: 1rem;
+  background-color: var(--color-primary);
+}
+
+/* Vertical drag divider */
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--color-surface);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.1),
+    0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Drag handle in the middle of the divider */
+.handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: grab;
+  pointer-events: auto;
+  box-shadow:
+    0 0 0 4px var(--color-surface),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.handle:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.handle:active {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.handle:focus-visible {
+  box-shadow:
+    0 0 0 4px var(--color-surface),
+    0 0 0 6px var(--color-primary),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.handleArrow {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* ============================================
+   CARD CONTENT
+   ============================================ */
 .cardContent {
   display: flex;
   flex-direction: column;
@@ -95,8 +213,37 @@
   margin: 0;
 }
 
+.cardHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin: 0.5rem 0 0;
+}
+
+.hintDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(52, 126, 93, 0.5);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 6px rgba(52, 126, 93, 0);
+  }
+}
+
 /* ============================================
-   ROTATING BADGE — top right of card
+   ROTATING BADGE
    ============================================ */
 .rotatingBadge {
   position: absolute;
@@ -110,7 +257,6 @@
 .rotatingSvg {
   width: 100%;
   height: 100%;
-  /* The actual rotation animation */
   animation: rotate 18s linear infinite;
 }
 
@@ -122,7 +268,6 @@
   text-transform: uppercase;
 }
 
-/* Center decoration — coral accent dot */
 .badgeCenter {
   position: absolute;
   top: 50%;
@@ -135,7 +280,6 @@
   box-shadow: 0 0 0 6px var(--color-bg), 0 0 0 7px var(--color-accent-soft);
 }
 
-/* The animation itself */
 @keyframes rotate {
   from {
     transform: rotate(0deg);
@@ -145,13 +289,12 @@
   }
 }
 
-/* Pause on hover — small delight */
 .rotatingBadge:hover .rotatingSvg {
   animation-play-state: paused;
 }
 
 /* ============================================
-   FOOTER — tagline + link
+   FOOTER
    ============================================ */
 .footer {
   margin-top: 2.5rem;
@@ -190,8 +333,8 @@
     grid-template-columns: 1fr;
   }
 
-  .cardImageWrap {
-    min-height: 280px;
+  .compareWrap {
+    min-height: 360px;
   }
 
   .cardContent {
@@ -211,6 +354,10 @@
     margin-bottom: 2rem;
   }
 
+  .compareWrap {
+    min-height: 320px;
+  }
+
   .rotatingBadge {
     width: 90px;
     height: 90px;
@@ -221,11 +368,22 @@
   .rotatingText {
     font-size: 13px;
   }
+
+  .handle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .labelBefore,
+  .labelAfter {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.6rem;
+  }
 }
 
-/* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .rotatingSvg {
+  .rotatingSvg,
+  .hintDot {
     animation: none;
   }
 }

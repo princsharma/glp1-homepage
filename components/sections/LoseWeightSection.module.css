@@ -50,7 +50,7 @@
   position: relative;
   border-radius: 28px;
   overflow: hidden;
-  min-height: 580px;
+  min-height: 560px;
 
   /* base gradient */
  background: linear-gradient(135deg, #5fb3d4 0%, #4a9bc4 40%, #3782b1 100%);

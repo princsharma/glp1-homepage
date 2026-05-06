@@ -45,7 +45,7 @@ const ROW_TOP: Card[] = [
     quote:
       "The staff has been so friendly and caring. I didn't expect that! If I call, I get an immediate answer from a real person!",
   },
-  { type: "image", imageSrc: "/images/review-b.webp", alt: "Smiling woman" },
+  { type: "image", imageSrc: "/images/review-d.webp", alt: "Smiling woman" },
 ];
 
 const ROW_BOTTOM: Card[] = [

@@ -1,245 +1,612 @@
 /* ============================================
-   HERO SECTION
+   HERO ENTRANCE ANIMATIONS
+   Staggered fly-in on page load
    ============================================ */
-.hero {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-primary-soft);
-  padding-top: 4rem;
-  overflow: hidden;
+
+/* Each element starts hidden + offset, then flies into place */
+.eyebrow,
+.heading,
+.subcopy {
+  opacity: 0;
+  transform: translateY(-40px);
+  animation: flyInTop 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.heroContent {
-  max-width: 1100px;
+.eyebrow {
+  animation-delay: 0.2s;
+}
+
+.heading {
+  animation-delay: 0.5s;
+}
+
+.subcopy {
+  animation-delay: 0.9s;
+}
+
+@keyframes flyInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* CTA button comes in from left */
+.primaryBtn {
+  opacity: 0;
+  transform: translateX(-50px);
+  animation: flyInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
+}
+
+@keyframes flyInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Avatar group comes in from right */
+.avatarGroup {
+  opacity: 0;
+  transform: translateX(50px);
+  animation: flyInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
+}
+
+@keyframes flyInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Carousel fades in last */
+.marqueeWrap {
+  opacity: 0;
+  animation: fadeInUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .heading,
+  .subcopy,
+  .primaryBtn,
+  .avatarGroup,
+  .marqueeWrap {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ============================================
+   HERO — dark canvas with subtle gradient
+   ============================================ */
+.hero {
+  position: relative;
   width: 100%;
+  background: radial-gradient(
+      ellipse at top,
+      var(--color-primary-dark) 0%,
+      #0d1f17 100%
+    );
+  overflow: hidden;
+  color: var(--color-surface);
+  min-height: 800px;
+  padding: 4rem 0 4rem;
+}
+
+/* ============================================
+   FLOATING ORBS
+   ============================================ */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.orb_1 {
+  width: 50px;
+  height: 50px;
+  top: 18%;
+  left: 8%;
+  background: linear-gradient(135deg, #b8a4f0, #7c5cd6);
+  animation: orbFloat 6s ease-in-out infinite;
+}
+
+.orb_2 {
+  width: 35px;
+  height: 35px;
+  top: 35%;
+  left: 15%;
+  background: linear-gradient(135deg, #e76f51, #d65a3a);
+  animation: orbFloat 8s ease-in-out infinite reverse;
+}
+
+.orb_3 {
+  width: 60px;
+  height: 60px;
+  top: 25%;
+  right: 8%;
+  background: linear-gradient(135deg, #ee8a4f, #b8a4f0);
+  animation: orbFloat 7s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+.orb_4 {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  right: 15%;
+  background: linear-gradient(135deg, #74c69d, #347e5d);
+  animation: orbFloat 9s ease-in-out infinite reverse;
+  animation-delay: -4s;
+}
+
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(15px, -20px) scale(1.1);
+  }
+}
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+.container {
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
+  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================================
-   EYEBROW (top tagline)
+   CONTENT
    ============================================ */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  max-width: 800px;
+}
+
 .eyebrow {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.eyebrowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.heading {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-surface);
   margin: 0;
   text-transform: uppercase;
-}
-
-.eyebrowHighlight {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-/* ============================================
-   MAIN HEADING
-   ============================================ */
-.heading {
-  font-size: clamp(2.25rem, 5vw, 4rem);
-  font-weight: 700;
-  color: var(--color-text);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin: 0;
-  max-width: 900px;
 }
 
 .headingItalic {
   font-style: italic;
   font-family: Georgia, "Times New Roman", serif;
-  color: var(--color-primary);
-  font-weight: 500;
+  color: var(--color-primary-light);
+  font-weight: 400;
+  text-transform: lowercase;
+}
+
+.subcopy {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+  max-width: 520px;
 }
 
 /* ============================================
-   BENEFIT PILLS
+   ACTION ROW
    ============================================ */
-.benefits {
-  list-style: none;
-  padding: 0;
-  margin: 0.5rem 0 0;
+.actionRow {
   display: flex;
+  align-items: center;
+  gap: 1.25rem;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
-.benefitItem {
+.primaryBtn {
   display: inline-flex;
   align-items: center;
   gap: 0.625rem;
-  background-color: var(--color-surface);
-  padding: 0.625rem 1.25rem;
-  border-radius: 9999px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--color-text);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.benefitCheck {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background-color: var(--color-success);
-  color: var(--color-surface);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-/* ============================================
-   CTA BUTTON
-   ============================================ */
-
-.ctaButton {
-  margin-top: 0.75rem;
-  /* Layered gradient: lighter at top, primary in middle, darker at bottom */
   background: linear-gradient(
-    180deg,
-    var(--color-primary-light) 0%,
-    var(--color-primary) 55%,
-    var(--color-primary-dark) 100%
+    135deg,
+    var(--color-primary-light),
+    var(--color-primary)
   );
   color: var(--color-surface);
-  padding: 1.125rem 3.5rem;
   border: none;
+  padding: 1rem 2rem;
   border-radius: 9999px;
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  position: relative;
-
-  /* The depth effect — combines:
-     1. Inner top highlight (white glow inside top edge)
-     2. Inner bottom shadow (darker rim inside bottom edge)
-     3. Outer drop shadow (lifts button off the page) */
-  box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
-    0 8px 20px rgba(45, 106, 79, 0.35),
-    0 2px 4px rgba(45, 106, 79, 0.2);
-
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(124, 92, 214, 0.4);
+  text-transform: uppercase;
 }
 
-.ctaButton:hover {
+.primaryBtn:hover {
   transform: translateY(-2px);
-  box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
-    0 12px 24px rgba(45, 106, 79, 0.4),
-    0 3px 6px rgba(45, 106, 79, 0.25);
+  box-shadow: 0 8px 24px rgba(124, 92, 214, 0.6);
 }
 
-.ctaButton:active {
-  transform: translateY(1px);
-  box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.2),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2),
-    0 4px 10px rgba(45, 106, 79, 0.3);
+.btnArrow {
+  font-size: 1.05rem;
+  transition: transform 0.2s ease;
 }
-.ctaButton:active {
-  transform: translateY(0);
+
+.primaryBtn:hover .btnArrow {
+  transform: translateX(3px);
+}
+
+.avatarGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.4rem 1rem 0.4rem 0.5rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+}
+
+.avatarStack {
+  display: inline-flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center top;
+  border: 2px solid var(--color-primary-dark);
+  margin-left: -8px;
+  background-color: var(--color-primary-soft);
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatarText {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.1;
+}
+
+.avatarCount {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-surface);
+}
+
+.avatarLabel {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 /* ============================================
-   MARQUEE — INFINITE SCROLLING IMAGES
+   3D MARQUEE — full-width with curved depth
    ============================================ */
-.marquee {
+.marqueeWrap {
+  position: relative;
   width: 100%;
+  height: 480px;
   overflow: hidden;
-  margin-top: 2rem;
-  padding-bottom: 2rem;
+  /* Strong perspective from a low viewpoint creates the arc illusion */
+  perspective: 1400px;
+  perspective-origin: center 60%;
+  /* Soft fade at edges */
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 80px,
-    #000 calc(100% - 80px),
+    #000 60px,
+    #000 calc(100% - 60px),
     transparent 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 80px,
-    #000 calc(100% - 80px),
+    #000 60px,
+    #000 calc(100% - 60px),
     transparent 100%
   );
 }
 
+/* The track that scrolls */
 .marqueeTrack {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  height: 100%;
   width: max-content;
-  animation: scroll 30s linear infinite;
+  gap: 1rem;
+  padding: 0 2rem;
+  transform-style: preserve-3d;
+  animation: marqueeScroll 40s linear infinite;
+  will-change: transform;
 }
 
-.marquee:hover .marqueeTrack {
+.marqueeWrap:hover .marqueeTrack {
   animation-play-state: paused;
 }
 
-.marqueeItem {
-  flex-shrink: 0;
-  width: 320px;
-  height: 380px;
-  border-radius: 16px;
-  overflow: hidden;
-  background-color: var(--color-surface-alt);
+@keyframes marqueeScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-25%);
+  }
 }
 
-.marqueeImage {
+/* ============================================
+   CARD WRAPPER — sits in the track
+   ============================================ */
+.cardWrapper {
+  flex: 0 0 auto;
+  width: 280px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Each card's transform is set by JS to create the 3D arc */
+  transform-style: preserve-3d;
+  transition: transform 0.05s linear;
+  will-change: transform;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+  width: 100%;
+  height: 420px;
+  border-radius: 20px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  pointer-events: auto;
+}
+
+.cardImageWrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.cardImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-@keyframes scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    /* Move by exactly half the track (since we duplicated images) */
-    transform: translateX(-50%);
-  }
+.cardFooter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.75),
+    transparent
+  );
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cardLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-surface);
+  letter-spacing: -0.01em;
+}
+
+.cardBadge {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-surface);
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
 }
 
 /* ============================================
    RESPONSIVE
    ============================================ */
-@media (max-width: 768px) {
-  .heroContent {
-    padding: 1.5rem 1rem 2rem;
-    gap: 1.25rem;
+@media (max-width: 1024px) {
+  .marqueeWrap {
+    height: 420px;
   }
 
-  .benefits {
+  .cardWrapper {
+    width: 200px;
+  }
+
+  .card {
+    height: 380px;
+  }
+}
+
+/* ============================================
+   MOBILE — flat, simple horizontal marquee
+   ============================================ */
+@media (max-width: 767px) {
+  .hero {
+    min-height: auto;
+    padding: 2.5rem 0 2.5rem;
+  }
+
+  .heading {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+  }
+
+  .subcopy {
+    font-size: 0.9rem;
+  }
+
+  .actionRow {
     flex-direction: column;
-    align-items: stretch;
+    gap: 1rem;
   }
 
-  .benefitItem {
-    justify-content: flex-start;
+  .primaryBtn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.8rem;
   }
 
-  .marqueeItem {
-    width: 220px;
+  .avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Kill the 3D perspective entirely */
+  .marqueeWrap {
     height: 280px;
+    perspective: none;
   }
 
   .marqueeTrack {
-    animation-duration: 20s;
+    transform-style: flat;
+    gap: 0.875rem;
+    padding: 0 1rem;
+    animation-duration: 25s;
+  }
+
+  /* Cards stay flat — JS won't apply transforms */
+  .cardWrapper {
+    width: 160px;
+    transform-style: flat;
+    transition: none;
+  }
+
+  .card {
+    height: 240px;
+    border-radius: 16px;
+  }
+
+  .cardLabel {
+    font-size: 0.8rem;
+  }
+
+  .cardBadge {
+    display: none;
+  }
+
+  .cardFooter {
+    padding: 0.75rem 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .marqueeWrap {
+    height: 240px;
+  }
+
+  .cardWrapper {
+    width: 130px;
+  }
+
+  .card {
+    height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb,
+  .eyebrowDot,
+  .marqueeTrack {
+    animation: none;
   }
 }

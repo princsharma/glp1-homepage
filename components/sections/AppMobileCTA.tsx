@@ -51,7 +51,7 @@ export default function AppMobileCTA() {
         {/* Hero image — bleeds right */}
         <div className={styles.imageWrap}>
           <img
-            src="/images/Find freedom with.webp"
+            src="/images/ORANGE GIRL.png"
             alt="Smiling person enjoying a confident moment"
             className={styles.heroImage}
           />
