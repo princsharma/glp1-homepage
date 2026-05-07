@@ -110,21 +110,39 @@
 }
 
 /* ============================================
-   HERO — soft, calm gradient background
+   HERO — theme-driven gradient background
+   Reacts to ThemeSwitcher via --color-primary-* tokens
    ============================================ */
 .hero {
   position: relative;
   width: 100%;
-  background: linear-gradient(
-    180deg,
-    #e8f0eb 0%,
-    #d8e8de 60%,
-    #c5dccd 100%
-  );
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 20% 0%,
+      color-mix(in srgb, var(--color-primary-light) 55%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 70% 55% at 85% 15%,
+      color-mix(in srgb, var(--color-primary) 35%, transparent) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 90% 60% at 50% 100%,
+      color-mix(in srgb, var(--color-primary) 45%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-primary-soft) 0%,
+      color-mix(in srgb, var(--color-primary-light) 55%, var(--color-bg)) 55%,
+      color-mix(in srgb, var(--color-primary) 30%, var(--color-primary-light)) 100%
+    );
   overflow: hidden;
   color: var(--color-text);
   min-height: 800px;
   padding: 4rem 0 4rem;
+  transition: background 0.6s ease;
 }
 
 /* ============================================
@@ -133,10 +151,11 @@
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(40px);
+  filter: blur(45px);
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.55;
   z-index: 0;
+  transition: background 0.6s ease;
 }
 
 .orb_1 {
@@ -183,6 +202,76 @@
   }
   50% {
     transform: translate(20px, -25px) scale(1.05);
+  }
+}
+
+/* ============================================
+   RAIN — themed falling drops
+   Each .drop is a small soft pill that falls and
+   fades. Color/size/speed are driven by inline
+   CSS custom properties set in JSX so themes
+   take over via var(--color-primary*).
+   ============================================ */
+.rain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.drop {
+  position: absolute;
+  top: -10%;
+  left: var(--x, 50%);
+  width: var(--size, 8px);
+  height: calc(var(--size, 8px) * 2.2);
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-primary) 70%, transparent) 0%,
+    color-mix(in srgb, var(--color-primary-light) 80%, transparent) 100%
+  );
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
+  opacity: 0;
+  transform: translateY(0);
+  animation: dropFall var(--duration, 7s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+}
+
+.dropDot {
+  height: var(--size, 8px);
+  background: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--color-primary-light) 90%, white) 0%,
+    color-mix(in srgb, var(--color-primary) 80%, transparent) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-primary) 55%, transparent);
+}
+
+@keyframes dropFall {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 20px));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drop {
+    animation: none;
+    display: none;
   }
 }
 

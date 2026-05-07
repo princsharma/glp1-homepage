@@ -36,8 +36,8 @@ export default function CTAButton() {
          const sequence = [
   { pos: 100, delay: 1000 },  // 1s pause showing fat → fade to slim
   { pos: 0, delay: 2500 },    // 1.5s on slim → fade back to fat
-  { pos: 100, delay: 4000 },  // again to slim
-  { pos: 0, delay: 5500 },    // settle at fat
+  // { pos: 100, delay: 4000 },  // again to slim
+  // { pos: 0, delay: 5500 },    // settle at fat
 ];
           sequence.forEach(({ pos, delay }) => {
             setTimeout(() => {

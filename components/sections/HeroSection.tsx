@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import styles from "./HeroSection.module.css";
 
 const cards = [
@@ -18,6 +18,38 @@ const avatars = [
 ];
 
 const repeatedCards = [...cards, ...cards, ...cards, ...cards];
+
+// Predefined rain drops — fixed values keep SSR + client render in sync.
+// Mix of "pill" drops and round dot drops for variety.
+const drops: Array<{
+  x: string;
+  size: number;
+  duration: number;
+  delay: number;
+  drift: number;
+  dot?: boolean;
+}> = [
+  { x: "4%",  size: 6,  duration: 7.5, delay: 0,    drift: 18 },
+  { x: "9%",  size: 5,  duration: 9,   delay: 1.6,  drift: -22, dot: true },
+  { x: "14%", size: 7,  duration: 6.5, delay: 3.2,  drift: 12 },
+  { x: "19%", size: 4,  duration: 8.5, delay: 0.8,  drift: -10, dot: true },
+  { x: "24%", size: 8,  duration: 7,   delay: 2.4,  drift: 26 },
+  { x: "29%", size: 5,  duration: 9.5, delay: 4,    drift: -18 },
+  { x: "34%", size: 6,  duration: 8,   delay: 1.2,  drift: 14, dot: true },
+  { x: "39%", size: 7,  duration: 6.8, delay: 3.6,  drift: -24 },
+  { x: "44%", size: 5,  duration: 9.2, delay: 0.4,  drift: 20 },
+  { x: "49%", size: 6,  duration: 7.6, delay: 2.8,  drift: -12, dot: true },
+  { x: "54%", size: 8,  duration: 6.4, delay: 1.8,  drift: 22 },
+  { x: "59%", size: 4,  duration: 9.8, delay: 4.4,  drift: -16, dot: true },
+  { x: "64%", size: 7,  duration: 7.2, delay: 0.6,  drift: 18 },
+  { x: "69%", size: 5,  duration: 8.4, delay: 3,    drift: -20 },
+  { x: "74%", size: 6,  duration: 6.6, delay: 1.4,  drift: 16, dot: true },
+  { x: "79%", size: 8,  duration: 9,   delay: 2.2,  drift: -26 },
+  { x: "84%", size: 5,  duration: 7.8, delay: 0.2,  drift: 14 },
+  { x: "89%", size: 7,  duration: 8.6, delay: 3.4,  drift: -18, dot: true },
+  { x: "94%", size: 6,  duration: 6.2, delay: 1,    drift: 22 },
+  { x: "97%", size: 4,  duration: 9.4, delay: 4.2,  drift: -14, dot: true },
+];
 
 export default function HeroSection() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -88,6 +120,25 @@ useEffect(() => {
       <span className={`${styles.orb} ${styles.orb_2}`} aria-hidden="true" />
       <span className={`${styles.orb} ${styles.orb_3}`} aria-hidden="true" />
       <span className={`${styles.orb} ${styles.orb_4}`} aria-hidden="true" />
+
+      {/* Themed rain — falls behind content, picks up theme colors */}
+      <div className={styles.rain} aria-hidden="true">
+        {drops.map((d, i) => (
+          <span
+            key={i}
+            className={`${styles.drop} ${d.dot ? styles.dropDot : ""}`}
+            style={
+              {
+                "--x": d.x,
+                "--size": `${d.size}px`,
+                "--duration": `${d.duration}s`,
+                "--delay": `${d.delay}s`,
+                "--drift": `${d.drift}px`,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </div>
 
       <div className={styles.container}>
         <div className={styles.content}>

@@ -143,7 +143,9 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.35s ease;
+  will-change: transform;
 }
 
 /* Subtle dotted pattern + soft radial glow for depth */
@@ -167,13 +169,13 @@
 
 .drawer {
   opacity: 0;
-  transform: scale(0.985);
+  transform: translateX(100%);
   pointer-events: none;
 }
 
 .drawerOpen {
   opacity: 1;
-  transform: scale(1);
+  transform: translateX(0);
   pointer-events: auto;
 }
 
