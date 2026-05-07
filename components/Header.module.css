@@ -22,8 +22,8 @@
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 var(--color-border),
     0 4px 16px rgba(0, 0, 0, 0.04);
-    position: fixed;
-    top: 0;
+  position: fixed;
+  top: 0;
 }
 
 .container {
@@ -37,7 +37,7 @@
 }
 
 /* ============================================
-   LOGO
+   LOGO (header)
    ============================================ */
 .logo {
   display: inline-flex;
@@ -107,14 +107,14 @@
 }
 
 /* ============================================
-   BACKDROP
+   BACKDROP — sits below the takeover drawer
    ============================================ */
 .backdrop,
 .backdropOpen {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.55);
   transition: opacity 0.3s ease;
 }
 
@@ -129,175 +129,455 @@
 }
 
 /* ============================================
-   DRAWER — slides in from right
+   DRAWER — FULL-SCREEN TAKEOVER
    ============================================ */
 .drawer,
 .drawerOpen {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 380px;
-  max-width: 85vw;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 300;
-  background-color: var(--color-surface);
+  background-color: var(--color-primary-dark);
+  color: #fffbf5;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle dotted pattern + soft radial glow for depth */
+.drawer::before,
+.drawerOpen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    radial-gradient(
+      ellipse at 80% 0%,
+      var(--color-primary) 0%,
+      transparent 55%
+    );
+  background-size: 28px 28px, 100% 100%;
+  background-position: 0 0, center;
+  opacity: 0.6;
 }
 
 .drawer {
-  transform: translateX(100%);
+  opacity: 0;
+  transform: scale(0.985);
+  pointer-events: none;
 }
 
 .drawerOpen {
-  transform: translateX(0);
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
 }
 
-.drawerHeader {
+.drawerInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+}
+
+/* ============================================
+   DRAWER TOP — logo + close pill
+   ============================================ */
+.drawerTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--color-border);
+  gap: 1rem;
 }
 
-.drawerTitle {
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.closeButton {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--color-surface-alt);
+.drawerLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.875rem;
-  color: var(--color-text);
+  padding: 0;
+  font-family: inherit;
+  color: #fffbf5;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.drawerLogoMark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.drawerLogoText {
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border: none;
+  padding: 0.55rem 0.65rem 0.55rem 1.1rem;
+  border-radius: 9999px;
+  cursor: pointer;
   font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
   transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
 .closeButton:hover {
-  background-color: var(--color-primary-soft);
-  transform: rotate(90deg);
+  background-color: #fffbf5;
+  transform: translateY(-1px);
+}
+
+.closeLabel {
+  line-height: 1;
+}
+
+.closeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--color-primary-dark);
+  color: var(--color-primary-light);
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 /* ============================================
-   DRAWER NAV
+   DRAWER BODY — two-column grid
    ============================================ */
-.drawerNav {
+.drawerBody {
   flex: 1;
-  padding: 0.75rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 3rem;
+  padding-top: 1rem;
 }
 
-.drawerLink,
-.drawerLinkActive {
-  display: flex;
+/* ============================================
+   EYEBROW — "— NAVIGATE", "— GET IN TOUCH" etc.
+   ============================================ */
+.eyebrow {
+  display: inline-flex;
   align-items: center;
-  gap: 0.875rem;
-  padding: 0.875rem 1rem;
-  border-radius: 12px;
+  gap: 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary-light);
+  margin-bottom: 1.25rem;
+}
+
+.eyebrowDash {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background-color: var(--color-primary-light);
+  border-radius: 9999px;
+}
+
+/* ============================================
+   NAV LIST — big bold typography
+   ============================================ */
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+}
+
+.navList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.navListItem {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navListItem:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navItem,
+.navItemActive {
+  --i: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 0.25rem;
   background: transparent;
   border: none;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--color-text);
-  transition: background-color 0.2s ease, color 0.2s ease,
-    transform 0.15s ease;
-  width: 100%;
+  color: #fffbf5;
+  transition: color 0.2s ease, transform 0.2s ease, padding 0.2s ease;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: navItemIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(0.06s * var(--i) + 0.18s);
 }
 
-.drawerLink:hover {
-  background-color: var(--color-surface-alt);
-  transform: translateX(4px);
+.navItem:hover {
+  color: var(--color-primary-light);
+  padding-left: 0.65rem;
 }
 
-.drawerLinkActive {
-  background-color: var(--color-primary-soft);
-  color: var(--color-primary-dark);
-  font-weight: 600;
+.navItem:hover .navArrow {
+  transform: translate(4px, -4px);
+  opacity: 1;
 }
 
-.drawerNumber {
+.navItemActive {
+  color: var(--color-primary-light);
+}
+
+.navNumber {
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--color-text-soft);
+  letter-spacing: 0.08em;
+  color: var(--color-primary-light);
   font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
+  align-self: start;
+  padding-top: 0.65rem;
+  min-width: 2ch;
 }
 
-.drawerLinkActive .drawerNumber {
-  color: var(--color-primary);
+.navLabel {
+  font-size: clamp(1.6rem, 3.5vw, 2.85rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
 
-.drawerLabel {
-  flex: 1;
+.navArrow {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary-light);
+  opacity: 0.5;
+  transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
-.drawerArrow {
-  color: var(--color-text-soft);
-  font-size: 1rem;
-  font-weight: 500;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.drawerLink:hover .drawerArrow {
-  transform: translateX(3px);
-  color: var(--color-primary);
-}
-
-.drawerLinkActive .drawerArrow {
-  color: var(--color-primary);
+@keyframes navItemIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ============================================
-   DRAWER FOOTER
+   INFO PANEL — right column
    ============================================ */
-.drawerFooter {
-  padding: 1.25rem 1.5rem;
-  border-top: 1px solid var(--color-border);
+.drawerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding-top: 0.5rem;
 }
 
-.drawerCta {
-  width: 100%;
+.statusPill {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #fffbf5;
+}
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #4ade80;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.18);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.18); }
+  50% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoBlock .eyebrow {
+  margin-bottom: 0.85rem;
+}
+
+.infoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0;
+  color: #fffbf5;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.infoLink:hover {
+  color: var(--color-primary-light);
+  transform: translateX(2px);
+}
+
+.infoIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   background-color: var(--color-primary);
-  color: var(--color-surface);
+  color: #fffbf5;
+  font-size: 0.85rem;
+}
+
+.socialRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fffbf5;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.socialBtn:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.infoFooter {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: rgba(255, 251, 245, 0.7);
+}
+
+.footerLine {
+  margin: 0;
+  font-weight: 600;
+}
+
+.footerTagline {
+  margin: 0.2rem 0 0;
+  font-style: italic;
+  color: rgba(255, 251, 245, 0.5);
+}
+
+/* ============================================
+   DRAWER CTA — bottom Book Now button
+   ============================================ */
+.drawerCta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
   border: none;
-  padding: 0.95rem 1.5rem;
+  padding: 1rem 1.75rem;
   border-radius: 9999px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  letter-spacing: 0.01em;
+  transition: background-color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 .drawerCta:hover {
-  background-color: var(--color-primary-dark);
+  background-color: #fffbf5;
   transform: translateY(-1px);
 }
 
 /* ============================================
    RESPONSIVE
    ============================================ */
+@media (max-width: 900px) {
+  .drawerInner {
+    padding: 1.25rem 1.25rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .drawerBody {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-top: 0.5rem;
+  }
+
+  .drawerInfo {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+  }
+
+  .infoFooter {
+    margin-top: 1rem;
+  }
+}
+
 @media (max-width: 480px) {
   .container {
     padding: 0.875rem 1rem;
@@ -318,10 +598,32 @@
     height: 42px;
   }
 
-  .drawerLink,
-  .drawerLinkActive {
-    padding: 0.75rem 0.875rem;
-    font-size: 0.95rem;
+  .drawerInner {
+    padding: 1rem 1rem 1.25rem;
+  }
+
+  .drawerLogoText {
+    font-size: 1rem;
+  }
+
+  .closeButton {
+    padding: 0.45rem 0.55rem 0.45rem 0.95rem;
+    font-size: 0.8rem;
+  }
+
+  .navItem,
+  .navItemActive {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.85rem;
+    padding: 0.85rem 0.15rem;
+  }
+
+  .navLabel {
+    font-size: clamp(1.4rem, 7vw, 2rem);
+  }
+
+  .navArrow {
+    font-size: 1.15rem;
   }
 }
 
@@ -333,10 +635,24 @@
   .backdropOpen,
   .drawer,
   .drawerOpen,
-  .drawerLink,
-  .drawerLinkActive,
+  .navItem,
+  .navItemActive,
   .closeButton,
-  .menuToggle {
+  .menuToggle,
+  .infoLink,
+  .socialBtn,
+  .drawerCta {
     transition: none;
+    animation: none;
+  }
+
+  .navItem,
+  .navItemActive {
+    opacity: 1;
+    transform: none;
+  }
+
+  .statusDot {
+    animation: none;
   }
 }

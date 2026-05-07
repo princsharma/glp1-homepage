@@ -62,7 +62,7 @@ export default function GLP1Education() {
               <div className={styles.imageBackdrop} />
               <div className={styles.imageWrap}>
                 <img
-                  src="/images/Lose weight with GLP-1 drugs.webp"
+                  src="/images/Gemini_Generated_Image_56dfmw56dfmw56df 1.png"
                   alt="Doctor showing positive results"
                   className={styles.heroImage}
                 />

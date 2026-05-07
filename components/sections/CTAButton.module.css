@@ -56,52 +56,53 @@
 }
 
 /* ============================================
-   BEFORE/AFTER COMPARE SLIDER
+   COMPARE WRAP — holds the two stacked images
    ============================================ */
 .compareWrap {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 460px;
+  min-height: 560px;
   border-radius: 16px;
   overflow: hidden;
   background-color: var(--color-surface-alt);
-  cursor: ew-resize;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none;
+  transition: box-shadow 0.3s ease;
 }
 
+.compareWrap_active {
+  box-shadow: 0 0 0 3px var(--color-primary), 0 12px 32px rgba(52, 126, 93, 0.25);
+}
+
+/* ============================================
+   STACKED IMAGES — same size and position
+   ============================================ */
 .compareImage {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center bottom;
   display: block;
   pointer-events: none;
+  background-color: var(--color-surface-alt);
 }
 
-/* Container that clips the BEFORE image to show only the left portion */
-.beforeClip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  overflow: hidden;
-  /* The width changes via inline style based on slider position */
-  pointer-events: none;
+.beforeImage {
+  z-index: 1;
 }
 
-/* Inside the clip, the BEFORE image is rendered at full container size,
-   but the clip's width crops it. We need to make the image stay anchored
-   to the LEFT edge of the actual container, not the clip box. */
-.beforeClip .compareImage {
-  width: var(--full-width, 100%);
-  max-width: none;
+.afterImage {
+  z-index: 2;
+  /* Opacity controlled inline by slider */
+  will-change: opacity;
 }
 
-/* Labels */
+/* ============================================
+   LABELS — top corners
+   ============================================ */
 .labelBefore,
 .labelAfter {
   position: absolute;
@@ -115,6 +116,8 @@
   border-radius: 6px;
   pointer-events: none;
   backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 5;
 }
 
 .labelBefore {
@@ -126,51 +129,105 @@
   background-color: var(--color-primary);
 }
 
-/* Vertical drag divider */
-.divider {
+.labelBright {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.labelDim {
+  opacity: 0.45;
+  transform: scale(0.92);
+}
+
+/* ============================================
+   SLIDER TRACK — at bottom of image
+   ============================================ */
+.sliderTrack {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: 9999px;
+  cursor: pointer;
+  z-index: 4;
+  touch-action: none;
+}
+
+.sliderFill {
   position: absolute;
   top: 0;
-  bottom: 0;
-  width: 3px;
-  background-color: var(--color-surface);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.1),
-    0 4px 16px rgba(0, 0, 0, 0.2);
-  transform: translateX(-50%);
+  left: 0;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    var(--color-primary)
+  );
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: width;
+}
+
+.trackLabelLeft,
+.trackLabelRight {
+  position: absolute;
+  top: 1.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-surface);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   pointer-events: none;
 }
 
-/* Drag handle in the middle of the divider */
+.trackLabelLeft {
+  left: 0;
+}
+
+.trackLabelRight {
+  right: 0;
+}
+
+/* ============================================
+   HANDLE — sits on track
+   ============================================ */
 .handle {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background: var(--color-primary);
   color: var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   cursor: grab;
   pointer-events: auto;
   box-shadow:
     0 0 0 4px var(--color-surface),
     0 4px 16px rgba(0, 0, 0, 0.3);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
   outline: none;
+  transform: translate(-50%, -50%);
+  will-change: left;
 }
 
 .handle:hover {
-  transform: translate(-50%, -50%) scale(1.1);
+  background: var(--color-primary-dark);
 }
 
-.handle:active {
+.handle:active,
+.handleActive {
   cursor: grabbing;
-  transform: translate(-50%, -50%) scale(0.95);
+  background: var(--color-primary-dark);
+  box-shadow:
+    0 0 0 4px var(--color-surface),
+    0 0 0 8px rgba(52, 126, 93, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .handle:focus-visible {
@@ -180,10 +237,135 @@
     0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
+.handlePulsing::before,
+.handlePulsing::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  animation: ringPulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.handlePulsing::after {
+  animation-delay: 1s;
+}
+
+@keyframes ringPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
 .handleArrow {
-  font-size: 1.4rem;
+  font-size: 0.95rem;
   font-weight: 800;
   line-height: 1;
+}
+
+.handleGrip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 1px;
+}
+
+.gripDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ============================================
+   "DRAG ME" TOOLTIP — appears above the handle
+   ============================================ */
+.dragTooltip {
+  position: absolute;
+  bottom: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: var(--color-surface);
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 6;
+  pointer-events: none;
+  animation: tooltipBob 1.6s ease-in-out infinite;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.dragTooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--color-text);
+}
+
+.dragTooltipArrow {
+  font-size: 0.95rem;
+  animation: arrowSlide 1.4s ease-in-out infinite;
+}
+
+@keyframes tooltipBob {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+@keyframes arrowSlide {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================
+   POSITION INDICATOR
+   ============================================ */
+.positionIndicator {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  color: var(--color-surface);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.positionLabel {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ============================================
@@ -213,6 +395,49 @@
   margin: 0;
 }
 
+/* ============================================
+   STATS BLOCK
+   ============================================ */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--color-primary-soft);
+  border-radius: 14px;
+  margin: 0.5rem 0;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.statDivider {
+  width: 1px;
+  height: 32px;
+  background-color: rgba(52, 126, 93, 0.2);
+}
+
+/* ============================================
+   HINT
+   ============================================ */
 .cardHint {
   display: inline-flex;
   align-items: center;
@@ -220,7 +445,7 @@
   font-size: 0.85rem;
   color: var(--color-primary);
   font-weight: 600;
-  margin: 0.5rem 0 0;
+  margin: 0.25rem 0 0;
 }
 
 .hintDot {
@@ -281,12 +506,8 @@
 }
 
 @keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .rotatingBadge:hover .rotatingSvg {
@@ -334,7 +555,7 @@
   }
 
   .compareWrap {
-    min-height: 360px;
+    min-height: 500px;
   }
 
   .cardContent {
@@ -347,6 +568,15 @@
     width: 100px;
     height: 100px;
   }
+
+  .stats {
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .statValue {
+    font-size: 1.1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -355,7 +585,7 @@
   }
 
   .compareWrap {
-    min-height: 320px;
+    min-height: 420px;
   }
 
   .rotatingBadge {
@@ -370,8 +600,8 @@
   }
 
   .handle {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
 
   .labelBefore,
@@ -379,11 +609,37 @@
     font-size: 0.6rem;
     padding: 0.3rem 0.6rem;
   }
+
+  .stats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .statDivider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .dragTooltip {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .sliderTrack {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rotatingSvg,
-  .hintDot {
+  .hintDot,
+  .dragTooltip,
+  .handlePulsing::before,
+  .handlePulsing::after,
+  .dragTooltipArrow {
     animation: none;
   }
 }

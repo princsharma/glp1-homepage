@@ -51,7 +51,7 @@
 .headingAccent {
   display: block;
   font-style: italic;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
   margin-top: 0.25rem;

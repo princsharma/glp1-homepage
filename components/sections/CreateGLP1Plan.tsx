@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./CreateGLP1Plan.module.css";
 
 type Medication = {
@@ -8,8 +8,8 @@ type Medication = {
   name: string;
   isNew?: boolean;
   benefits: string[];
-  imageSrc?: string;
-  videoSrc?: string;
+  description?: string;
+  videoSrc: string;
 };
 
 const MEDICATIONS: Medication[] = [
@@ -17,148 +17,211 @@ const MEDICATIONS: Medication[] = [
     id: "wegovy-pill",
     name: "Wegovy®",
     isNew: true,
-    benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
+    description: "A once-weekly GLP-1 injection clinically proven for chronic weight management.",
+    benefits: ["FDA Approved", "Once-weekly injection"],
     videoSrc: "/images/wegovy-inj.mp4",
   },
   {
     id: "zepbound",
     name: "Zepbound®",
     isNew: true,
-    benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
+    description: "Dual-action GIP/GLP-1 injection helping with appetite regulation and metabolic health.",
+    benefits: ["FDA Approved", "Once-weekly injection"],
     videoSrc: "/images/zepbound-inj.mp4",
   },
   {
     id: "ozempic",
     name: "Ozempic®",
-    benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
+    description: "Originally approved for type 2 diabetes, often prescribed off-label for weight loss.",
+    benefits: ["FDA Approved", "Once-weekly injection"],
     videoSrc: "/images/ozmepic-inj.mp4",
   },
   {
     id: "mounjaro",
     name: "Mounjaro®",
     isNew: true,
-    benefits: ["FDA Approved", "Dosing : Once-weekly injection"],
+    description: "A once-weekly injection that targets two key hormones to help reduce hunger and cravings.",
+    benefits: ["FDA Approved", "Once-weekly injection"],
     videoSrc: "/images/ozmepic-inj.mp4",
   },
   {
     id: "rybelsus",
     name: "Rybelsus®",
-    benefits: ["FDA Approved", "Dosing : Once-daily tablet"],
+    description: "The only GLP-1 medication available in tablet form — no injection needed.",
+    benefits: ["FDA Approved", "Once-daily tablet"],
     videoSrc: "/images/ryb-tab.mp4",
   },
   {
     id: "liraglutide",
     name: "Liraglutide",
-    benefits: ["FDA Approved", "Dosing : Once-daily injection"],
+    description: "A daily GLP-1 injection that helps regulate appetite and support gradual weight loss.",
+    benefits: ["FDA Approved", "Once-daily injection"],
     videoSrc: "/images/liraglutide-inj.mp4",
   },
 ];
 
+const CYCLE_DURATION = 6000;
+
 export default function CreateGLP1Plan() {
-  const [selectedId, setSelectedId] = useState(MEDICATIONS[0].id);
-  const selected = MEDICATIONS.find((m) => m.id === selectedId)!;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
+
+  const selected = MEDICATIONS[activeIndex];
+
+  useEffect(() => {
+    if (isPaused) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
+
+    startTimeRef.current = Date.now();
+
+    intervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const newProgress = (elapsed / CYCLE_DURATION) * 100;
+
+      if (newProgress >= 100) {
+        setActiveIndex((prev) => (prev + 1) % MEDICATIONS.length);
+        startTimeRef.current = Date.now();
+        setProgress(0);
+      } else {
+        setProgress(newProgress);
+      }
+    }, 50);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isPaused, activeIndex]);
+
+  const handleSelectManual = (index: number) => {
+    setActiveIndex(index);
+    setProgress(0);
+    startTimeRef.current = Date.now();
+  };
 
   return (
     <section className={styles.section}>
       <div className={styles.container}>
         {/* Header */}
         <header className={styles.header}>
+          <p className={styles.eyebrow}>OUR MEDICATIONS</p>
           <h2 className={styles.heading}>
             Find the right medication for your{" "}
             <span className={styles.headingAccent}>weight management</span>
           </h2>
           <p className={styles.subcopy}>
-            Our providers may prescribe from one of the six GLP-1 options
-            depending on medical necessity and the patient’s health needs.
+            Our providers may prescribe from one of six GLP-1 options
+            depending on medical necessity and your health needs.
           </p>
         </header>
 
-        {/* Two-column body */}
-        <div className={styles.grid}>
-          {/* LEFT — medication list */}
-          <ul className={styles.medList} role="tablist">
-            {MEDICATIONS.map((med) => {
-              const isActive = med.id === selectedId;
-              return (
-                <li key={med.id} className={styles.medListItem}>
-                  <button
-                    role="tab"
-                    aria-selected={isActive}
-                    className={`${styles.medButton} ${
-                      isActive ? styles.medButtonActive : ""
-                    }`}
-                    onClick={() => setSelectedId(med.id)}
-                  >
-                    <span className={styles.medIcon}>
-                      <img
-                        src={med.imageSrc}
-                        alt=""
-                        className={styles.medIconImg}
-                      />
-                    </span>
-                    <span className={styles.medName}>{med.name}</span>
-                    {med.isNew && <span className={styles.medBadge}>NEW</span>}
-                    <span className={styles.medArrow} aria-hidden="true">
-                      ›
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+        {/* Stage — video LEFT, info RIGHT */}
+        <div
+          className={styles.stage}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Pause hint floats top-right of stage */}
+          <span className={styles.pauseHint} aria-hidden="true">
+            {isPaused ? "⏸ Paused" : "▶ Auto-playing"}
+          </span>
 
-          {/* RIGHT — preview card */}
-          <aside className={styles.preview}>
-            
+          {/* LEFT — Video */}
+          <div className={styles.videoFrame}>
+            <video
+              key={selected.id}
+              className={styles.video}
+              autoPlay
+              muted
+              loop
+              playsInline
+            >
+              <source src={selected.videoSrc} type="video/mp4" />
+            </video>
+          </div>
 
-          <div className={styles.previewImageWrap}>
-  {selected.videoSrc ? (
-    <video
-      key={selected.id}
-      className={styles.previewImage}
-      autoPlay
-      muted
-      loop
-      playsInline
-    >
-      <source src={selected.videoSrc} type="video/mp4" />
-    </video>
-  ) : (
-    <img
-      src={selected.imageSrc}
-      alt={selected.name}
-      className={styles.previewImage}
-    />
-  )}
-</div>
-<ul className={styles.benefitList}>
+          {/* RIGHT — Info card */}
+          <div key={selected.id + "-info"} className={styles.infoCard}>
+            <div className={styles.infoHeader}>
+              <h3 className={styles.medName}>{selected.name}</h3>
+              {selected.isNew && (
+                <span className={styles.newBadge}>NEW</span>
+              )}
+            </div>
+
+            {selected.description && (
+              <p className={styles.medDescription}>{selected.description}</p>
+            )}
+
+            <ul className={styles.benefitList}>
               {selected.benefits.map((benefit) => (
                 <li key={benefit} className={styles.benefitItem}>
                   <span className={styles.benefitCheck} aria-hidden="true">
                     ✓
                   </span>
-                  <span className={styles.benefitText}>{benefit}</span>
+                  <span>{benefit}</span>
                 </li>
               ))}
             </ul>
-            <div className={styles.previewFooter}>
-              <h3 className={styles.previewName}>{selected.name}</h3>
-              <button className={styles.ctaButton}>Get Started</button>
-            </div>
-          </aside>
+
+            <button className={styles.ctaButton}>
+              Get started with {selected.name}
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
 
-        {/* Disclaimer */}
-       <div className={styles.disclaimers}>
-  <p className={styles.disclaimer}>
-    <span className={styles.disclaimerLink}>Important:</span>{" "}
-    Medications such as Ozempic, Mounjaro, Rybelsus, and Victoza are not FDA-approved for weight loss but are often prescribed off-label based on medical necessity.
-  </p>
+        {/* Progress bar */}
+        <div className={styles.progressTrack}>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
 
-  <p className={styles.disclaimerSmall}>
-    Your provider may offer compounded medication based on your eligibility. However, compounded medications are not FDA-approved.
-  </p>
-</div>
+        {/* Pill navigation */}
+        <div className={styles.pillNav} role="tablist">
+          {MEDICATIONS.map((med, i) => {
+            const isActive = i === activeIndex;
+            return (
+              <button
+                key={med.id}
+                role="tab"
+                aria-selected={isActive}
+                className={`${styles.pill} ${
+                  isActive ? styles.pillActive : ""
+                }`}
+                onClick={() => handleSelectManual(i)}
+              >
+                <span className={styles.pillNumber}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className={styles.pillName}>{med.name}</span>
+                {med.isNew && (
+                  <span className={styles.pillNewBadge}>NEW</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Disclaimers */}
+        <div className={styles.disclaimers}>
+          <p className={styles.disclaimer}>
+            <span className={styles.disclaimerLink}>Important:</span>{" "}
+            Medications such as Ozempic, Mounjaro, Rybelsus, and Victoza are
+            not FDA-approved for weight loss but are often prescribed
+            off-label based on medical necessity.
+          </p>
+          <p className={styles.disclaimerSmall}>
+            Your provider may offer compounded medication based on your
+            eligibility. However, compounded medications are not FDA-approved.
+          </p>
+        </div>
       </div>
     </section>
   );

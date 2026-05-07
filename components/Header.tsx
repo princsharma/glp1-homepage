@@ -119,46 +119,140 @@ export default function Header() {
         aria-label="Site navigation"
         aria-hidden={!isOpen}
       >
-        <div className={styles.drawerHeader}>
-          <span className={styles.drawerTitle}>Menu</span>
-          <button
-            type="button"
-            className={styles.closeButton}
-            onClick={() => setIsOpen(false)}
-            aria-label="Close menu"
-          >
-            ✕
-          </button>
-        </div>
-
-        <nav className={styles.drawerNav}>
-          {NAV_LINKS.map((link, index) => (
+        <div className={styles.drawerInner}>
+          <div className={styles.drawerTop}>
             <button
-              key={link.id}
               type="button"
-              className={
-                activeId === link.id
-                  ? styles.drawerLinkActive
-                  : styles.drawerLink
-              }
-              onClick={() => handleLinkClick(link.id)}
+              className={styles.drawerLogo}
+              onClick={handleLogoClick}
+              aria-label="Go to top"
             >
-              <span className={styles.drawerNumber}>
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className={styles.drawerLabel}>{link.label}</span>
-              <span className={styles.drawerArrow} aria-hidden="true">→</span>
+              <span className={styles.drawerLogoMark}>◆</span>
+              <span className={styles.drawerLogoText}>Ongo</span>
             </button>
-          ))}
-        </nav>
 
-        <div className={styles.drawerFooter}>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={() => setIsOpen(false)}
+              aria-label="Close menu"
+            >
+              <span className={styles.closeLabel}>Close</span>
+              <span className={styles.closeIcon} aria-hidden="true">
+                ✕
+              </span>
+            </button>
+          </div>
+
+          <div className={styles.drawerBody}>
+            <nav className={styles.drawerNav} aria-label="Primary">
+              <span className={styles.eyebrow}>
+                <span className={styles.eyebrowDash} aria-hidden="true" />
+                NAVIGATE
+              </span>
+
+              <ul className={styles.navList}>
+                {NAV_LINKS.map((link, index) => (
+                  <li key={link.id} className={styles.navListItem}>
+                    <button
+                      type="button"
+                      className={
+                        activeId === link.id
+                          ? styles.navItemActive
+                          : styles.navItem
+                      }
+                      onClick={() => handleLinkClick(link.id)}
+                      style={{ ["--i" as never]: index } as React.CSSProperties}
+                    >
+                      <span className={styles.navNumber}>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className={styles.navLabel}>{link.label}</span>
+                      <span className={styles.navArrow} aria-hidden="true">
+                        ↗
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <aside className={styles.drawerInfo} aria-label="Contact information">
+              <span className={styles.statusPill}>
+                <span className={styles.statusDot} aria-hidden="true" />
+                ACCEPTING NEW PATIENTS
+              </span>
+
+              <div className={styles.infoBlock}>
+                <span className={styles.eyebrow}>
+                  <span className={styles.eyebrowDash} aria-hidden="true" />
+                  GET IN TOUCH
+                </span>
+
+                <a
+                  className={styles.infoLink}
+                  href="mailto:support@ongoweightloss.com"
+                >
+                  <span className={styles.infoIcon} aria-hidden="true">
+                    ✉
+                  </span>
+                  <span>support@ongoweightloss.com</span>
+                </a>
+
+                <a className={styles.infoLink} href="tel:+12015550199">
+                  <span className={styles.infoIcon} aria-hidden="true">
+                    ☎
+                  </span>
+                  <span>+1 (201) 555-0199</span>
+                </a>
+              </div>
+
+              <div className={styles.infoBlock}>
+                <span className={styles.eyebrow}>
+                  <span className={styles.eyebrowDash} aria-hidden="true" />
+                  FOLLOW US
+                </span>
+
+                <div className={styles.socialRow}>
+                  <a
+                    className={styles.socialBtn}
+                    href="#"
+                    aria-label="Instagram"
+                  >
+                    ◎
+                  </a>
+                  <a
+                    className={styles.socialBtn}
+                    href="#"
+                    aria-label="YouTube"
+                  >
+                    ▶
+                  </a>
+                  <a
+                    className={styles.socialBtn}
+                    href="#"
+                    aria-label="LinkedIn"
+                  >
+                    in
+                  </a>
+                </div>
+              </div>
+
+              <div className={styles.infoFooter}>
+                <p className={styles.footerLine}>© 2026 Ongo Weight Loss.</p>
+                <p className={styles.footerTagline}>
+                  Doctor-led GLP-1, made for you.
+                </p>
+              </div>
+            </aside>
+          </div>
+
           <button
             type="button"
             className={styles.drawerCta}
             onClick={() => handleLinkClick("get-started")}
           >
-            Book Now
+            Book Now →
           </button>
         </div>
       </aside>

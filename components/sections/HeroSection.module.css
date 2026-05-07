@@ -110,69 +110,70 @@
 }
 
 /* ============================================
-   HERO — dark canvas with subtle gradient
+   HERO — soft, calm gradient background
    ============================================ */
 .hero {
   position: relative;
   width: 100%;
-  background: radial-gradient(
-      ellipse at top,
-      var(--color-primary-dark) 0%,
-      #0d1f17 100%
-    );
+  background: linear-gradient(
+    180deg,
+    #e8f0eb 0%,
+    #d8e8de 60%,
+    #c5dccd 100%
+  );
   overflow: hidden;
-  color: var(--color-surface);
+  color: var(--color-text);
   min-height: 800px;
   padding: 4rem 0 4rem;
 }
 
 /* ============================================
-   FLOATING ORBS
+   FLOATING ORBS — softer, ambient
    ============================================ */
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(2px);
+  filter: blur(40px);
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.35;
   z-index: 0;
 }
 
 .orb_1 {
-  width: 50px;
-  height: 50px;
-  top: 18%;
-  left: 8%;
-  background: linear-gradient(135deg, #b8a4f0, #7c5cd6);
-  animation: orbFloat 6s ease-in-out infinite;
+  width: 200px;
+  height: 200px;
+  top: 15%;
+  left: 5%;
+  background: var(--color-primary-light);
+  animation: orbFloat 12s ease-in-out infinite;
 }
 
 .orb_2 {
-  width: 35px;
-  height: 35px;
-  top: 35%;
-  left: 15%;
-  background: linear-gradient(135deg, #e76f51, #d65a3a);
-  animation: orbFloat 8s ease-in-out infinite reverse;
+  width: 150px;
+  height: 150px;
+  top: 40%;
+  left: 10%;
+  background: var(--color-accent-soft);
+  animation: orbFloat 14s ease-in-out infinite reverse;
 }
 
 .orb_3 {
-  width: 60px;
-  height: 60px;
-  top: 25%;
-  right: 8%;
-  background: linear-gradient(135deg, #ee8a4f, #b8a4f0);
-  animation: orbFloat 7s ease-in-out infinite;
+  width: 250px;
+  height: 250px;
+  top: 20%;
+  right: 5%;
+  background: var(--color-primary-soft);
+  animation: orbFloat 13s ease-in-out infinite;
   animation-delay: -2s;
 }
 
 .orb_4 {
-  width: 40px;
-  height: 40px;
-  top: 50%;
-  right: 15%;
-  background: linear-gradient(135deg, #74c69d, #347e5d);
-  animation: orbFloat 9s ease-in-out infinite reverse;
+  width: 180px;
+  height: 180px;
+  top: 55%;
+  right: 12%;
+  background: var(--color-primary-light);
+  animation: orbFloat 15s ease-in-out infinite reverse;
   animation-delay: -4s;
 }
 
@@ -181,7 +182,7 @@
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(15px, -20px) scale(1.1);
+    transform: translate(20px, -25px) scale(1.05);
   }
 }
 
@@ -219,9 +220,9 @@
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.85);
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-primary-dark);
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(52, 126, 93, 0.2);
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   text-transform: uppercase;
@@ -233,7 +234,7 @@
   height: 8px;
   border-radius: 50%;
   background-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.3);
+  box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.25);
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -244,18 +245,18 @@
 
 .heading {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.02em;
-  color: var(--color-surface);
+  color: var(--color-text);
   margin: 0;
   text-transform: uppercase;
 }
 
 .headingItalic {
   font-style: italic;
-  font-family: Georgia, "Times New Roman", serif;
-  color: var(--color-primary-light);
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
+  color: var(--color-primary);
   font-weight: 400;
   text-transform: lowercase;
 }
@@ -263,7 +264,7 @@
 .subcopy {
   font-size: 1rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--color-text-muted);
   margin: 0;
   max-width: 520px;
 }
@@ -284,10 +285,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.625rem;
-  background: linear-gradient(
+   background: linear-gradient(
     135deg,
-    var(--color-primary-light),
-    var(--color-primary)
+    var(--color-primary),
+    var(--color-primary-dark)
   );
   color: var(--color-surface);
   border: none;
@@ -299,13 +300,13 @@
   cursor: pointer;
   font-family: inherit;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 16px rgba(124, 92, 214, 0.4);
+  box-shadow: 0 4px 16px rgba(52, 126, 93, 0.35);
   text-transform: uppercase;
 }
 
 .primaryBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(124, 92, 214, 0.6);
+  box-shadow: 0 8px 24px rgba(52, 126, 93, 0.5);
 }
 
 .btnArrow {
@@ -321,11 +322,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   padding: 0.4rem 1rem 0.4rem 0.5rem;
   border-radius: 9999px;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .avatarStack {
@@ -339,9 +340,10 @@
   border-radius: 50%;
   background-size: cover;
   background-position: center top;
-  border: 2px solid var(--color-primary-dark);
+  border: 2px solid var(--color-surface);
   margin-left: -8px;
   background-color: var(--color-primary-soft);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .avatar:first-child {
@@ -358,12 +360,12 @@
 .avatarCount {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--color-surface);
+  color: var(--color-text);
 }
 
 .avatarLabel {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-text-muted);
 }
 
 /* ============================================
@@ -374,10 +376,8 @@
   width: 100%;
   height: 480px;
   overflow: hidden;
-  /* Strong perspective from a low viewpoint creates the arc illusion */
   perspective: 1400px;
   perspective-origin: center 60%;
-  /* Soft fade at edges */
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
@@ -430,24 +430,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Each card's transform is set by JS to create the 3D arc */
   transform-style: preserve-3d;
   transition: transform 0.05s linear;
   will-change: transform;
 }
 
 /* ============================================
-   CARDS
+   CARDS — softer shadows for light background
    ============================================ */
 .card {
   width: 100%;
   height: 420px;
   border-radius: 20px;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    0 8px 24px rgba(0, 0, 0, 0.3);
+    0 8px 24px rgba(20, 17, 13, 0.12),
+    0 4px 12px rgba(20, 17, 13, 0.06);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -475,7 +474,8 @@
   padding: 1rem 1.25rem;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.4) 60%,
     transparent
   );
   display: flex;

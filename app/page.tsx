@@ -14,9 +14,11 @@ import Cascade from "@/components/Cascade";
 import GLP1Education from "@/components/sections/GLP1Education";
 import Pricing from "@/components/sections/pricing";
 import ScrollProgress from "@/components/ScrollProgress";
+import WelcomePopup from "@/components/WelcomePopup";
 export default function HomePage() {
   return (
     <>
+      <WelcomePopup />
       <ScrollProgress />
       <Header />
       <main className="flex flex-col w-full">

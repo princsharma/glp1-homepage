@@ -70,7 +70,7 @@
 
 .headingItalic {
   font-style: italic;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-surface);
   font-weight: 500;
   /* Slight transparency separates italic from bold */
