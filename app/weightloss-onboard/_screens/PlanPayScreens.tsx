@@ -1,8 +1,18 @@
 "use client";
 
-import StripePayment from "../StripePayment";
+import dynamic from "next/dynamic";
 import { PlanCard } from "../components";
 import { useOnboard } from "./OnboardContext";
+
+const StripePayment = dynamic(() => import("../StripePayment"), {
+  ssr: false,
+  loading: () => (
+    <div className="pay-loading">
+      <div className="pay-spinner" />
+      <span>Preparing secure payment…</span>
+    </div>
+  ),
+});
 
 export function SPlan() {
   const { form, updateField, goTo } = useOnboard();

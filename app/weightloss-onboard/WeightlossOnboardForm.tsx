@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./wlf.css";
 import {
   bmiCategory,
@@ -115,32 +115,33 @@ export default function WeightlossOnboardForm() {
   // todayDate caps last-injection (s7c) at the present.
   // maxDobDate caps the DOB input (s21) so the calendar will not offer a
   // date that would make the user under MIN_AGE_YEARS.
-  const todayDate = (() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  })();
-  const maxDobDate = (() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - MIN_AGE_YEARS);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  })();
+  const { todayDate, maxDobDate } = useMemo(() => {
+    const fmt = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const today = new Date();
+    const dobCap = new Date();
+    dobCap.setFullYear(dobCap.getFullYear() - MIN_AGE_YEARS);
+    return { todayDate: fmt(today), maxDobDate: fmt(dobCap) };
+  }, []);
 
-  const progressPercent = (() => {
+  const progressPercent = useMemo(() => {
     if (screen === "dHard" || screen === "iThanks") return 0;
     const idx = PROGRESS_ORDER.indexOf(screen);
     if (idx === -1) return 0;
     return Math.round(((idx + 1) / PROGRESS_ORDER.length) * 100);
-  })();
+  }, [screen]);
 
-  const goTo = (next: ScreenId) => {
-    screenHistory.current.push(screen);
-    setScreen(next);
-  };
+  const goTo = useCallback((next: ScreenId) => {
+    setScreen((curr) => {
+      screenHistory.current.push(curr);
+      return next;
+    });
+  }, []);
 
-  const back = () => {
+  const back = useCallback(() => {
     const previous = screenHistory.current.pop();
     if (previous) setScreen(previous);
-  };
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
@@ -148,41 +149,52 @@ export default function WeightlossOnboardForm() {
     setUploadError("");
   }, [screen]);
 
-  const submitMauticOnEmailCapture = () => submitToMautic(form, "s20");
-  const submitMauticOnComplete = (overrides: Partial<Form>, step: ScreenId) =>
-    submitToMautic({ ...form, ...overrides }, step);
+  const submitMauticOnEmailCapture = useCallback(
+    () => submitToMautic(form, "s20"),
+    [form],
+  );
+  const submitMauticOnComplete = useCallback(
+    (overrides: Partial<Form>, step: ScreenId) =>
+      submitToMautic({ ...form, ...overrides }, step),
+    [form],
+  );
 
-  const updateField = <K extends keyof Form>(field: K, value: Form[K]) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const updateField = useCallback(
+    <K extends keyof Form>(field: K, value: Form[K]) =>
+      setForm((prev) => ({ ...prev, [field]: value })),
+    [],
+  );
 
-  const toggleValue = <K extends keyof Form>(field: K, value: string) =>
-    setForm((prev) => {
-      const current = prev[field] as string[];
-      const next = current.includes(value)
-        ? current.filter((entry) => entry !== value)
-        : [...current, value];
-      return { ...prev, [field]: next as Form[K] };
-    });
+  const toggleValue = useCallback(
+    <K extends keyof Form>(field: K, value: string) =>
+      setForm((prev) => {
+        const current = prev[field] as string[];
+        const next = current.includes(value)
+          ? current.filter((entry) => entry !== value)
+          : [...current, value];
+        return { ...prev, [field]: next as Form[K] };
+      }),
+    [],
+  );
 
   // Toggle a value, but treat `noneValue` as exclusive of every other value.
-  const toggleWithNone = <K extends keyof Form>(
-    field: K,
-    value: string,
-    noneValue: string,
-  ) =>
-    setForm((prev) => {
-      const current = prev[field] as string[];
-      let next: string[];
-      if (value === noneValue) {
-        next = current.includes(noneValue) ? [] : [noneValue];
-      } else {
-        const without = current.filter(
-          (entry) => entry !== value && entry !== noneValue,
-        );
-        next = current.includes(value) ? without : [...without, value];
-      }
-      return { ...prev, [field]: next as Form[K] };
-    });
+  const toggleWithNone = useCallback(
+    <K extends keyof Form>(field: K, value: string, noneValue: string) =>
+      setForm((prev) => {
+        const current = prev[field] as string[];
+        let next: string[];
+        if (value === noneValue) {
+          next = current.includes(noneValue) ? [] : [noneValue];
+        } else {
+          const without = current.filter(
+            (entry) => entry !== value && entry !== noneValue,
+          );
+          next = current.includes(value) ? without : [...without, value];
+        }
+        return { ...prev, [field]: next as Form[K] };
+      }),
+    [],
+  );
 
   const bmi = useMemo(
     () =>
@@ -227,9 +239,9 @@ export default function WeightlossOnboardForm() {
   const currentBmiCategory = bmiCategory(bmi);
 
   // Switching units carries existing values across (kg ↔ lbs, cm ↔ ft/in).
-  const setBmiUnit = (next: "metric" | "imperial") => {
-    if (next === form.bmiUnit) return;
+  const setBmiUnit = useCallback((next: "metric" | "imperial") => {
     setForm((prev) => {
+      if (next === prev.bmiUnit) return prev;
       const updated = { ...prev, bmiUnit: next };
       if (next === "metric") {
         const feet = parseFloat(prev.heightFt) || 0;
@@ -252,14 +264,16 @@ export default function WeightlossOnboardForm() {
       }
       return updated;
     });
-  };
+  }, []);
 
-  const submit = () => {
-    console.log("Weight loss onboarding submission", form);
+  const submit = useCallback(() => {
     goTo("sPlan");
-  };
+  }, [goTo]);
 
-  const selectedPlan = PLANS.find((plan) => plan.id === form.plan);
+  const selectedPlan = useMemo(
+    () => PLANS.find((plan) => plan.id === form.plan),
+    [form.plan],
+  );
 
   // HIPAA (consentH) is required; Telehealth/Terms (consentT) is optional.
   const emailScreenIsValid = isValidEmail(form.email) && form.consentH;
@@ -270,29 +284,53 @@ export default function WeightlossOnboardForm() {
     isValidPhone(form.phone) &&
     isAtLeastAge(form.dob, MIN_AGE_YEARS);
 
-  const onboardCtx: OnboardContextValue = {
-    screen,
-    form,
-    uploadError,
-    setUploadError,
-    goTo,
-    back,
-    updateField,
-    toggleValue,
-    toggleWithNone,
-    submit,
-    submitMauticOnEmailCapture,
-    submitMauticOnComplete,
-    bmi,
-    bmiError,
-    currentBmiCategory,
-    setBmiUnit,
-    todayDate,
-    maxDobDate,
-    selectedPlan,
-    emailScreenIsValid,
-    profileScreenIsValid,
-  };
+  const onboardCtx = useMemo<OnboardContextValue>(
+    () => ({
+      screen,
+      form,
+      uploadError,
+      setUploadError,
+      goTo,
+      back,
+      updateField,
+      toggleValue,
+      toggleWithNone,
+      submit,
+      submitMauticOnEmailCapture,
+      submitMauticOnComplete,
+      bmi,
+      bmiError,
+      currentBmiCategory,
+      setBmiUnit,
+      todayDate,
+      maxDobDate,
+      selectedPlan,
+      emailScreenIsValid,
+      profileScreenIsValid,
+    }),
+    [
+      screen,
+      form,
+      uploadError,
+      goTo,
+      back,
+      updateField,
+      toggleValue,
+      toggleWithNone,
+      submit,
+      submitMauticOnEmailCapture,
+      submitMauticOnComplete,
+      bmi,
+      bmiError,
+      currentBmiCategory,
+      setBmiUnit,
+      todayDate,
+      maxDobDate,
+      selectedPlan,
+      emailScreenIsValid,
+      profileScreenIsValid,
+    ],
+  );
 
   const ScreenComponent = SCREEN_COMPONENTS[screen];
 
@@ -300,7 +338,7 @@ export default function WeightlossOnboardForm() {
     <OnboardProvider value={onboardCtx}>
       <div className="wlf-root">
         <div className="wlf-page">
-          <div className="fw" ref={scrollRef}>
+          <main className="fw" ref={scrollRef} aria-label="Weight loss onboarding">
             <div className="hdr">
               <button
                 type="button"
@@ -313,8 +351,12 @@ export default function WeightlossOnboardForm() {
               <div className="logo">
                 <em>Ongo</em> Weight Loss
               </div>
-              <a className="contact-link" href="tel:+18885550123">
-                <span className="contact-icon" aria-hidden>📞</span>
+              <a
+                className="contact-link"
+                href="tel:+18885550123"
+                aria-label="Call Ongo Weight Loss at 1 (888) 555-0123"
+              >
+                <span className="contact-icon" aria-hidden="true">📞</span>
                 <span className="contact-num">1 (888) 555-0123</span>
               </a>
             </div>
@@ -345,7 +387,7 @@ export default function WeightlossOnboardForm() {
             )}
 
             {ScreenComponent && <ScreenComponent />}
-          </div>
+          </main>
         </div>
 
         <ThemeSwitcher />
