@@ -4,11 +4,11 @@ import { useEffect, useRef, type CSSProperties } from "react";
 import styles from "./HeroSection.module.css";
 
 const cards = [
-  { src: "/images/glp-c.jpg", label: "GLP-1 GIP", color: "#9b6dff" },
-  { src: "/images/glp-b.jpg", label: "Liraglutide", color: "#2bb8a3" },
-  { src: "/images/glp-a.jpg", label: "Tirzepatide", color: "#7c5cd6" },
-  { src: "/images/glp-d.jpg", label: "Semaglutide", color: "#e7508f" },
-  { src: "/images/glp-e.jpg", label: "GLP-1+", color: "#ee8a4f" },
+  { src: "/images/glp-c.webp", label: "GLP-1 GIP", color: "#9b6dff" },
+  { src: "/images/glp-b.webp", label: "Liraglutide", color: "#2bb8a3" },
+  { src: "/images/glp-a.webp", label: "Tirzepatide", color: "#7c5cd6" },
+  { src: "/images/glp-d.webp", label: "Semaglutide", color: "#e7508f" },
+  { src: "/images/glp-e.webp", label: "GLP-1+", color: "#ee8a4f" },
 ];
 
 const avatars = [
@@ -201,10 +201,10 @@ useEffect(() => {
                     className={styles.cardImage}
                   />
                 </div>
-                {/* <div className={styles.cardFooter}>
+                <div className={styles.cardFooter}>
                   <span className={styles.cardLabel}>{card.label}</span>
                   <span className={styles.cardBadge}>FDA · GLP-1</span>
-                </div> */}
+                </div> 
               </div>
             </div>
           ))}
