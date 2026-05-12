@@ -155,9 +155,13 @@ export default function Pricing() {
             </div>
 
             {/* CTA */}
-            <button type="button" className={styles.cta}>
+            <a
+              href="/weightloss-onboard"
+              className={styles.cta}
+              style={{ textDecoration: "none" }}
+            >
               Check Your Eligibility
-            </button>
+            </a>
           </div>
         </div>
       </div>

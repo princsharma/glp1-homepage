@@ -1,23 +1,66 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./BMICalculator.module.css";
 
 type Unit = "metric" | "imperial";
 
 type Category = {
   label: string;
+  modalLabel: string;
   range: string;
+  modalRange: string;
   min: number;
   max: number;
   tone: "low" | "ok" | "warn" | "high";
+  description: string;
 };
 
 const CATEGORIES: Category[] = [
-  { label: "Under", range: "< 18.5", min: 0, max: 18.5, tone: "low" },
-  { label: "Healthy", range: "18.5 – 24.9", min: 18.5, max: 25, tone: "ok" },
-  { label: "Over", range: "25 – 29.9", min: 25, max: 30, tone: "warn" },
-  { label: "Obese", range: "≥ 30", min: 30, max: 60, tone: "high" },
+  {
+    label: "Under",
+    modalLabel: "Underweight",
+    range: "< 18.5",
+    modalRange: "<18.5",
+    min: 0,
+    max: 18.5,
+    tone: "low",
+    description:
+      "Your BMI is below the healthy range. A licensed clinician can help explore underlying factors and guide you toward a safe, sustainable plan.",
+  },
+  {
+    label: "Healthy",
+    modalLabel: "Healthy Weight",
+    range: "18.5 – 24.9",
+    modalRange: "18.5+",
+    min: 18.5,
+    max: 25,
+    tone: "ok",
+    description:
+      "Your BMI is in the healthy range. GLP-1 medications are typically reserved for people with a higher BMI or related health conditions.",
+  },
+  {
+    label: "Over",
+    modalLabel: "Overweight",
+    range: "25 – 29.9",
+    modalRange: "25+",
+    min: 25,
+    max: 30,
+    tone: "warn",
+    description:
+      "Your BMI is in the overweight range. You may qualify for GLP-1 medications, especially when paired with a weight-related health condition.",
+  },
+  {
+    label: "Obese",
+    modalLabel: "Obesity",
+    range: "≥ 30",
+    modalRange: "30+",
+    min: 30,
+    max: 60,
+    tone: "high",
+    description:
+      "Your BMI is in the obese range. You likely qualify for GLP-1 medications. A licensed clinician will confirm based on your full health profile.",
+  },
 ];
 
 const ELIGIBILITY: Record<Category["tone"], { label: string }> = {
@@ -34,6 +77,21 @@ export default function BMICalculator() {
   const [weightLb, setWeightLb] = useState<number>(154);
   const [feet, setFeet] = useState<number>(5);
   const [inches, setInches] = useState<number>(7);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsModalOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isModalOpen]);
 
   const bmi = useMemo(() => {
     if (unit === "metric") {
@@ -141,8 +199,12 @@ export default function BMICalculator() {
                 <span className={styles.resultEyebrow}>Eligibility</span>
                 <span className={styles.resultLabel}>{eligibility.label}</span>
               </div>
-              <button type="button" className={styles.cta}>
-                Start Medical Evaluation →
+              <button
+                type="button"
+                className={styles.cta}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Check Your Eligibility →
               </button>
             </div>
 
@@ -166,7 +228,160 @@ export default function BMICalculator() {
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+        <EligibilityModal
+          bmi={bmi}
+          category={category}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </section>
+  );
+}
+
+function EligibilityModal({
+  bmi,
+  category,
+  onClose,
+}: {
+  bmi: number;
+  category: Category;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className={styles.modalBackdrop}
+      role="presentation"
+      onClick={onClose}
+    >
+      <div
+        className={styles.modalPanel}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bmi-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className={styles.modalClose}
+          onClick={onClose}
+          aria-label="Close"
+        >
+          ✕
+        </button>
+
+        <div className={styles.modalGrid}>
+          <div className={styles.modalLeft}>
+            <h3 id="bmi-modal-title" className={styles.modalTitle}>
+              Check your eligibility.
+            </h3>
+
+            <MiniGauge bmi={bmi} category={category} />
+
+            <p className={styles.modalDesc}>
+              Body Mass Index (BMI) is a measurement that uses your height and
+              weight to estimate whether your weight is in a healthy range for
+              your height.*
+            </p>
+          </div>
+
+          <div className={styles.modalRight}>
+            {CATEGORIES.map((c) => {
+              const isActive = c.tone === category.tone;
+              return (
+                <div
+                  key={c.tone}
+                  className={`${styles.modalCat} ${styles[`modalCat_${c.tone}`]} ${
+                    isActive ? styles.modalCatActive : ""
+                  }`}
+                >
+                  <div className={styles.modalCatHeader}>
+                    <span
+                      className={`${styles.modalCatDot} ${styles[`modalCatDot_${c.tone}`]}`}
+                      aria-hidden="true"
+                    />
+                    <span className={styles.modalCatLabel}>{c.modalLabel}</span>
+                    <span className={styles.modalCatRange}>{c.modalRange}</span>
+                  </div>
+                  {isActive && (
+                    <p className={styles.modalCatDesc}>{c.description}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className={styles.modalFooter}>
+          <p className={styles.modalFootnote}>
+            *BMI doesn&apos;t directly measure body fat and may not accurately
+            reflect health for people with high muscle mass, pregnant women,
+            children, older adults, certain ethnic groups, or those with medical
+            conditions. It shouldn&apos;t be used as the only way to assess
+            health.
+          </p>
+          <p className={styles.modalFootnote}>
+            The BMI calculator does not determine eligibility for weight loss
+            treatments. A healthcare provider must evaluate your overall health
+            and history to decide if treatment is right for you.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniGauge({ bmi, category }: { bmi: number; category: Category }) {
+  const size = 220;
+  const cx = size / 2;
+  const cy = size / 2 + 20;
+  const r = 90;
+
+  const polar = (deg: number, radius = r) => {
+    const rad = ((deg - 90) * Math.PI) / 180;
+    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+  };
+
+  const start = polar(-90);
+  const end = polar(90);
+  const arcPath = `M ${start.x} ${start.y} A ${r} ${r} 0 0 1 ${end.x} ${end.y}`;
+
+  const clamped = Math.min(40, Math.max(10, bmi || 0));
+  const t = (clamped - 10) / 30;
+  const angle = -90 + t * 180;
+  const dot = polar(angle);
+
+  return (
+    <div className={styles.miniGauge}>
+      <svg
+        viewBox={`0 0 ${size} ${size / 1.4}`}
+        className={styles.miniGaugeSvg}
+        aria-hidden="true"
+      >
+        <path
+          d={arcPath}
+          fill="none"
+          stroke="#e9e9ef"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+        <circle
+          cx={dot.x}
+          cy={dot.y}
+          r="7"
+          fill="#ffffff"
+          stroke={`var(--bmi-tone-${category.tone})`}
+          strokeWidth="3"
+        />
+      </svg>
+      <div className={styles.miniGaugeReadout}>
+        <span className={styles.miniGaugeValue}>
+          {bmi > 0 ? bmi.toFixed(0) : "0"}
+        </span>
+        <span className={styles.miniGaugeLabel}>Your BMI</span>
+      </div>
+    </div>
   );
 }
 

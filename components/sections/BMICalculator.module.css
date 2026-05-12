@@ -418,3 +418,264 @@ border-radius: 28px;
     transition: none;
   }
 }
+
+/* ============================================
+   ELIGIBILITY MODAL
+   ============================================ */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 32, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 1000;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalPanel {
+  position: relative;
+  background-color: #fff;
+  color: #1d2330;
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 880px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background-color: #fff;
+  color: #1d2330;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.modalClose:hover {
+  background-color: #f3f4f6;
+  transform: scale(1.05);
+}
+
+.modalGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 1.75rem;
+  align-items: stretch;
+  margin-top: 0.5rem;
+}
+
+/* ----- LEFT (gauge card) ----- */
+.modalLeft {
+  background-color: #f7f7fa;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.modalTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1d2330;
+  letter-spacing: -0.01em;
+}
+
+.miniGauge {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  margin-top: 0.5rem;
+}
+
+.miniGaugeSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.miniGaugeReadout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  pointer-events: none;
+}
+
+.miniGaugeValue {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1d2330;
+  line-height: 1;
+}
+
+.miniGaugeLabel {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.modalDesc {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #4b5563;
+  margin: 0;
+  text-align: left;
+}
+
+/* ----- RIGHT (categories) ----- */
+.modalRight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.modalCat {
+  /* tone color is set via --bmi-tone-* per modifier */
+  background-color: #f7f7fa;
+  border-radius: 14px;
+  padding: 0.875rem 1.1rem;
+  transition: background-color 0.2s ease;
+}
+
+.modalCatHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1d2330;
+}
+
+.modalCatLabel {
+  flex: 1;
+}
+
+.modalCatRange {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1d2330;
+}
+
+.modalCatDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Tone dot colors */
+.modalCatDot_low  { background-color: #9b87f5; }
+.modalCatDot_ok   { background-color: #5ec27e; }
+.modalCatDot_warn { background-color: #f5b964; }
+.modalCatDot_high { background-color: #f08a8a; }
+
+/* Active card highlight per tone */
+.modalCatActive.modalCat_low  { background-color: #ece8ff; }
+.modalCatActive.modalCat_ok   { background-color: #e3f5ea; }
+.modalCatActive.modalCat_warn { background-color: #fdf1dc; }
+.modalCatActive.modalCat_high { background-color: #fde6e6; }
+
+.modalCatDesc {
+  margin: 0.625rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #3f475a;
+}
+
+/* Expose tone colors as CSS vars for inline use (mini-gauge dot stroke) */
+.modalCat_low  { --bmi-tone-low:  #9b87f5; }
+.modalCat_ok   { --bmi-tone-ok:   #5ec27e; }
+.modalCat_warn { --bmi-tone-warn: #f5b964; }
+.modalCat_high { --bmi-tone-high: #f08a8a; }
+
+/* Make tone vars available globally inside the panel too */
+.modalPanel {
+  --bmi-tone-low:  #9b87f5;
+  --bmi-tone-ok:   #5ec27e;
+  --bmi-tone-warn: #f5b964;
+  --bmi-tone-high: #f08a8a;
+}
+
+/* ----- Footer disclaimers ----- */
+.modalFooter {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.modalFootnote {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .modalPanel {
+    padding: 1.5rem 1.1rem;
+    border-radius: 16px;
+  }
+
+  .modalGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .modalLeft {
+    padding: 1.25rem;
+  }
+
+  .miniGaugeValue {
+    font-size: 2.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalBackdrop,
+  .modalPanel {
+    animation: none;
+  }
+}

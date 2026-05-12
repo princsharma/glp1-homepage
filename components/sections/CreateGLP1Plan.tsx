@@ -126,9 +126,9 @@ export default function CreateGLP1Plan() {
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Pause hint floats top-right of stage */}
-          <span className={styles.pauseHint} aria-hidden="true">
+          {/* <span className={styles.pauseHint} aria-hidden="true">
             {isPaused ? "⏸ Paused" : "▶ Auto-playing"}
-          </span>
+          </span> */}
 
           {/* LEFT — Video */}
           <div className={styles.videoFrame}>
@@ -168,10 +168,14 @@ export default function CreateGLP1Plan() {
               ))}
             </ul>
 
-            <button className={styles.ctaButton}>
+            <a
+              href="/weightloss-onboard"
+              className={styles.ctaButton}
+              style={{ textDecoration: "none" }}
+            >
               Get started with {selected.name}
               <span aria-hidden="true">→</span>
-            </button>
+            </a>
           </div>
         </div>
 

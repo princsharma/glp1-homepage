@@ -54,10 +54,16 @@ export default function HowItWorks() {
       <div className={styles.container}>
         <header className={styles.header}>
           <h2 className={styles.heading}>
-            How your treatment{" "}
-            <span className={styles.headingAccent}>journey works</span>
+            How your GLP-1{" "}
+            <span className={styles.headingAccent}>treatment journey works</span>
           </h2>
-          <button className={styles.ctaButton}>Get Started</button>
+          <a
+            href="/weightloss-onboard"
+            className={styles.ctaButton}
+            style={{ textDecoration: "none" }}
+          >
+            Get Started
+          </a>
         </header>
 
         <ol className={styles.stepGrid}>

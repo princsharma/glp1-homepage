@@ -24,11 +24,7 @@ const COLUMN_LEFT: Doctor[] = [
     npi: "NPI: 1306189832",
     imageSrc: "/images/dr-krasne .webp",
   },
- 
-];
-
-const COLUMN_RIGHT: Doctor[] = [
- {
+   {
     name: "Dr. Niles",
     credential: "R.N., M.D., F.A.C.O.G",
     affiliation: "Board-certified physician",
@@ -44,6 +40,42 @@ const COLUMN_RIGHT: Doctor[] = [
 
     imageSrc: "/images/cheryl-bugailiskis.webp",
   },
+ 
+];
+
+const COLUMN_RIGHT: Doctor[] = [
+{
+    name: "Dr. Bugailiskis",
+    credential: "MD",
+    affiliation: "Board-certified physician",
+    npi: "NPI: 1871882035",
+
+    imageSrc: "/images/cheryl-bugailiskis.webp",
+  },
+   {
+    name: "Dr. Niles",
+    credential: "R.N., M.D., F.A.C.O.G",
+    affiliation: "Board-certified physician",
+    npi: "NPI: 1922199470",
+
+    imageSrc: "/images/Dr-vanessa-niles.webp",
+  },
+   {
+    name: "Dr. Krasne",
+    credential: "MD",
+    affiliation: "Licensed physician",
+    npi: "NPI: 1306189832",
+    imageSrc: "/images/dr-krasne .webp",
+  },
+   {
+    name: "Dr. Miller",
+    credential: "MD",
+    affiliation: "Licensed physician",
+    npi: "NPI: 1235623372",
+
+    imageSrc: "/images/johnathan-miller.webp",
+  },
+
 ];
 
 export default function ongoSolution() {
@@ -62,7 +94,13 @@ export default function ongoSolution() {
 
           </p>
 
-          <button className={styles.ctaButton}>Get Started</button>
+          <a
+            href="/weightloss-onboard"
+            className={styles.ctaButton}
+            style={{ textDecoration: "none" }}
+          >
+            Get Started
+          </a>
 
           {/* Trust strip */}
           <div className={styles.trustStrip}>

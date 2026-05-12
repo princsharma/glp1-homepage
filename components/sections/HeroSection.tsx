@@ -4,17 +4,17 @@ import { useEffect, useRef, type CSSProperties } from "react";
 import styles from "./HeroSection.module.css";
 
 const cards = [
-  { src: "/images/glp-c.webp", label: "GLP-1 GIP", color: "#9b6dff" },
-  { src: "/images/glp-b.webp", label: "Liraglutide", color: "#2bb8a3" },
-  { src: "/images/glp-a.webp", label: "Tirzepatide", color: "#7c5cd6" },
-  { src: "/images/glp-d.webp", label: "Semaglutide", color: "#e7508f" },
-  { src: "/images/glp-e.webp", label: "GLP-1+", color: "#ee8a4f" },
+  { src: "/images/glp-c.webp", label: "Wegovy", color: "#9b6dff" },
+  { src: "/images/glp-b.webp", label: "Mounjaro", color: "#2bb8a3" },
+  { src: "/images/glp-a.webp", label: "Zepbound", color: "#7c5cd6" },
+  { src: "/images/glp-d.webp", label: "Novo", color: "#e7508f" },
+  { src: "/images/glp-e.webp", label: "Ozempic", color: "#ee8a4f" },
 ];
 
-const avatars = [
-  "/images/dr-cheryl.webp",
-  "/images/dr-krasne.webp",
-  "/images/dr-vanessa-niles.webp",
+const trustBadges = [
+  "Board-certified Physicians",
+  "HIPAA Compliant Platform",
+  "100% Online Consultations",
 ];
 
 const repeatedCards = [...cards, ...cards, ...cards, ...cards];
@@ -144,13 +144,13 @@ useEffect(() => {
         <div className={styles.content}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowDot} />
-            JOIN 5,000+ PATIENTS
+            JOIN 5,000+ PATIENTS WHO STARTED THEIR GLP-1 JOURNEY
           </span>
 
           <h1 className={styles.heading}>
-            SAY GOODBYE TO
+            Weight loss 
             <br />
-            <span className={styles.headingItalic}>weight</span> STRUGGLES
+            <span className={styles.headingItalic}> program </span> rooted in science
           </h1>
 
           <p className={styles.subcopy}>
@@ -159,25 +159,22 @@ useEffect(() => {
           </p>
 
           <div className={styles.actionRow}>
-            <button type="button" className={styles.primaryBtn}>
+            <a
+              href="/weightloss-onboard"
+              className={styles.primaryBtn}
+              style={{ textDecoration: "none" }}
+            >
               GET STARTED
               <span className={styles.btnArrow} aria-hidden="true">→</span>
-            </button>
+            </a>
 
-            <div className={styles.avatarGroup}>
-              <div className={styles.avatarStack}>
-                {avatars.map((src, i) => (
-                  <span
-                    key={i}
-                    className={styles.avatar}
-                    style={{ backgroundImage: `url(${src})` }}
-                  />
-                ))}
-              </div>
-              <div className={styles.avatarText}>
-                <span className={styles.avatarCount}>5,000+</span>
-                <span className={styles.avatarLabel}>happy patients</span>
-              </div>
+            <div className={styles.trustBadges}>
+              {trustBadges.map((label) => (
+                <span key={label} className={styles.trustBadge}>
+                  <span className={styles.trustCheck} aria-hidden="true">✓</span>
+                  {label}
+                </span>
+              ))}
             </div>
           </div>
         </div>

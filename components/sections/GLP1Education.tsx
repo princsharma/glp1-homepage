@@ -53,11 +53,7 @@ export default function GLP1Education() {
           {/* LEFT — Visual with floating features */}
           <div className={styles.visual}>
             {/* Promo badge — now inside left column */}
-            <div className={styles.promoBadge}>
-              <span className={styles.promoIcon}>★</span>
-              <span>Assessment 40% off</span>
-            </div>
-
+          
             <div className={styles.imageStack}>
               <div className={styles.imageBackdrop} />
               <div className={styles.imageWrap}>
@@ -134,10 +130,14 @@ export default function GLP1Education() {
 
             {/* CTA row */}
             <div className={styles.ctaRow}>
-              <button type="button" className={styles.primaryCta}>
+              <a
+                href="/weightloss-onboard"
+                className={styles.primaryCta}
+                style={{ textDecoration: "none" }}
+              >
                Check Your Eligibility
                 <span className={styles.ctaArrow}>→</span>
-              </button>
+              </a>
 
               <div className={styles.miniStats}>
                 <div className={styles.miniStatItem}>

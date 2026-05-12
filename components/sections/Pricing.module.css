@@ -344,7 +344,7 @@
    ============================================ */
 .cta {
   width: 100%;
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-primary);
   color: var(--color-surface);
   border: none;
   padding: 1.1rem 1.75rem;
@@ -360,7 +360,7 @@
 }
 
 .cta:hover {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-dark);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }

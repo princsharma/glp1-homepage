@@ -397,6 +397,24 @@
     padding: 3rem 1rem;
   }
 
+  /* Flex column so we can reorder children on mobile */
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header        { order: 0; }
+  .stage         { order: 1; }
+  .disclaimers   { order: 2; }
+  .progressTrack { order: 3; }
+  .pillNav       { order: 4; }
+
+  /* Tighter spacing for disclaimers now that they sit right under the card */
+  .disclaimers {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
   .stage {
     grid-template-columns: 1fr;
     padding: 1.25rem;

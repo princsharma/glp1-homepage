@@ -21,7 +21,7 @@ export default function LoseWeightSection() {
           {/* LEFT: Content */}
           <div className={styles.content}>
             <h2 className={styles.heading}>
-              Weight loss plan 
+              GLP-1 Weight loss plan
 
               <br />
              tailored to{" "}
@@ -44,7 +44,13 @@ export default function LoseWeightSection() {
               ))}
             </ul>
 
-            <button className={styles.primaryBtn}>Get Started</button>
+            <a
+              href="/weightloss-onboard"
+              className={styles.primaryBtn}
+              style={{ textDecoration: "none" }}
+            >
+              Get Started
+            </a>
           </div>
 
           {/* RIGHT: Image + floating weight chip */}

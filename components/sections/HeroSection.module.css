@@ -58,7 +58,8 @@
 }
 
 /* Avatar group comes in from right */
-.avatarGroup {
+.avatarGroup,
+.trustBadges {
   opacity: 0;
   transform: translateX(50px);
   animation: flyInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
@@ -101,6 +102,7 @@
   .subcopy,
   .primaryBtn,
   .avatarGroup,
+  .trustBadges,
   .marqueeWrap {
     animation: none;
     opacity: 1;
@@ -455,6 +457,43 @@
 .avatarLabel {
   font-size: 0.7rem;
   color: var(--color-text-muted);
+}
+
+.trustBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.trustBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+}
+
+.trustCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 /* ============================================

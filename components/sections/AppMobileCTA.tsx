@@ -45,7 +45,13 @@ export default function AppMobileCTA() {
           Start your evaluation today for GLP-1 treatments tailored to sustainable weight loss.
           </p>
 
-          <button className={styles.ctaButton}>Get Started</button>
+          <a
+            href="/weightloss-onboard"
+            className={styles.ctaButton}
+            style={{ textDecoration: "none" }}
+          >
+            Get Started
+          </a>
         </div>
 
         {/* Hero image — bleeds right */}

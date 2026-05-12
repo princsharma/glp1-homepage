@@ -69,6 +69,10 @@ export default function Header() {
 
   const handleLinkClick = (id: string) => {
     setIsOpen(false);
+    if (id === "get-started") {
+      window.location.href = "/weightloss-onboard";
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -191,19 +195,19 @@ export default function Header() {
 
                 <a
                   className={styles.infoLink}
-                  href="mailto:support@ongoweightloss.com"
+                  href="mailto:info@ongoweightloss.com"
                 >
                   <span className={styles.infoIcon} aria-hidden="true">
                     ✉
                   </span>
-                  <span>support@ongoweightloss.com</span>
+                  <span>info@ongoweightloss.com</span>
                 </a>
 
-                <a className={styles.infoLink} href="tel:+12015550199">
+                <a className={styles.infoLink} href="tel:+1 (888) 655-5267">
                   <span className={styles.infoIcon} aria-hidden="true">
                     ☎
                   </span>
-                  <span>+1 (201) 555-0199</span>
+                  <span>+1 (888) 655-5267</span>
                 </a>
               </div>
 
@@ -239,7 +243,9 @@ export default function Header() {
               </div>
 
               <div className={styles.infoFooter}>
-                <p className={styles.footerLine}>© 2026 Ongo Weight Loss.</p>
+                <p className={styles.footerLine}>
+                  © {new Date().getFullYear()} Ongo Weight Loss.
+                </p>
                 <p className={styles.footerTagline}>
                   Doctor-led GLP-1, made for you.
                 </p>
