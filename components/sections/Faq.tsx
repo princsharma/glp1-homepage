@@ -83,7 +83,7 @@ export default function Faq() {
              Talk to a care team member to get a better understanding of your treatment.
             </p>
             <button className={styles.contactButton}>
-             Free Call →
+             Start My Free Call →
             </button>
           </div>
         </aside>

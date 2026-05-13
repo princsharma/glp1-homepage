@@ -191,6 +191,15 @@ max-width: 1280px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
+.disclaimer {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0.75rem 0 0;
+  max-width: 480px;
+  font-style: italic;
+}
+
 /* ============================================
    RIGHT — HERO IMAGE
    ============================================ */

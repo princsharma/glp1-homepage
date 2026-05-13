@@ -121,7 +121,7 @@ export default function CTAButton() {
         </p>
 
         <h2 className={styles.heading}>
-          A fitness plan designed for
+          A personalized plan designed for
           <br />
           <span className={styles.headingAccent}>long-term success</span>
         </h2>

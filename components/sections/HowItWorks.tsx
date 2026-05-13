@@ -17,9 +17,9 @@ const steps: Step[] = [
     imageAlt: "Mobile app screen showing weight loss goal questions",
     imageSrc: "/images/step-a.webp",
     features: [
-      "5-minute questionnaire",
-      "No commitment",
-      "Free to start",
+      "Convenient online start",
+      "Stress-free onboarding",
+      "Care team support",
     ],
   },
   {
@@ -62,7 +62,7 @@ export default function HowItWorks() {
             className={styles.ctaButton}
             style={{ textDecoration: "none" }}
           >
-            Get Started
+           Begin My Free Intake Call
           </a>
         </header>
 
@@ -112,6 +112,10 @@ export default function HowItWorks() {
             </li>
           ))}
         </ol>
+
+        <p className={styles.disclaimer}>
+          <strong>Important:</strong> Following your consultation, you may fill your prescription at any licensed pharmacy, or choose optional home delivery coordinated through a licensed pharmacy.
+        </p>
       </div>
     </section>
   );

@@ -49,8 +49,12 @@ export default function LoseWeightSection() {
               className={styles.primaryBtn}
               style={{ textDecoration: "none" }}
             >
-              Get Started
+              Start My Medical Evaluation
             </a>
+
+            <p className={styles.disclaimer}>
+              All GLP-1 medications require a doctor's evaluation. Prescription approval is based on medical necessity and aligned with FDA guidelines.
+            </p>
           </div>
 
           {/* RIGHT: Image + floating weight chip */}

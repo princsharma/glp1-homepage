@@ -12,9 +12,9 @@ type Plan = {
 };
 
 const PLANS: Plan[] = [
-  { id: "1m", duration: "1 month", months: 1, basePrice: 69, originalPrice: 59 },
-  { id: "3m", duration: "3 months", months: 3, basePrice: 219, originalPrice: 199 },
-  { id: "12m", duration: "6 months", months: 6, basePrice: 499, originalPrice: 419 },
+  { id: "1m", duration: "1 month", months: 1, basePrice: 69, originalPrice: 79 },
+  { id: "3m", duration: "3 months", months: 3, basePrice: 219, originalPrice: 240 },
+  { id: "12m", duration: "6 months", months: 6, basePrice: 499, originalPrice: 525 },
 ];
 
 const FEATURES = [
@@ -77,6 +77,16 @@ export default function Pricing() {
               <div className={styles.trustItem}>
                 <span className={styles.trustValue}>24/7</span>
                 <span className={styles.trustText}>Availability</span>
+              </div>
+            </div>
+
+            <div className={styles.disclaimer}>
+              <span className={styles.disclaimerIcon} aria-hidden="true">ℹ</span>
+              <div className={styles.disclaimerBody}>
+                <span className={styles.disclaimerTitle}>Pricing note</span>
+                <p className={styles.disclaimerText}>
+                  Displayed pricing applies to compounded medications. Brand-name options and final costs may vary based on your prescription, dosage, and pharmacy.
+                </p>
               </div>
             </div>
           </div>
@@ -160,7 +170,7 @@ export default function Pricing() {
               className={styles.cta}
               style={{ textDecoration: "none" }}
             >
-              Check Your Eligibility
+              Start My Medical Evaluation at $69
             </a>
           </div>
         </div>

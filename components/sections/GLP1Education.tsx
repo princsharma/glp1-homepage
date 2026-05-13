@@ -37,10 +37,10 @@ const BENEFITS: Benefit[] = [
 ];
 
 const FEATURES = [
-  { icon: "🧪", label: "Rx Based\nMedications" },
-  { icon: "👨‍⚕️", label: "HIPAA Compliant\nSystem" },
-  { icon: "🚚", label: "Prescribed by\nlicensed doctors" },
-  { icon: "📦", label: "Medication delivery\nto your door" },
+  { icon: "/images/Rx Based.webp", label: "Rx Based\nMedications" },
+  { icon: "/images/hippa.webp", label: "HIPAA Compliant\nSystem" },
+  { icon: "/images/Prescribed by.webp", label: "Prescribed by\nlicensed doctors" },
+  { icon: "/images/Medication delivery.webp", label: "Medication delivery\nto your door" },
 ];
 
 export default function GLP1Education() {
@@ -64,23 +64,20 @@ export default function GLP1Education() {
                 />
               </div>
 
-              {/* Floating feature pills — only 3 now */}
-              <div className={`${styles.featurePill} ${styles.featurePill_1}`}>
-                <span className={styles.featureIcon}>{FEATURES[0].icon}</span>
-                <span className={styles.featureText}>{FEATURES[0].label}</span>
-              </div>
-              <div className={`${styles.featurePill} ${styles.featurePill_2}`}>
-                <span className={styles.featureIcon}>{FEATURES[1].icon}</span>
-                <span className={styles.featureText}>{FEATURES[1].label}</span>
-              </div>
-              <div className={`${styles.featurePill} ${styles.featurePill_3}`}>
-                <span className={styles.featureIcon}>{FEATURES[2].icon}</span>
-                <span className={styles.featureText}>{FEATURES[2].label}</span>
-              </div>
-              <div className={`${styles.featurePill} ${styles.featurePill_4}`}>
-                <span className={styles.featureIcon}>{FEATURES[3].icon}</span>
-                <span className={styles.featureText}>{FEATURES[3].label}</span>
-              </div>
+              {/* Floating feature pills */}
+              {FEATURES.map((f, i) => (
+                <div
+                  key={i}
+                  className={`${styles.featurePill} ${
+                    styles[`featurePill_${i + 1}`]
+                  }`}
+                >
+                  <span className={styles.featureIcon}>
+                    <img src={f.icon} alt="" />
+                  </span>
+                  <span className={styles.featureText}>{f.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -135,7 +132,7 @@ export default function GLP1Education() {
                 className={styles.primaryCta}
                 style={{ textDecoration: "none" }}
               >
-               Check Your Eligibility
+               Start My Medical Evaluation
                 <span className={styles.ctaArrow}>→</span>
               </a>
 

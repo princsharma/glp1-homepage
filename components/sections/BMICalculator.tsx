@@ -204,7 +204,7 @@ export default function BMICalculator() {
                 className={styles.cta}
                 onClick={() => setIsModalOpen(true)}
               >
-                Check Your Eligibility →
+                Check My Eligibility →
               </button>
             </div>
 

@@ -148,14 +148,13 @@ useEffect(() => {
           </span>
 
           <h1 className={styles.heading}>
-            Weight loss 
+            Science-backed
             <br />
-            <span className={styles.headingItalic}> program </span> rooted in science
+            <span className={styles.headingItalic}> GLP-1 weight loss</span>  program
           </h1>
 
           <p className={styles.subcopy}>
-            Discover the power of GLP-1 medication. Sustainable weight loss
-            doesn&apos;t have to be complicated, confusing, or frustrating.
+            Receive GLP-1 evaluations and prescriptions personalized to your body and treatment goals.
           </p>
 
           <div className={styles.actionRow}>
@@ -164,7 +163,7 @@ useEffect(() => {
               className={styles.primaryBtn}
               style={{ textDecoration: "none" }}
             >
-              GET STARTED
+             Start My Medical Evaluation
               <span className={styles.btnArrow} aria-hidden="true">→</span>
             </a>
 
