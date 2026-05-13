@@ -10,6 +10,7 @@ type Medication = {
   benefits: string[];
   description?: string;
   videoSrc: string;
+  offLabel?: string;
 };
 
 const MEDICATIONS: Medication[] = [
@@ -35,6 +36,7 @@ const MEDICATIONS: Medication[] = [
     description: "Originally approved for type 2 diabetes, often prescribed off-label for weight loss.",
     benefits: ["FDA Approved", "Once-weekly injection"],
     videoSrc: "/images/ozmepic-inj.mp4",
+    offLabel: "Prescribed off-label for weight loss",
   },
   {
     id: "mounjaro",
@@ -43,6 +45,7 @@ const MEDICATIONS: Medication[] = [
     description: "A once-weekly injection that targets two key hormones to help reduce hunger and cravings.",
     benefits: ["FDA Approved", "Once-weekly injection"],
     videoSrc: "/images/ozmepic-inj.mp4",
+    offLabel: "Prescribed off-label for weight loss",
   },
   {
     id: "rybelsus",
@@ -50,6 +53,7 @@ const MEDICATIONS: Medication[] = [
     description: "The only GLP-1 medication available in tablet form — no injection needed.",
     benefits: ["FDA Approved", "Once-daily tablet"],
     videoSrc: "/images/ryb-tab.mp4",
+    offLabel: "Prescribed off-label for weight loss",
   },
   {
     id: "liraglutide",
@@ -57,6 +61,7 @@ const MEDICATIONS: Medication[] = [
     description: "A daily GLP-1 injection that helps regulate appetite and support gradual weight loss.",
     benefits: ["FDA Approved", "Once-daily injection"],
     videoSrc: "/images/liraglutide-inj.mp4",
+    offLabel: "Prescribed off-label for weight loss under the brand name Victoza®",
   },
 ];
 
@@ -167,6 +172,15 @@ export default function CreateGLP1Plan() {
                 </li>
               ))}
             </ul>
+
+            {selected.offLabel && (
+              <p className={styles.offLabelNote}>
+                <span className={styles.offLabelIcon} aria-hidden="true">
+                  ⓘ
+                </span>
+                <span>{selected.offLabel}</span>
+              </p>
+            )}
 
             <a
               href="/weightloss-onboard"

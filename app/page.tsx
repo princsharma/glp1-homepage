@@ -8,13 +8,14 @@ import ProductReviews from "@/components/sections/ProductReviews";
 import OngoSolution from "@/components/sections/OngoSolution";
 import AppMobileCTA from "@/components/sections/AppMobileCTA";
 import Faq from "@/components/sections/Faq";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 import Header from "@/components/Header";
 import Cascade from "@/components/Cascade";
 import GLP1Education from "@/components/sections/GLP1Education";
 import Pricing from "@/components/sections/pricing";
 import ScrollProgress from "@/components/ScrollProgress";
 import WelcomePopup from "@/components/WelcomePopup";
+import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 export default function HomePage() {
   return (
     <>
@@ -66,8 +67,9 @@ export default function HomePage() {
 <div id="get-started">
   <Cascade from="left"><AppMobileCTA /></Cascade>
 </div>
-        <ThemeSwitcher />
       </main>
+      <Footer />
+      <BackToTop />
     </>
   );
 }

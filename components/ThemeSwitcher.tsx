@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./ThemeSwitcher.module.css";
 
 type Theme = {
@@ -52,6 +52,7 @@ const STORAGE_KEY = "site-theme";
 export default function ThemeSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeId, setActiveId] = useState<string>(THEMES[0].id);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   // Apply a theme — writes CSS custom properties to :root
   const applyTheme = (theme: Theme) => {
@@ -81,9 +82,37 @@ export default function ThemeSwitcher() {
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
+  // Close panel when clicking outside
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isOpen]);
+
   return (
-    <div className={styles.wrapper}>
-      {/* Swatch panel */}
+    <div className={styles.wrapper} ref={wrapperRef}>
+      {/* Toggle button */}
+      <button
+        type="button"
+        className={styles.toggle}
+        onClick={() => setIsOpen((v) => !v)}
+        aria-expanded={isOpen}
+        aria-label={isOpen ? "Close theme picker" : "Open theme picker"}
+      >
+        <span className={styles.toggleIcon} aria-hidden="true">
+          🎨
+        </span>
+      </button>
+
+      {/* Swatch panel — drops below the toggle */}
       <div
         className={`${styles.panel} ${isOpen ? styles.panelOpen : ""}`}
         role="group"
@@ -114,19 +143,6 @@ export default function ThemeSwitcher() {
           ))}
         </div>
       </div>
-
-      {/* Toggle button */}
-      <button
-        type="button"
-        className={styles.toggle}
-        onClick={() => setIsOpen((v) => !v)}
-        aria-expanded={isOpen}
-        aria-label={isOpen ? "Close theme picker" : "Open theme picker"}
-      >
-        <span className={styles.toggleIcon} aria-hidden="true">
-          {isOpen ? "✕" : "🎨"}
-        </span>
-      </button>
     </div>
   );
 }

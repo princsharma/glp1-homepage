@@ -4,7 +4,7 @@ type Doctor = {
   name: string;
   credential: string;
   affiliation: string;
- npi: string;
+  npi: string;
   imageSrc: string;
 };
 
@@ -13,69 +13,61 @@ const COLUMN_LEFT: Doctor[] = [
     name: "Dr. Miller",
     credential: "MD",
     affiliation: "Licensed physician",
-    npi: "NPI: 1235623372",
-
+    npi: "1235623372",
     imageSrc: "/images/johnathan-miller.webp",
   },
   {
     name: "Dr. Krasne",
     credential: "MD",
     affiliation: "Licensed physician",
-    npi: "NPI: 1306189832",
+    npi: "1306189832",
     imageSrc: "/images/dr-krasne .webp",
   },
-   {
+  {
     name: "Dr. Niles",
     credential: "R.N., M.D., F.A.C.O.G",
     affiliation: "Board-certified physician",
-    npi: "NPI: 1922199470",
-
+    npi: "1922199470",
     imageSrc: "/images/Dr-vanessa-niles.webp",
   },
   {
     name: "Dr. Bugailiskis",
     credential: "MD",
     affiliation: "Board-certified physician",
-    npi: "NPI: 1871882035",
-
+    npi: "1871882035",
     imageSrc: "/images/cheryl-bugailiskis.webp",
   },
- 
 ];
 
 const COLUMN_RIGHT: Doctor[] = [
-{
+  {
     name: "Dr. Bugailiskis",
     credential: "MD",
     affiliation: "Board-certified physician",
-    npi: "NPI: 1871882035",
-
+    npi: "1871882035",
     imageSrc: "/images/cheryl-bugailiskis.webp",
   },
-   {
+  {
     name: "Dr. Niles",
     credential: "R.N., M.D., F.A.C.O.G",
     affiliation: "Board-certified physician",
-    npi: "NPI: 1922199470",
-
+    npi: "1922199470",
     imageSrc: "/images/Dr-vanessa-niles.webp",
   },
-   {
+  {
     name: "Dr. Krasne",
     credential: "MD",
     affiliation: "Licensed physician",
-    npi: "NPI: 1306189832",
+    npi: "1306189832",
     imageSrc: "/images/dr-krasne .webp",
   },
-   {
+  {
     name: "Dr. Miller",
     credential: "MD",
     affiliation: "Licensed physician",
-    npi: "NPI: 1235623372",
-
+    npi: "1235623372",
     imageSrc: "/images/johnathan-miller.webp",
   },
-
 ];
 
 export default function ongoSolution() {
@@ -99,7 +91,8 @@ export default function ongoSolution() {
             className={styles.ctaButton}
             style={{ textDecoration: "none" }}
           >
-            Get Started
+            Meet My Doctor
+
           </a>
 
           {/* Trust strip */}
@@ -117,12 +110,19 @@ export default function ongoSolution() {
         </div>
 
         {/* RIGHT — scrolling columns */}
-        <div className={styles.columns} aria-hidden="true">
+        <div className={styles.columns}>
           {/* Left column scrolls UP */}
           <div className={styles.columnWrap}>
             <div className={`${styles.columnTrack} ${styles.scrollUp}`}>
-              {[...COLUMN_LEFT, ...COLUMN_LEFT].map((doc, i) => (
+              {COLUMN_LEFT.map((doc, i) => (
                 <DoctorCard key={`l-${i}`} doctor={doc} />
+              ))}
+              {COLUMN_LEFT.map((doc, i) => (
+                <DoctorCard
+                  key={`l-clone-${i}`}
+                  doctor={doc}
+                  ariaHidden
+                />
               ))}
             </div>
           </div>
@@ -130,8 +130,15 @@ export default function ongoSolution() {
           {/* Right column scrolls DOWN */}
           <div className={styles.columnWrap}>
             <div className={`${styles.columnTrack} ${styles.scrollDown}`}>
-              {[...COLUMN_RIGHT, ...COLUMN_RIGHT].map((doc, i) => (
+              {COLUMN_RIGHT.map((doc, i) => (
                 <DoctorCard key={`r-${i}`} doctor={doc} />
+              ))}
+              {COLUMN_RIGHT.map((doc, i) => (
+                <DoctorCard
+                  key={`r-clone-${i}`}
+                  doctor={doc}
+                  ariaHidden
+                />
               ))}
             </div>
           </div>
@@ -143,9 +150,18 @@ export default function ongoSolution() {
 
 /* ----- Sub-component ----- */
 
-function DoctorCard({ doctor }: { doctor: Doctor }) {
+function DoctorCard({
+  doctor,
+  ariaHidden = false,
+}: {
+  doctor: Doctor;
+  ariaHidden?: boolean;
+}) {
   return (
-    <article className={styles.doctorCard}>
+    <article
+      className={styles.doctorCard}
+      aria-hidden={ariaHidden || undefined}
+    >
       <div className={styles.doctorImageWrap}>
         <img
           src={doctor.imageSrc}
@@ -162,7 +178,19 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
           </span>
         </h3>
         <p className={styles.doctorAffiliation}>{doctor.affiliation}</p>
-        <p className={styles.doctorNPI}>{doctor.npi}</p>
+        <a
+          href={`https://npiregistry.cms.hhs.gov/provider-view/${doctor.npi}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.doctorNPI}
+          aria-label={`Verify ${doctor.name} on the NPI registry (opens in new tab)`}
+          tabIndex={ariaHidden ? -1 : undefined}
+        >
+          <span>NPI: {doctor.npi}</span>
+          <span className={styles.npiArrow} aria-hidden="true">
+            ↗
+          </span>
+        </a>
       </div>
     </article>
   );

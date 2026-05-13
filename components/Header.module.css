@@ -68,6 +68,52 @@
 }
 
 /* ============================================
+   MIDDLE NAV — page links (desktop only)
+   ============================================ */
+.midNav {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  padding: 0.3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.midNavLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.midNavLink:hover {
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-soft);
+}
+
+@media (min-width: 768px) {
+  .midNav {
+    display: inline-flex;
+  }
+}
+
+/* ============================================
+   HEADER ACTIONS — theme switcher + menu toggle
+   ============================================ */
+.headerActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ============================================
    HAMBURGER TOGGLE
    ============================================ */
 .menuToggle {
@@ -316,6 +362,51 @@
   flex-direction: column;
 }
 
+/* ============================================
+   DRAWER — page links (About / Contact)
+   ============================================ */
+.drawerPageList {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.drawerPageLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1.1rem;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: #fffbf5;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.18s ease, border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.drawerPageLink:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-color: transparent;
+  transform: translateX(4px);
+}
+
+.drawerPageArrow {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.eyebrowSpaced {
+  margin-top: 1.5rem;
+}
+
 .navList {
   list-style: none;
   margin: 0;
@@ -503,9 +594,47 @@
 }
 
 .socialBtn:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
   transform: translateY(-2px);
+}
+
+/* Always-on brand colors so users instantly recognize each platform */
+.socialInstagram {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.socialInstagram:hover {
+  box-shadow: 0 6px 16px rgba(220, 39, 67, 0.45);
+}
+
+.socialYoutube {
+  background-color: #ff0000;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.socialYoutube:hover {
+  background-color: #cc0000;
+  box-shadow: 0 6px 16px rgba(255, 0, 0, 0.4);
+}
+
+.socialYelp {
+  background-color: #d32323;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.socialYelp:hover {
+  background-color: #af1d1d;
+  box-shadow: 0 6px 16px rgba(211, 35, 35, 0.4);
 }
 
 .infoFooter {

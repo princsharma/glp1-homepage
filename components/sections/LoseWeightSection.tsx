@@ -21,7 +21,7 @@ export default function LoseWeightSection() {
           {/* LEFT: Content */}
           <div className={styles.content}>
             <h2 className={styles.heading}>
-              GLP-1 Weight loss plan
+              GLP-1 weight loss plan
 
               <br />
              tailored to{" "}

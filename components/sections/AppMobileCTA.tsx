@@ -50,7 +50,7 @@ export default function AppMobileCTA() {
             className={styles.ctaButton}
             style={{ textDecoration: "none" }}
           >
-            Get Started
+            Start My Medical Evaluation
           </a>
         </div>
 

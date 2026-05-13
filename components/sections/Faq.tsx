@@ -37,7 +37,7 @@ const FAQS: FaqItem[] = [
   {
     question: "How much does the Ongo Weight Loss program cost?",
     answer:
-      "The evaluation fee for our program is $49. Medication costs are additional based on the type, dose, and treatment plan.",
+      "The evaluation fee for our program is $69. Medication costs are additional based on the type, dose, and treatment plan.",
   },
   {
     question: "Can I cancel my membership anytime?",

@@ -200,11 +200,20 @@ useEffect(() => {
                 <div className={styles.cardFooter}>
                   <span className={styles.cardLabel}>{card.label}</span>
                   <span className={styles.cardBadge}>FDA · GLP-1</span>
-                </div> 
+                </div>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      <div className={styles.carouselDisclaimer}>
+        <span className={styles.carouselDisclaimerIcon} aria-hidden="true">
+          ℹ
+        </span>
+        <p className={styles.carouselDisclaimerText}>
+          Prescription approvals are subject to the doctor&apos;s discretion.
+        </p>
       </div>
     </section>
   );

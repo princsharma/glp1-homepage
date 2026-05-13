@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const NAV_LINKS = [
   { id: "hero", label: "Home" },
@@ -16,6 +17,11 @@ const NAV_LINKS = [
   { id: "doctors", label: "Our Doctors" },
   { id: "faq", label: "FAQ" },
   { id: "get-started", label: "Get Started" },
+];
+
+const PAGE_LINKS = [
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
@@ -73,6 +79,11 @@ export default function Header() {
       window.location.href = "/weightloss-onboard";
       return;
     }
+    // If we're not on the home page, route to /#id so the anchor still works.
+    if (typeof window !== "undefined" && window.location.pathname !== "/") {
+      window.location.href = `/#${id}`;
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -81,6 +92,10 @@ export default function Header() {
 
   const handleLogoClick = () => {
     setIsOpen(false);
+    if (typeof window !== "undefined" && window.location.pathname !== "/") {
+      window.location.href = "/";
+      return;
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -98,17 +113,33 @@ export default function Header() {
             <span className={styles.logoText}>OngoWeightLoss</span>
           </button>
 
-          <button
-            type="button"
-            className={styles.menuToggle}
-            onClick={() => setIsOpen(true)}
-            aria-label="Open menu"
-            aria-expanded={isOpen}
-          >
-            <span className={styles.hamburgerLine} />
-            <span className={styles.hamburgerLine} />
-            <span className={styles.hamburgerLine} />
-          </button>
+          <nav className={styles.midNav} aria-label="Primary pages">
+            {PAGE_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={styles.midNavLink}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className={styles.headerActions}>
+            <ThemeSwitcher />
+
+            <button
+              type="button"
+              className={styles.menuToggle}
+              onClick={() => setIsOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={isOpen}
+            >
+              <span className={styles.hamburgerLine} />
+              <span className={styles.hamburgerLine} />
+              <span className={styles.hamburgerLine} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -151,6 +182,28 @@ export default function Header() {
           <div className={styles.drawerBody}>
             <nav className={styles.drawerNav} aria-label="Primary">
               <span className={styles.eyebrow}>
+                <span className={styles.eyebrowDash} aria-hidden="true" />
+                PAGES
+              </span>
+
+              <ul className={styles.drawerPageList}>
+                {PAGE_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className={styles.drawerPageLink}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <span>{link.label}</span>
+                      <span aria-hidden="true" className={styles.drawerPageArrow}>
+                        ↗
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <span className={`${styles.eyebrow} ${styles.eyebrowSpaced}`}>
                 <span className={styles.eyebrowDash} aria-hidden="true" />
                 NAVIGATE
               </span>
@@ -219,25 +272,55 @@ export default function Header() {
 
                 <div className={styles.socialRow}>
                   <a
-                    className={styles.socialBtn}
-                    href="#"
+                    className={`${styles.socialBtn} ${styles.socialInstagram}`}
+                    href="https://www.instagram.com/ongoweightloss/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="Instagram"
                   >
-                    ◎
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.366.062 2.633.336 3.608 1.311.975.975 1.249 2.242 1.311 3.608.058 1.266.07 1.65.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.336 2.633-1.311 3.608-.975.975-2.242 1.249-3.608 1.311-1.266.058-1.65.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.336-3.608-1.311-.975-.975-1.249-2.242-1.311-3.608C2.212 15.584 2.2 15.2 2.2 12s.012-3.584.07-4.85c.062-1.366.336-2.633 1.311-3.608.975-.975 2.242-1.249 3.608-1.311C8.416 2.212 8.8 2.2 12 2.2zm0 1.802c-3.146 0-3.518.012-4.76.069-1.064.048-1.64.227-2.024.376-.508.198-.871.434-1.252.815-.381.381-.617.744-.815 1.252-.149.384-.328.96-.376 2.024-.057 1.242-.069 1.614-.069 4.76 0 3.146.012 3.518.069 4.76.048 1.064.227 1.64.376 2.024.198.508.434.871.815 1.252.381.381.744.617 1.252.815.384.149.96.328 2.024.376 1.242.057 1.614.069 4.76.069s3.518-.012 4.76-.069c1.064-.048 1.64-.227 2.024-.376.508-.198.871-.434 1.252-.815.381-.381.617-.744.815-1.252.149-.384.328-.96.376-2.024.057-1.242.069-1.614.069-4.76s-.012-3.518-.069-4.76c-.048-1.064-.227-1.64-.376-2.024-.198-.508-.434-.871-.815-1.252-.381-.381-.744-.617-1.252-.815-.384-.149-.96-.328-2.024-.376-1.242-.057-1.614-.069-4.76-.069zm0 3.063A4.935 4.935 0 1 1 12 16.935 4.935 4.935 0 0 1 12 7.065zm0 8.135A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm6.27-8.34a1.152 1.152 0 1 1-2.304 0 1.152 1.152 0 0 1 2.304 0z" />
+                    </svg>
                   </a>
                   <a
-                    className={styles.socialBtn}
-                    href="#"
+                    className={`${styles.socialBtn} ${styles.socialYoutube}`}
+                    href="https://www.youtube.com/@ongoweightlossusa"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="YouTube"
                   >
-                    ▶
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="22"
+                      height="22"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
                   </a>
                   <a
-                    className={styles.socialBtn}
-                    href="#"
-                    aria-label="LinkedIn"
+                    className={`${styles.socialBtn} ${styles.socialYelp}`}
+                    href="https://www.yelp.com/biz/ongo-weight-loss-new-york/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Yelp"
                   >
-                    in
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M20.16 12.594l-1.89-.612c-1.518-.486-2.484.18-2.484.18-.378.234-.36.72-.36.72l.018 4.86s.054.504.378.702c.378.234.846 0 .846 0l3.708-2.916s.36-.27.378-.738c.018-.396-.252-.81-.594-.972zM14.166 9.81c.486.612 1.404.072 1.404.072L19.692 7.5s.414-.27.45-.738c.054-.378-.234-.864-.234-.864-.234-.396-2.808-3.078-3.69-3.762-.378-.288-.792-.198-.792-.198-.486.072-.738.504-.738.504l-2.07 3.564c-.918 1.512-.612 2.376-.612 2.376.144.504.522.81 1.236 1.224.36.198.738.108.738.108zM10.602 11.43c.27-.486.252-1.026.252-1.026.072-1.566-.252-4.842-.504-6.696-.144-.99-.45-1.314-.846-1.476-.594-.234-1.314-.018-1.314-.018-2.124.45-4.554 1.404-6.012 2.358-.504.342-.738.81-.738.81-.27.594.072 1.116.072 1.116l5.526 8.046s.486.738 1.062.738c.45 0 .846-.36 1.296-.756l1.206-3.096zM10.692 14.058l-3.69 2.034s-.414.252-.504.738c-.108.504.198.99.198.99 1.494 2.358 4.05 4.014 4.05 4.014.504.288.972.198.972.198.504-.072.81-.45.81-.45l.27-.252v-6.444s-.018-.378-.36-.612c-.45-.288-.99-.27-.99-.27-.252.018-.756.054-.756.054zM18.864 18.738c-.378-.972-3.708-4.392-3.708-4.392s-.378-.378-.72-.252c-.27.09-.45.252-.594.612-.18.45-.072 4.842-.054 4.95.018.108.054.54.342.756.36.27.954.144.954.144l3.276-.918s.504-.198.612-.522c.108-.36-.108-.378-.108-.378z" />
+                    </svg>
                   </a>
                 </div>
               </div>

@@ -117,7 +117,7 @@ export default function CTAButton() {
     <section className={styles.section}>
       <div className={styles.container}>
         <p className={styles.eyebrow}>
-          Clinicians-Supervised Lifestyle Guidance
+          Clinician-Supervised Lifestyle Guidance
         </p>
 
         <h2 className={styles.heading}>
