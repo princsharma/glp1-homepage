@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./LoseWeightSection.module.css";
 
 const benefits = [
@@ -14,7 +15,12 @@ export default function LoseWeightSection() {
       {/* Descending diagonal trend line in background — drops on hover */}
 {/* Smooth descending wave curve in background — drops on hover */}
 <div  className={styles.bgCurve}>
-  <img src="images/graph.png" alt="graph goes down like your weight" />
+  <Image
+    src="/images/graph.webp"
+    alt="graph goes down like your weight"
+    fill
+    sizes="100vw"
+  />
 </div>
 
         <div className={styles.loseweight_inner}>
@@ -60,14 +66,18 @@ export default function LoseWeightSection() {
           {/* RIGHT: Image + floating weight chip */}
           <div className={styles.visual}>
             <div className={styles.imageWrapper}>
-              <img
+              <Image
                 src="/images/fat-girl.webp"
                 alt="Person before weight loss program"
+                fill
+                sizes="(max-width: 900px) 100vw, 640px"
                 className={`${styles.heroImage} ${styles.heroImageBefore}`}
               />
-              <img
+              <Image
                 src="/images/slim-girl.webp"
                 alt="Person after weight loss program"
+                fill
+                sizes="(max-width: 900px) 100vw, 640px"
                 className={`${styles.heroImage} ${styles.heroImageAfter}`}
               />
             </div>

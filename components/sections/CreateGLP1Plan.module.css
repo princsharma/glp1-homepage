@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    SECTION
    ============================================ */
 .section {
@@ -45,7 +45,7 @@
 
 .headingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
 }
@@ -59,14 +59,14 @@
 }
 
 /* ============================================
-   STAGE — two-column layout: video + info
+   STAGE â€” two-column layout: video + info
    ============================================ */
 .stage {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  align-items: stretch;          /* was 'center' — now both columns match height */
+  align-items: stretch;          /* was 'center' â€” now both columns match height */
   margin-bottom: 1.5rem;
   padding: 2rem;
   background-color: var(--color-primary-soft);
@@ -102,7 +102,7 @@
 }
 
 /* ============================================
-   VIDEO FRAME — portrait orientation
+   VIDEO FRAME â€” portrait orientation
    ============================================ */
 .videoFrame {
   position: relative;
@@ -140,7 +140,7 @@
 }
 
 /* ============================================
-   INFO CARD — sits beside the video, not on it
+   INFO CARD â€” sits beside the video, not on it
    ============================================ */
 .infoCard {
   background: var(--color-surface);
@@ -153,7 +153,7 @@
   gap: 1.5rem;                    /* more breathing room between elements */
   animation: infoSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 16px rgba(20, 17, 13, 0.06);
-  /* No fixed height — stretches with grid */
+  /* No fixed height â€” stretches with grid */
 }
 
 @keyframes infoSlideIn {

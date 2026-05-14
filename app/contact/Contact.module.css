@@ -1,11 +1,11 @@
-/* ============================================
-   PAGE — sits between Header and Footer
+﻿/* ============================================
+   PAGE â€” sits between Header and Footer
    ============================================ */
 .page {
   width: 100%;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: "Teachers", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-teachers), "Teachers", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* ============================================
@@ -47,7 +47,7 @@
 
 .headingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
 }

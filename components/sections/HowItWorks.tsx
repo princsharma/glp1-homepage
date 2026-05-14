@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./HowItWorks.module.css";
 
 type Step = {
@@ -74,9 +75,11 @@ export default function HowItWorks() {
               </span>
 
               <div className={styles.stepImageWrap}>
-                <img
+                <Image
                   src={step.imageSrc}
                   alt={step.imageAlt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                   className={styles.stepImage}
                 />
                 <div className={styles.imageGloss} aria-hidden="true" />

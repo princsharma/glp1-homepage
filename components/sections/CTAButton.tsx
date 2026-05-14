@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import Image from "next/image";
 import styles from "./CTAButton.module.css";
 
 const ROTATING_TEXT = "★ MODERN HEALTHCARE · MODERN CARE  ";
@@ -153,17 +154,21 @@ export default function CTAButton() {
             }`}
           >
             {/* BASE LAYER — fat girl (BEFORE) always at full opacity */}
-            <img
+            <Image
               src="/images/healthy.webp"
               alt="Before weight loss program"
+              fill
+              sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 600px"
               className={`${styles.compareImage} ${styles.beforeImage}`}
               draggable={false}
             />
 
             {/* OVERLAY LAYER — slim girl (AFTER) opacity controlled by slider */}
-            <img
+            <Image
               src="/images/slimmer.webp"
               alt="After weight loss program"
+              fill
+              sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 600px"
               className={`${styles.compareImage} ${styles.afterImage}`}
               style={{
                 opacity: position / 100,

@@ -2,7 +2,7 @@
   width: 100%;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: "Teachers", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-teachers), "Teachers", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* ============================================
@@ -127,7 +127,7 @@
 
 .giantSubtitle {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   font-size: clamp(1.5rem, 4vw, 3rem);
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -263,7 +263,7 @@
 
 .headingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
 }

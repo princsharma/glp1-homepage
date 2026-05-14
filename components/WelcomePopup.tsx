@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./WelcomePopup.module.css";
 
 const STORAGE_KEY = "welcome-popup-seen";
@@ -108,14 +109,18 @@ export default function WelcomePopup() {
               onMouseLeave={() => setHovered(false)}
             >
               <div className={styles.beforeAfter}>
-                <img
+                <Image
                   src="/images/fat-girl.webp"
                   alt="Before"
+                  fill
+                  sizes="200px"
                   className={`${styles.baImage} ${hovered ? styles.baFade : ""}`}
                 />
-                <img
+                <Image
                   src="/images/slim-girl.webp"
                   alt="After"
+                  fill
+                  sizes="200px"
                   className={`${styles.baImage} ${styles.baImageAfter} ${
                     hovered ? styles.baShow : ""
                   }`}

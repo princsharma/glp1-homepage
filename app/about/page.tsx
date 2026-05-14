@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import styles from "./About.module.css";
@@ -227,11 +228,13 @@ export default function AboutPage() {
               </svg>
 
               <div className={styles.heroPortraitWrap}>
-                <img
+                <Image
                   src="/images/Margaret.webp"
                   alt="A patient who chose Ongo"
+                  fill
+                  sizes="(max-width: 600px) 60vw, 580px"
+                  priority
                   className={styles.heroPortrait}
-                  loading="eager"
                 />
               </div>
             </div>
@@ -604,7 +607,13 @@ export default function AboutPage() {
                     top: ARC_POSITIONS[i].top,
                   }}
                 >
-                  <img src={d.image} alt="" />
+                  <Image
+                    src={d.image}
+                    alt=""
+                    width={110}
+                    height={110}
+                    sizes="110px"
+                  />
                 </span>
               ))}
               {/* Center extra avatar — use first doctor */}
@@ -615,7 +624,13 @@ export default function AboutPage() {
                   top: ARC_POSITIONS[4].top,
                 }}
               >
-                <img src={DOCTORS[0].image} alt="" />
+                <Image
+                  src={DOCTORS[0].image}
+                  alt=""
+                  width={110}
+                  height={110}
+                  sizes="110px"
+                />
               </span>
             </div>
 
@@ -623,11 +638,12 @@ export default function AboutPage() {
               {DOCTORS.map((d) => (
                 <article key={d.name} className={styles.doctorCard}>
                   <div className={styles.doctorPhotoWrap}>
-                    <img
+                    <Image
                       src={d.image}
                       alt={`Portrait of ${d.name}`}
+                      fill
+                      sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 280px"
                       className={styles.doctorPhoto}
-                      loading="lazy"
                     />
                   </div>
                   <div className={styles.doctorHeader}>

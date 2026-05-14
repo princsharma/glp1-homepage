@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import styles from "./DeepPage.module.css";
@@ -162,7 +163,13 @@ export default function DeepPage({
                 className={styles.arcAvatar}
                 style={{ left: pos.left, top: pos.top }}
               >
-                <img src={ARC_IMAGES[i]} alt="" />
+                <Image
+                  src={ARC_IMAGES[i]}
+                  alt=""
+                  width={120}
+                  height={120}
+                  sizes="120px"
+                />
               </span>
             ))}
           </div>

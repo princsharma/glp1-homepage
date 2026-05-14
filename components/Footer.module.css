@@ -1,5 +1,5 @@
-/* ============================================
-   FOOTER — Modern, dark sage canvas
+﻿/* ============================================
+   FOOTER â€” Modern, dark sage canvas
    ============================================ */
 .footer {
   position: relative;
@@ -11,7 +11,7 @@
   );
   color: #f1ebe0;
   padding: 4.5rem 1.5rem 2rem;
-  font-family: "Teachers", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-teachers), "Teachers", "Helvetica Neue", Arial, sans-serif;
 }
 
 .container {
@@ -22,7 +22,7 @@
 }
 
 /* ============================================
-   TOP — brand + newsletter
+   TOP â€” brand + newsletter
    ============================================ */
 .top {
   display: grid;

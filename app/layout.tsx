@@ -1,5 +1,24 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const teachers = localFont({
+  src: [
+    {
+      path: "./fonts/Teachers-Latin-Roman.woff2",
+      weight: "400 800",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Teachers-Latin-Italic.woff2",
+      weight: "400 800",
+      style: "italic",
+    },
+  ],
+  display: "swap",
+  variable: "--font-teachers",
+  fallback: ["Helvetica Neue", "Arial", "sans-serif"],
+});
 
 export const metadata: Metadata = {
   title: "GLP-1 Weight Loss Program",
@@ -12,19 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Teachers:ital,wght@0,400..800;1,400..800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={teachers.variable}>
       <body>{children}</body>
     </html>
   );

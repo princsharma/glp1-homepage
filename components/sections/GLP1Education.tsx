@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import styles from "./GLP1Education.module.css";
 
 type Benefit = {
@@ -57,9 +58,11 @@ export default function GLP1Education() {
             <div className={styles.imageStack}>
               <div className={styles.imageBackdrop} />
               <div className={styles.imageWrap}>
-                <img
-                  src="/images/Gemini_Generated_Image_56dfmw56dfmw56df 1.png"
+                <Image
+                  src="/images/Gemini_Generated_Image_56dfmw56dfmw56df 1.webp"
                   alt="Doctor showing positive results"
+                  fill
+                  sizes="(max-width: 900px) 90vw, 460px"
                   className={styles.heroImage}
                 />
               </div>
@@ -73,7 +76,7 @@ export default function GLP1Education() {
                   }`}
                 >
                   <span className={styles.featureIcon}>
-                    <img src={f.icon} alt="" />
+                    <Image src={f.icon} alt="" width={28} height={28} />
                   </span>
                   <span className={styles.featureText}>{f.label}</span>
                 </div>

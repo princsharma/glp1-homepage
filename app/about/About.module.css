@@ -1,11 +1,11 @@
-/* ============================================
+﻿/* ============================================
    PAGE
    ============================================ */
 .page {
   width: 100%;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: "Teachers", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-teachers), "Teachers", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* ============================================
@@ -22,7 +22,7 @@
 
 .headingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
 }
@@ -68,7 +68,7 @@
 }
 
 /* ============================================
-   HERO — Hims-style: massive gradient + curve
+   HERO â€” Hims-style: massive gradient + curve
    ============================================ */
 .hero {
   position: relative;
@@ -177,7 +177,7 @@
 
 .heroHeadingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
 }
@@ -206,7 +206,7 @@
   font-size: 64px;
   font-weight: 700;
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   fill: var(--color-text);
   letter-spacing: 0.02em;
   opacity: 0.32;
@@ -343,7 +343,7 @@
 }
 
 /* ============================================
-   EDITORIAL — "Your health is personal" (Hims-style)
+   EDITORIAL â€” "Your health is personal" (Hims-style)
    Massive heading + paragraph with highlight technique
    ============================================ */
 .editorialSection {
@@ -389,14 +389,14 @@
 .editorialAccent {
   color: var(--color-primary);
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   font-weight: 600;
 }
 
 .editorialAccentWarm {
   color: var(--color-accent);
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   font-weight: 600;
 }
 
@@ -712,7 +712,7 @@
 }
 
 /* ============================================
-   WHY CHOOSE — card grid
+   WHY CHOOSE â€” card grid
    ============================================ */
 .cardGrid {
   display: grid;
@@ -888,7 +888,7 @@
 }
 
 /* ============================================
-   DOCTORS — arc preview + grid
+   DOCTORS â€” arc preview + grid
    ============================================ */
 .doctorsSection {
   width: 100%;
@@ -1064,7 +1064,7 @@
 }
 
 /* ============================================
-   EXPLORE — dark "More to explore" grid
+   EXPLORE â€” dark "More to explore" grid
    ============================================ */
 .exploreSection {
   width: 100%;
@@ -1187,7 +1187,7 @@
 
 .ctaHeadingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary-light);
   font-weight: 500;
 }

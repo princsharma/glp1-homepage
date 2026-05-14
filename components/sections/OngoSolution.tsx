@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./OngoSolution.module.css";
 
 type Doctor = {
@@ -163,9 +164,12 @@ function DoctorCard({
       aria-hidden={ariaHidden || undefined}
     >
       <div className={styles.doctorImageWrap}>
-        <img
+        <Image
           src={doctor.imageSrc}
           alt={`${doctor.name}, ${doctor.credential}`}
+          width={320}
+          height={320}
+          sizes="(max-width: 900px) 50vw, 320px"
           className={styles.doctorImage}
         />
       </div>

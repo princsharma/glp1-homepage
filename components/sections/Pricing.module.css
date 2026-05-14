@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    SECTION
    ============================================ */
 .section {
@@ -13,7 +13,7 @@
 }
 
 /* ============================================
-   GRID — left content + right card
+   GRID â€” left content + right card
    ============================================ */
 .grid {
   display: grid;
@@ -23,7 +23,7 @@
 }
 
 /* ============================================
-   LEFT — CONTENT
+   LEFT â€” CONTENT
    ============================================ */
 .content {
   display: flex;
@@ -53,7 +53,7 @@
 
 .headingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-primary);
   font-weight: 500;
 }
@@ -165,7 +165,7 @@
 }
 
 /* ============================================
-   RIGHT — PRICING CARD
+   RIGHT â€” PRICING CARD
    ============================================ */
 .card {
   background-color: var(--color-surface);
@@ -395,7 +395,7 @@
 }
 
 /* ============================================
-   CTA — DARK PILL
+   CTA â€” DARK PILL
    ============================================ */
 .cta {
   width: 100%;

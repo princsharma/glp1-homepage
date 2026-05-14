@@ -1,21 +1,39 @@
+import dynamic from "next/dynamic";
 import HeroSection from "@/components/sections/HeroSection";
 import LoseWeightSection from "@/components/sections/LoseWeightSection";
-import BMICalculator from "@/components/sections/BMICalculator";
-import HowItWorks from "@/components/sections/HowItWorks";
-import CreateGLP1Plan from "@/components/sections/CreateGLP1Plan";
-import CTAButton from "@/components/sections/CTAButton";
-import ProductReviews from "@/components/sections/ProductReviews";
-import OngoSolution from "@/components/sections/OngoSolution";
-import AppMobileCTA from "@/components/sections/AppMobileCTA";
-import Faq from "@/components/sections/Faq";
 import Header from "@/components/Header";
 import Cascade from "@/components/Cascade";
-import GLP1Education from "@/components/sections/GLP1Education";
-import Pricing from "@/components/sections/pricing";
 import ScrollProgress from "@/components/ScrollProgress";
-import WelcomePopup from "@/components/WelcomePopup";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+
+// Below-the-fold sections — code-split, still server-rendered
+const HowItWorks = dynamic(() => import("@/components/sections/HowItWorks"));
+const BMICalculator = dynamic(
+  () => import("@/components/sections/BMICalculator")
+);
+const CreateGLP1Plan = dynamic(
+  () => import("@/components/sections/CreateGLP1Plan")
+);
+const CTAButton = dynamic(() => import("@/components/sections/CTAButton"));
+const Pricing = dynamic(() => import("@/components/sections/pricing"));
+const ProductReviews = dynamic(
+  () => import("@/components/sections/ProductReviews")
+);
+const GLP1Education = dynamic(
+  () => import("@/components/sections/GLP1Education")
+);
+const OngoSolution = dynamic(
+  () => import("@/components/sections/OngoSolution")
+);
+const Faq = dynamic(() => import("@/components/sections/Faq"));
+const AppMobileCTA = dynamic(
+  () => import("@/components/sections/AppMobileCTA")
+);
+
+// Not needed for initial paint — lazy
+const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"));
+
 export default function HomePage() {
   return (
     <>

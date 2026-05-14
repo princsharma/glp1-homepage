@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
+import Image from "next/image";
 import styles from "./HeroSection.module.css";
 
 const cards = [
@@ -191,10 +192,13 @@ useEffect(() => {
                 }}
               >
                 <div className={styles.cardImageWrap}>
-                  <img
+                  <Image
                     src={card.src}
                     alt={card.label}
+                    fill
+                    sizes="(max-width: 480px) 130px, (max-width: 767px) 160px, (max-width: 1024px) 200px, 280px"
                     className={styles.cardImage}
+                    priority={i < 5}
                   />
                 </div>
                 <div className={styles.cardFooter}>

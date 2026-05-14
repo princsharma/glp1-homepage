@@ -1,5 +1,5 @@
-/* ============================================
-   SECTION — OCEAN GRADIENT CANVAS
+﻿/* ============================================
+   SECTION â€” OCEAN GRADIENT CANVAS
    ============================================ */
 .section {
   width: 100%;
@@ -85,7 +85,7 @@ max-width: 1280px;
 } */
 
 /* ============================================
-   LEFT — CONTENT
+   LEFT â€” CONTENT
    ============================================ */
 .content {
   display: flex;
@@ -108,7 +108,7 @@ max-width: 1280px;
 
 .headingAccent {
   font-style: italic;
-  font-family: "Teachers", Georgia, "Times New Roman", serif;
+  font-family: var(--font-teachers), "Teachers", Georgia, "Times New Roman", serif;
   color: var(--color-surface);
   font-weight: 500;
 }
@@ -122,7 +122,7 @@ max-width: 1280px;
 }
 
 /* ============================================
-   BENEFIT LIST — glassmorphic container
+   BENEFIT LIST â€” glassmorphic container
    ============================================ */
 .benefitList {
   list-style: none;
@@ -169,7 +169,7 @@ max-width: 1280px;
 }
 
 /* ============================================
-   PRIMARY CTA — white pill on dark canvas
+   PRIMARY CTA â€” white pill on dark canvas
    ============================================ */
 .primaryBtn {
   align-self: flex-start;
@@ -201,7 +201,7 @@ max-width: 1280px;
 }
 
 /* ============================================
-   RIGHT — HERO IMAGE
+   RIGHT â€” HERO IMAGE
    ============================================ */
 .visual {
   position: relative;
@@ -216,7 +216,7 @@ max-width: 1280px;
   height: 100%;
   object-fit: cover;
   object-position: top;
-  /* Image blends with the gradient — no hard edge */
+  /* Image blends with the gradient â€” no hard edge */
   mask-image: linear-gradient(
     to right,
     transparent 0,
@@ -312,7 +312,7 @@ max-width: 1280px;
   }
 
   .heroImage {
-    /* Drop the side mask on mobile — image is its own row */
+    /* Drop the side mask on mobile â€” image is its own row */
     mask-image: none;
     -webkit-mask-image: none;
   }
@@ -344,7 +344,7 @@ max-width: 1280px;
 }
 
 /* ============================================
-   BACKGROUND CURVE — descends on container hover
+   BACKGROUND CURVE â€” descends on container hover
    ============================================ */
 .bgCurve {
   position: absolute;

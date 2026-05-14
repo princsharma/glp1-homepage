@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./AppMobileCTA.module.css";
 
 export default function AppMobileCTA() {
@@ -56,9 +57,11 @@ export default function AppMobileCTA() {
 
         {/* Hero image — bleeds right */}
         <div className={styles.imageWrap}>
-          <img
-            src="/images/ORANGE GIRL.png"
+          <Image
+            src="/images/ORANGE GIRL.webp"
             alt="Smiling person enjoying a confident moment"
+            fill
+            sizes="(max-width: 900px) 100vw, 640px"
             className={styles.heroImage}
           />
         </div>

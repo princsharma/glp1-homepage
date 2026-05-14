@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./ProductReviews.module.css";
 
 type Review = {
@@ -142,7 +143,14 @@ function ReviewCard({ card }: { card: Card }) {
   if (card.type === "image") {
     return (
       <article className={styles.imageCard}>
-        <img src={card.imageSrc} alt={card.alt} className={styles.cardImage} />
+        <Image
+          src={card.imageSrc}
+          alt={card.alt}
+          width={320}
+          height={220}
+          sizes="(max-width: 768px) 240px, 320px"
+          className={styles.cardImage}
+        />
       </article>
     );
   }
