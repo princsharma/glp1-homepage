@@ -1,29 +1,43 @@
 /* ============================================
-   HEADER — sticky top bar
+   HEADER — fixed glass top bar
    ============================================ */
 .header,
 .headerScrolled {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease,
-    backdrop-filter 0.3s ease;
+  will-change: background-color, box-shadow;
+  background-color: rgba(255, 251, 245, 0.55);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid rgba(229, 224, 216, 0);
+  transition: background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .header {
-  background-color: transparent;
+  box-shadow: none;
 }
 
 .headerScrolled {
-  background-color: rgba(255, 251, 245, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 var(--color-border),
-    0 4px 16px rgba(0, 0, 0, 0.04);
-  position: fixed;
-  top: 0;
+  background-color: rgba(255, 251, 245, 0.78);
+  border-bottom-color: rgba(229, 224, 216, 0.55);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Spacer keeps page content from sliding under the fixed header */
+.spacer {
+  height: 80px;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .spacer {
+    height: 70px;
+  }
 }
 
 .container {

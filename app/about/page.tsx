@@ -8,10 +8,41 @@ export const metadata = {
     "Doctor-led, science-backed GLP-1 weight loss care delivered through secure same-day telehealth visits.",
 };
 
+const SUB_NAV = [
+  { href: "/about", label: "About us", active: true },
+  { href: "/about/how-it-works", label: "How it works" },
+  { href: "/about/clinical-excellence", label: "Clinical excellence" },
+  { href: "/about/innovation", label: "Innovation" },
+  { href: "/about/quality-and-safety", label: "Quality & Safety" },
+];
+
+const SUB_NAV_SECONDARY = [
+  { href: "/contact", label: "Newsroom" },
+  { href: "/contact", label: "Investors" },
+];
+
 const HERO_STATS = [
   { value: "4,000+", label: "Patients Trust Ongo" },
   { value: "Same-Day", label: "Virtual Consultations" },
   { value: "FDA-Approved", label: "GLP-1 Medications" },
+];
+
+const HOW_IT_WORKS_VIDEOS = [
+  {
+    src: "/images/ozmepic-inj.mp4",
+    title: "Ozempic, demystified",
+    caption: "A licensed clinician walks through what to expect.",
+  },
+  {
+    src: "/images/wegovy-inj.mp4",
+    title: "Wegovy, in motion",
+    caption: "From evaluation to your first dose.",
+  },
+  {
+    src: "/images/zepbound-inj.mp4",
+    title: "Zepbound up close",
+    caption: "How GLP-1 therapy fits real lives.",
+  },
 ];
 
 const CORE_PRINCIPLES = [
@@ -23,33 +54,28 @@ const CORE_PRINCIPLES = [
 const WHY_CHOOSE = [
   {
     icon: "💻",
-    title: "Convenience With Trusted Experts",
-    body: "No waiting rooms, no generic plans, and no long hours. Connect with a licensed provider for a same-day virtual consultation, establishing the transparent patient–provider relationship required for prescribing.",
-  },
-  {
-    icon: "💊",
-    title: "Access to Six FDA-Approved GLP-1s",
-    body: "If a licensed provider determines a GLP-1 medication is clinically appropriate for your condition, a prescription may be issued, allowing you to access treatment through a licensed pharmacy.",
-  },
-  {
-    icon: "🌿",
-    title: "Personalized Care Beyond Prescriptions",
-    body: "We believe in a personalized approach. We offer weight-loss plans that combine GLP-1s, nutrition, lifestyle, and expert follow-ups.",
-  },
-  {
-    icon: "📦",
-    title: "Pharmacy-Handled Dispensing",
-    body: "If prescribed, your medication is dispensed by a licensed U.S. pharmacy, which manages secure and timely shipping directly to your home.",
+    title: "Personalized care plans",
+    body: "No waiting rooms, no generic plans. Connect with a licensed provider for a same-day virtual consultation built around your body and goals.",
   },
   {
     icon: "🩺",
-    title: "Evaluations From Weight Loss Specialists",
-    body: "You are evaluated by a licensed professional with years of experience in obesity and overweight treatment. Each prescription is doctor-approved and based on your health condition.",
+    title: "Licensed medical professionals",
+    body: "Board-certified physicians review every case. Prescriptions are issued only when clinically appropriate — never one-size-fits-all.",
   },
   {
-    icon: "🕑",
-    title: "24/7 Reliable Customer Support",
-    body: "The Ongo Weight Loss team is available around the clock to offer responsive support to our patients.",
+    icon: "🌐",
+    title: "Convenient online access",
+    body: "Care from the couch. Secure telehealth visits, follow-ups, and messaging — all without ever sitting in a waiting room.",
+  },
+  {
+    icon: "📦",
+    title: "Discreet & fast delivery",
+    body: "If prescribed, medication ships from a licensed U.S. pharmacy in plain, discreet packaging — typically within 3–5 business days.",
+  },
+  {
+    icon: "💚",
+    title: "Ongoing support & monitoring",
+    body: "We don't disappear after delivery. Your care team checks in, adjusts your plan, and is available 24/7 when questions come up.",
   },
 ];
 
@@ -74,35 +100,24 @@ const STEPS = [
 const VALUES = [
   {
     icon: "🤝",
-    title: "Judgment Free Care",
-    body: "Your body is unique, and we respect it. Our goal is to help you feel confident and supported as you reach your health goals.",
+    title: "Patient First",
+    body: "Every decision is made for better outcomes — clinical, emotional, and practical. Your experience drives every product choice we make.",
   },
   {
-    icon: "📊",
-    title: "Evidence-Based Outcomes",
-    body: "Our team focuses on evidence-based treatment plans designed to support safe, sustainable weight loss.",
+    icon: "🔍",
+    title: "Transparency",
+    body: "Clear pricing. Honest guidance. No hidden fees, no surprise add-ons. You always know what care costs and why it's recommended.",
   },
   {
-    icon: "🧬",
-    title: "Led By Science",
-    body: "Doctors thoroughly evaluate your health and use science-based decisions. They prescribe only FDA-approved medications.",
+    icon: "🚀",
+    title: "Innovation",
+    body: "Modern solutions for modern problems. We combine clinical rigor with thoughtful technology to make care faster, kinder, and smarter.",
   },
   {
     icon: "💚",
-    title: "Empathy With Expertise",
-    body: "We offer more than medical solutions — we provide step-by-step guidance, constant tracking, and post-treatment support to help you achieve lasting results.",
+    title: "Care & Support",
+    body: "Continuous patient support — before, during, and long after your first dose. Real humans, available when life happens.",
   },
-  {
-    icon: "🔬",
-    title: "Backed By Science",
-    body: "All GLP-1 medications are tested for weight loss or type 2 diabetes. Licensed specialists guide you and monitor your progress.",
-  },
-];
-
-const VALUE_BADGES = [
-  { value: "100% FDA-Approved", label: "Medications for weight loss or type 2 diabetes" },
-  { value: "Licensed", label: "Weight loss specialists" },
-  { value: "Clinically Proven", label: "Treatment options" },
 ];
 
 const DOCTORS = [
@@ -136,10 +151,22 @@ const DOCTORS = [
   },
 ];
 
-const DELIVERY_BULLETS = [
-  "Secure, pharmacy-managed delivery of medications",
-  "No spillage, damage, or spoilage",
-  "Inclusive of GLP-1 medication user guide",
+const DEEP_PAGES = [
+  { href: "/about/how-it-works", label: "How it works" },
+  { href: "/about/clinical-excellence", label: "Clinical excellence" },
+  { href: "/about/innovation", label: "Innovation" },
+  { href: "/about/quality-and-safety", label: "Quality & Safety" },
+  { href: "/contact", label: "Newsroom", external: true },
+  { href: "/contact", label: "Investors", external: true },
+];
+
+// Arc positions for doctor avatars (% from top-left of the arc box)
+const ARC_POSITIONS = [
+  { left: "10%", top: "78%" },
+  { left: "25%", top: "32%" },
+  { left: "50%", top: "12%" },
+  { left: "75%", top: "32%" },
+  { left: "90%", top: "78%" },
 ];
 
 export default function AboutPage() {
@@ -148,41 +175,80 @@ export default function AboutPage() {
       <Header />
       <main className={styles.page}>
         {/* ============================================
-            HERO
+            HERO — Hims-style massive title + sub-nav
             ============================================ */}
-        <section className={styles.hero}>
+        <section className={styles.hero} id="about">
+          {/* Sub-navigation pill bar (Hims-style) */}
+          <div className={styles.subNavWrap}>
+            <nav className={styles.subNav} aria-label="About sections">
+              {SUB_NAV.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={`${styles.subNavLink} ${item.active ? styles.subNavActive : ""}`}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <span className={styles.subNavDivider} aria-hidden="true" />
+              {SUB_NAV_SECONDARY.map((item) => (
+                <a key={item.label} href={item.href} className={styles.subNavLink}>
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+
           <div className={styles.heroInner}>
-            <div className={styles.heroCopy}>
-              <p className={styles.eyebrow}>ABOUT ONGO WEIGHT LOSS</p>
-              <h1 className={styles.heading}>
-                Transforming lives through{" "}
-                <span className={styles.headingAccent}>
-                  healthy weight management
-                </span>
-              </h1>
-              <p className={styles.subcopy}>
-                Ongo Weight Loss offers customized weight-loss programs based on
-                your health profile. Our state-certified doctors assess your
-                needs and prescribe FDA-approved medications to help you achieve
-                safe, effective results.
-              </p>
-              <div className={styles.heroCtas}>
-                <a href="/weightloss-onboard" className={styles.primaryBtn}>
-                  Start My Free Evaluation →
-                </a>
-                <a href="/contact" className={styles.secondaryBtn}>
-                  Talk to our team
-                </a>
+            <p className={styles.heroEyebrow}>EXPERIENCE THE POWER OF</p>
+            <h1 className={styles.heroHeading}>
+              <span className={styles.heroHeadingAccent}>Better health</span>
+              <br />
+              for a better you
+            </h1>
+
+            <div className={styles.heroStage}>
+              <svg
+                className={styles.heroCurve}
+                viewBox="0 0 800 800"
+                aria-hidden="true"
+              >
+                <defs>
+                  <path
+                    id="aboutHeroArc"
+                    d="M 400, 400 m -340, 0 a 340,340 0 1,1 680,0 a 340,340 0 1,1 -680,0"
+                  />
+                </defs>
+                <text className={styles.heroCurveText}>
+                  <textPath href="#aboutHeroArc" startOffset="0">
+                    Better Health · Better Care · Better You · Better Health · Better Care · Better You ·
+                  </textPath>
+                </text>
+              </svg>
+
+              <div className={styles.heroPortraitWrap}>
+                <img
+                  src="/images/Margaret.webp"
+                  alt="A patient who chose Ongo"
+                  className={styles.heroPortrait}
+                  loading="eager"
+                />
               </div>
             </div>
 
-            <div className={styles.heroVisual} aria-hidden="true">
-              <div className={styles.heroBlob} />
-              <img
-                src="/images/Gemini_Generated_Image_56dfmw56dfmw56df 1.png"
-                alt=""
-                className={styles.heroImage}
-              />
+            <p className={styles.heroSubcopy}>
+              Doctor-led GLP-1 weight loss programs — built around your body,
+              your goals, and your life. Telehealth-first, evidence-backed,
+              never one-size-fits-all.
+            </p>
+
+            <div className={styles.heroCtas}>
+              <a href="/weightloss-onboard" className={styles.primaryBtn}>
+                Start My Free Evaluation →
+              </a>
+              <a href="/contact" className={styles.secondaryBtn}>
+                Talk to our team
+              </a>
             </div>
           </div>
 
@@ -198,39 +264,130 @@ export default function AboutPage() {
         </section>
 
         {/* ============================================
-            MISSION
+            EDITORIAL STATEMENT — "Your health is personal."
+            Hims-style massive heading + highlight-on-faded body
             ============================================ */}
-        <section className={styles.section}>
-          <div className={styles.sectionTwoCol}>
-            <div className={styles.colCopy}>
-              <p className={styles.eyebrow}>OUR MISSION</p>
+        <section className={styles.editorialSection}>
+          <div className={styles.editorialInner}>
+            <h2 className={styles.editorialHeading}>
+              Your health is personal.
+              <br />
+              Now, so is your care.
+            </h2>
+            <p className={styles.editorialBody}>
+              <span className={styles.editorialFaded}>
+                Whether you&apos;re looking for an{" "}
+              </span>
+              <span className={styles.editorialAccent}>innovative</span>
+              <span className={styles.editorialFaded}>
+                {" "}treatment or a tried-and-true generic option, Ongo connects
+                you with a{" "}
+              </span>
+              <span className={styles.editorialBright}>
+                licensed medical provider
+              </span>
+              <span className={styles.editorialFaded}>
+                {" "}in your state to assess your{" "}
+              </span>
+              <span className={styles.editorialBright}>
+                symptoms and health history
+              </span>
+              <span className={styles.editorialFaded}>
+                {" "}on a 1-to-1 basis to determine what is right for you. Your
+                provider recommends a{" "}
+              </span>
+              <span className={styles.editorialAccentWarm}>
+                personalized treatment plan
+              </span>
+              <span className={styles.editorialFaded}>
+                {" "}based on your unique needs and goals. This customer-centric
+                approach doesn&apos;t stop at delivery — through the Ongo app
+                you can{" "}
+              </span>
+              <span className={styles.editorialBright}>
+                message your Care Team 24/7
+              </span>
+              <span className={styles.editorialFaded}>
+                {" "}at no additional cost.
+              </span>
+            </p>
+          </div>
+        </section>
+
+        {/* ============================================
+            HOW IT WORKS — videos
+            ============================================ */}
+        <section className={styles.videoSection}>
+          <div className={styles.sectionContainer}>
+            <header className={styles.sectionHeader}>
+              <p className={styles.eyebrow}>HOW IT WORKS</p>
               <h2 className={styles.sectionHeading}>
-                Healthier lives,{" "}
-                <span className={styles.headingAccent}>
-                  effective weight loss solutions
-                </span>
+                See Ongo{" "}
+                <span className={styles.headingAccent}>in motion</span>
               </h2>
               <p className={styles.sectionLead}>
-                Our mission is to make your weight loss journey simple and
-                achievable. We create personalized plans tailored to your health
-                needs. Through virtual consultations, our licensed doctors guide
-                you every step of the way.
+                Real GLP-1 medications, real telehealth visits — a short look
+                at the experience our patients receive.
               </p>
-            </div>
+            </header>
 
-            <div className={styles.principlesCard}>
-              <span className={styles.principlesLabel}>Our core principles</span>
-              <ul className={styles.principlesList}>
-                {CORE_PRINCIPLES.map((p) => (
-                  <li key={p} className={styles.principleItem}>
-                    <span className={styles.principleCheck} aria-hidden="true">
-                      ✓
-                    </span>
-                    <span>{p}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className={styles.videoGrid}>
+              {HOW_IT_WORKS_VIDEOS.map((v) => (
+                <article key={v.title} className={styles.videoCard}>
+                  <div className={styles.videoWrap}>
+                    <video
+                      className={styles.video}
+                      src={v.src}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                  </div>
+                  <h3 className={styles.videoTitle}>{v.title}</h3>
+                  <p className={styles.videoCaption}>{v.caption}</p>
+                </article>
+              ))}
             </div>
+          </div>
+        </section>
+
+        {/* ============================================
+            BIG STAT / TESTIMONIAL CARDS — Hims-style
+            ============================================ */}
+        <section className={styles.statCardsSection}>
+          <div className={styles.statCardsGrid}>
+            <article className={styles.statCard}>
+              <p className={styles.statCardBig}>
+                &ldquo;Out of 5 stars, I&apos;d give Ongo 6.&rdquo;
+              </p>
+              <div className={styles.statCardFooter}>
+                <span className={styles.statCardName}>— Brandon, 44</span>
+                <span className={styles.statCardRole}>Real Ongo patient</span>
+              </div>
+            </article>
+
+            <article className={styles.statCard}>
+              <p className={styles.statCardNumber}>4,000+*</p>
+              <p className={styles.statCardSmall}>active patients</p>
+              <div className={styles.statCardFooter}>
+                <span className={styles.statCardRole}>
+                  *Patients currently enrolled in an Ongo GLP-1 plan as of this
+                  quarter.
+                </span>
+              </div>
+            </article>
+
+            <article className={styles.statCard}>
+              <p className={styles.statCardBig}>
+                &ldquo;Ongo has changed my life for the better.&rdquo;
+              </p>
+              <div className={styles.statCardFooter}>
+                <span className={styles.statCardName}>— Stephanie, 32</span>
+                <span className={styles.statCardRole}>Real Ongo patient</span>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -262,13 +419,7 @@ export default function AboutPage() {
               <p>
                 We started Ongo to act as a bridge between patients and doctors,
                 offering a virtual platform where you can achieve your
-                weight-loss goals comfortably at home. Our mission is to expand
-                access to safe, evidence-based obesity care through secure,
-                same-day telehealth visits with licensed medical professionals.
-              </p>
-              <p>
-                We offer expert guidance and science-backed solutions tailored
-                to your unique health needs.
+                weight-loss goals comfortably at home.
               </p>
             </blockquote>
 
@@ -298,9 +449,8 @@ export default function AboutPage() {
                 <span className={styles.headingAccent}>Ongo Weight Loss</span>
               </h2>
               <p className={styles.sectionLead}>
-                Why wait in a crowded hall? Consult your doctor digitally. With
-                our pioneering approach, healthcare is convenient — and care is
-                personalized to support long-term, healthier habits.
+                A pioneering approach to healthcare — convenient, personalized,
+                and designed for long-term, healthier habits.
               </p>
             </header>
 
@@ -319,9 +469,76 @@ export default function AboutPage() {
         </section>
 
         {/* ============================================
+            MISSION
+            ============================================ */}
+        <section className={styles.missionSection}>
+          <div className={styles.sectionTwoCol}>
+            <div className={styles.colCopy}>
+              <p className={styles.eyebrow}>OUR MISSION</p>
+              <h2 className={styles.sectionHeading}>
+                Healthier lives,{" "}
+                <span className={styles.headingAccent}>
+                  effective weight loss solutions
+                </span>
+              </h2>
+              <p className={styles.sectionLead}>
+                We aim to make healthcare more accessible, transparent, and
+                patient-focused. By combining technology with medical expertise,
+                we're redefining how people experience care.
+              </p>
+            </div>
+
+            <div className={styles.principlesCard}>
+              <span className={styles.principlesLabel}>Our core principles</span>
+              <ul className={styles.principlesList}>
+                {CORE_PRINCIPLES.map((p) => (
+                  <li key={p} className={styles.principleItem}>
+                    <span className={styles.principleCheck} aria-hidden="true">
+                      ✓
+                    </span>
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================
+            CORE VALUES
+            ============================================ */}
+        <section className={styles.section}>
+          <div className={styles.sectionContainer}>
+            <header className={styles.sectionHeader}>
+              <p className={styles.eyebrow}>OUR CORE VALUES</p>
+              <h2 className={styles.sectionHeading}>
+                Building emotional trust{" "}
+                <span className={styles.headingAccent}>&amp; brand identity</span>
+              </h2>
+              <p className={styles.sectionLead}>
+                Four values shape every decision we make — from how we hire
+                clinicians to how we design your follow-up.
+              </p>
+            </header>
+
+            <div className={styles.valuesGrid}>
+              {VALUES.map((v) => (
+                <article key={v.title} className={styles.valueCard}>
+                  <span className={styles.valueIcon} aria-hidden="true">
+                    {v.icon}
+                  </span>
+                  <h3 className={styles.valueTitle}>{v.title}</h3>
+                  <p className={styles.valueBody}>{v.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================
             STEPS
             ============================================ */}
-        <section className={styles.stepsSection}>
+        <section className={styles.stepsSection} id="how-it-works">
           <div className={styles.sectionContainer}>
             <header className={styles.sectionHeader}>
               <p className={styles.eyebrow}>HOW IT WORKS</p>
@@ -347,47 +564,7 @@ export default function AboutPage() {
         </section>
 
         {/* ============================================
-            CORE VALUES
-            ============================================ */}
-        <section className={styles.section}>
-          <div className={styles.sectionContainer}>
-            <header className={styles.sectionHeader}>
-              <p className={styles.eyebrow}>OUR CORE VALUES</p>
-              <h2 className={styles.sectionHeading}>
-                Science meets a{" "}
-                <span className={styles.headingAccent}>patient-first approach</span>
-              </h2>
-              <p className={styles.sectionLead}>
-                We blend medical rigor with empathy to deliver a pioneering
-                patient experience.
-              </p>
-            </header>
-
-            <div className={styles.valuesGrid}>
-              {VALUES.map((v) => (
-                <article key={v.title} className={styles.valueCard}>
-                  <span className={styles.valueIcon} aria-hidden="true">
-                    {v.icon}
-                  </span>
-                  <h3 className={styles.valueTitle}>{v.title}</h3>
-                  <p className={styles.valueBody}>{v.body}</p>
-                </article>
-              ))}
-            </div>
-
-            <div className={styles.badgeStrip}>
-              {VALUE_BADGES.map((b) => (
-                <div key={b.value} className={styles.badgeItem}>
-                  <span className={styles.badgeValue}>{b.value}</span>
-                  <span className={styles.badgeLabel}>{b.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ============================================
-            DOCTORS
+            DOCTORS — arc preview + grid
             ============================================ */}
         <section className={styles.doctorsSection}>
           <div className={styles.sectionContainer}>
@@ -399,9 +576,48 @@ export default function AboutPage() {
               </h2>
               <p className={styles.sectionLead}>
                 U.S. board-certified clinicians with interdisciplinary expertise
-                and years of experience — invested in the best patient outcomes.
+                — invested in the best patient outcomes.
               </p>
             </header>
+
+            {/* Doctor arc composition */}
+            <div className={styles.doctorArc} aria-hidden="true">
+              <svg
+                className={styles.doctorArcSvg}
+                viewBox="0 0 800 350"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M 60,290 Q 400,-30 740,290"
+                  fill="none"
+                  stroke="var(--color-primary-soft)"
+                  strokeWidth="2"
+                  strokeDasharray="6 8"
+                />
+              </svg>
+              {DOCTORS.slice(0, 4).map((d, i) => (
+                <span
+                  key={d.name}
+                  className={styles.doctorArcAvatar}
+                  style={{
+                    left: ARC_POSITIONS[i].left,
+                    top: ARC_POSITIONS[i].top,
+                  }}
+                >
+                  <img src={d.image} alt="" />
+                </span>
+              ))}
+              {/* Center extra avatar — use first doctor */}
+              <span
+                className={styles.doctorArcAvatar}
+                style={{
+                  left: ARC_POSITIONS[4].left,
+                  top: ARC_POSITIONS[4].top,
+                }}
+              >
+                <img src={DOCTORS[0].image} alt="" />
+              </span>
+            </div>
 
             <div className={styles.doctorsGrid}>
               {DOCTORS.map((d) => (
@@ -411,6 +627,7 @@ export default function AboutPage() {
                       src={d.image}
                       alt={`Portrait of ${d.name}`}
                       className={styles.doctorPhoto}
+                      loading="lazy"
                     />
                   </div>
                   <div className={styles.doctorHeader}>
@@ -446,43 +663,25 @@ export default function AboutPage() {
         </section>
 
         {/* ============================================
-            DELIVERY
+            MORE TO EXPLORE — deep pages
             ============================================ */}
-        <section className={styles.section}>
-          <div className={styles.deliveryInner}>
-            <div className={styles.deliveryVisual}>
-              <img
-                src="/images/glp-d.webp"
-                alt="GLP-1 medications delivered to your doorstep"
-                className={styles.deliveryImage}
-              />
-            </div>
-
-            <div className={styles.deliveryCopy}>
-              <p className={styles.eyebrow}>DELIVERY</p>
-              <h2 className={styles.sectionHeading}>
-                GLP-1 medications{" "}
-                <span className={styles.headingAccent}>to your doorstep</span>
-              </h2>
-              <p className={styles.sectionLead}>
-                Once approved, your prescription is sent to a licensed U.S.
-                pharmacy. Your FDA-approved GLP-1 medications are shipped to
-                your doorstep in 3 to 5 business days.
-              </p>
-              <ul className={styles.deliveryList}>
-                {DELIVERY_BULLETS.map((b) => (
-                  <li key={b} className={styles.deliveryItem}>
-                    <span className={styles.deliveryCheck} aria-hidden="true">
-                      ✓
-                    </span>
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <a href="/weightloss-onboard" className={styles.primaryBtn}>
-                Get started →
-              </a>
-            </div>
+        <section className={styles.exploreSection}>
+          <div className={styles.exploreInner}>
+            <p className={styles.exploreEyebrow}>More to explore</p>
+            <ul className={styles.exploreList}>
+              {DEEP_PAGES.map((p) => (
+                <li key={p.label}>
+                  <a href={p.href} className={styles.exploreLink}>
+                    <span>{p.label}</span>
+                    {p.external && (
+                      <span className={styles.exploreArrow} aria-hidden="true">
+                        ↗
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -498,8 +697,8 @@ export default function AboutPage() {
             </h2>
             <p className={styles.ctaCopy}>
               Embrace your fitness journey with Ongo Weight Loss. Guided by
-              licensed providers, step into a healthier and more confident you —
-              on a HIPAA-compliant platform aligned with federal and state
+              licensed providers, step into a healthier and more confident you
+              — on a HIPAA-compliant platform aligned with federal and state
               telehealth regulations.
             </p>
             <div className={styles.ctaButtons}>

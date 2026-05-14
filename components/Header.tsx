@@ -101,6 +101,7 @@ export default function Header() {
 
   return (
     <>
+      <div className={styles.spacer} aria-hidden="true" />
       <header className={isScrolled ? styles.headerScrolled : styles.header}>
         <div className={styles.container}>
           <button
