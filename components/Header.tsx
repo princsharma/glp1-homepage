@@ -30,10 +30,29 @@ export default function Header() {
   const [activeId, setActiveId] = useState("hero");
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    let rafId = 0;
+    let last = window.scrollY > 20;
+    setIsScrolled(last);
+
+    const check = () => {
+      rafId = 0;
+      const next = window.scrollY > 20;
+      if (next !== last) {
+        last = next;
+        setIsScrolled(next);
+      }
+    };
+
+    const onScroll = () => {
+      if (rafId !== 0) return;
+      rafId = requestAnimationFrame(check);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== 0) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {

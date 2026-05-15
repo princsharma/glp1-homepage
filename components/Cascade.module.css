@@ -4,9 +4,7 @@
 .wrapper {
   opacity: 0;
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.8s ease;
-  filter: blur(4px);
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -33,7 +31,6 @@
 .visible {
   opacity: 1;
   transform: translate(0, 0);
-  filter: blur(0);
 }
 
 /* ============================================
@@ -43,7 +40,6 @@
   .wrapper {
     transition: opacity 0.3s ease;
     transform: none !important;
-    filter: none !important;
     opacity: 1;
   }
 }

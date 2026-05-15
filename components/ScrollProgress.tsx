@@ -1,38 +1,54 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import styles from "./ScrollProgress.module.css";
 
 export default function ScrollProgress() {
-  const [progress, setProgress] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const updateProgress = () => {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+    const bar = barRef.current;
+    if (!bar) return;
 
-      // Avoid division by zero on short pages
-      const percentage = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      setProgress(percentage);
+    // Cache docHeight — only changes on resize or when content reflows.
+    let docHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
+    let rafId = 0;
+
+    const write = () => {
+      rafId = 0;
+      const pct = docHeight > 0 ? window.scrollY / docHeight : 0;
+      bar.style.transform = `scaleX(${pct})`;
     };
 
-    updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
+    const onScroll = () => {
+      if (rafId !== 0) return;
+      rafId = requestAnimationFrame(write);
+    };
+
+    // ResizeObserver fires when the document grows/shrinks (images loading,
+    // fonts swapping, accordions opening). Cheaper than reading scrollHeight
+    // on every scroll tick.
+    const ro = new ResizeObserver(() => {
+      docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      onScroll();
+    });
+    ro.observe(document.documentElement);
+
+    write(); // initial paint
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
+      ro.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== 0) cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <div className={styles.track} aria-hidden="true">
-      <div
-        className={styles.bar}
-        style={{ transform: `scaleX(${progress / 100})` }}
-      />
+      <div ref={barRef} className={styles.bar} />
     </div>
   );
 }

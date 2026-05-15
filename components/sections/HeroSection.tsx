@@ -61,56 +61,115 @@ useEffect(() => {
   const track = trackRef.current;
   if (!wrap || !track) return;
 
-  // Skip 3D rotation on mobile — let CSS marquee handle it flat
+  const prefersReducedMotion =
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+  if (prefersReducedMotion) return;
+
   const isMobile = () => window.innerWidth <= 767;
 
-  let rafId: number;
+  const cardEls = Array.from(track.children) as HTMLElement[];
+  const rectBuffer: DOMRect[] = new Array(cardEls.length);
 
+  let rafId = 0;
+  let isVisible = false;
+  let wrapRect = wrap.getBoundingClientRect();
+
+  const clearTransforms = () => {
+    for (let i = 0; i < cardEls.length; i++) cardEls[i].style.transform = "";
+  };
+
+  // Single rAF frame: read ALL rects first, then write ALL transforms.
   const update = () => {
-    // If we're on mobile, reset transforms and stop the loop
-    if (isMobile()) {
-      const cards = track.children;
-      for (let i = 0; i < cards.length; i++) {
-        const card = cards[i] as HTMLElement;
-        card.style.transform = "";
-      }
-      return; // Don't schedule next frame
+    if (!isVisible || isMobile()) {
+      rafId = 0;
+      return;
     }
 
-    const wrapRect = wrap.getBoundingClientRect();
+    // READ PASS — batch all layout reads
     const wrapCenter = wrapRect.left + wrapRect.width / 2;
     const wrapHalfWidth = wrapRect.width / 2;
+    for (let i = 0; i < cardEls.length; i++) {
+      rectBuffer[i] = cardEls[i].getBoundingClientRect();
+    }
 
-    const cards = track.children;
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i] as HTMLElement;
-      const cardRect = card.getBoundingClientRect();
+    // WRITE PASS — only transforms (composited, no layout invalidation)
+    for (let i = 0; i < cardEls.length; i++) {
+      const cardRect = rectBuffer[i];
       const cardCenter = cardRect.left + cardRect.width / 2;
-
       const distance = (cardCenter - wrapCenter) / wrapHalfWidth;
-      const clamped = Math.max(-1.2, Math.min(1.2, distance));
-
+      const clamped = distance < -1.2 ? -1.2 : distance > 1.2 ? 1.2 : distance;
       const rotateY = clamped * -45;
       const translateZ = -Math.abs(clamped) * 100;
-
-      card.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px)`;
+      cardEls[i].style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px)`;
     }
 
     rafId = requestAnimationFrame(update);
   };
 
-  // Re-run when window resizes (handles user rotating phone or resizing browser)
-  const handleResize = () => {
-    cancelAnimationFrame(rafId);
+  const start = () => {
+    if (rafId !== 0) return;
+    if (isMobile()) {
+      clearTransforms();
+      return;
+    }
     rafId = requestAnimationFrame(update);
   };
 
-  rafId = requestAnimationFrame(update);
+  const stop = () => {
+    if (rafId !== 0) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+  };
+
+  // Only animate while the marquee is on-screen.
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) start();
+      else stop();
+    },
+    { rootMargin: "100px 0px" }
+  );
+  io.observe(wrap);
+
+  // Recompute wrap rect on resize only (it doesn't move during scroll within
+  // the page in any way that affects the math — the wrap stays put).
+  let resizeRaf = 0;
+  const handleResize = () => {
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      wrapRect = wrap.getBoundingClientRect();
+      if (isMobile()) {
+        stop();
+        clearTransforms();
+      } else if (isVisible) {
+        start();
+      }
+    });
+  };
+
+  // The wrap can also be reflowed by scrolling (sticky header, etc.), so
+  // refresh its rect on scroll, but only with a passive listener + rAF.
+  let scrollRaf = 0;
+  const handleScroll = () => {
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => {
+      wrapRect = wrap.getBoundingClientRect();
+      scrollRaf = 0;
+    });
+  };
+
   window.addEventListener("resize", handleResize);
+  window.addEventListener("scroll", handleScroll, { passive: true });
 
   return () => {
-    cancelAnimationFrame(rafId);
+    io.disconnect();
+    stop();
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    if (scrollRaf) cancelAnimationFrame(scrollRaf);
     window.removeEventListener("resize", handleResize);
+    window.removeEventListener("scroll", handleScroll);
   };
 }, []);
 

@@ -144,6 +144,7 @@ export default function CreateGLP1Plan() {
               muted
               loop
               playsInline
+              preload="metadata"
             >
               <source src={selected.videoSrc} type="video/mp4" />
             </video>

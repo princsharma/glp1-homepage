@@ -65,11 +65,17 @@ export default function ThemeSwitcher() {
     localStorage.setItem(STORAGE_KEY, theme.id);
   };
 
-  // Read saved theme on mount
+  // Read saved theme on mount. Skip applying when the saved theme matches the
+  // default already baked into globals.css — avoids a needless style recalc on
+  // first paint.
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    const theme = THEMES.find((t) => t.id === saved) || THEMES[0];
-    applyTheme(theme);
+    if (!saved || saved === THEMES[0].id) {
+      setActiveId(THEMES[0].id);
+      return;
+    }
+    const theme = THEMES.find((t) => t.id === saved);
+    if (theme) applyTheme(theme);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

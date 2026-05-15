@@ -9,12 +9,29 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setVisible(window.scrollY > SHOW_AFTER);
+    let rafId = 0;
+    let lastVisible = window.scrollY > SHOW_AFTER;
+    setVisible(lastVisible);
+
+    const check = () => {
+      rafId = 0;
+      const next = window.scrollY > SHOW_AFTER;
+      if (next !== lastVisible) {
+        lastVisible = next;
+        setVisible(next);
+      }
     };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const onScroll = () => {
+      if (rafId !== 0) return;
+      rafId = requestAnimationFrame(check);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== 0) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const handleClick = () => {
