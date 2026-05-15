@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./Header.module.css";
 import ThemeSwitcher from "./ThemeSwitcher";
 
@@ -19,8 +20,26 @@ const NAV_LINKS = [
   { id: "get-started", label: "Get Started" },
 ];
 
-const PAGE_LINKS = [
-  { href: "/about", label: "About" },
+type PageLink = {
+  href: string;
+  label: string;
+  children?: { href: string; label: string }[];
+};
+
+const PAGE_LINKS: PageLink[] = [
+  {
+    href: "/about",
+    label: "About",
+    children: [
+      { href: "/about", label: "About us" },
+      { href: "/about/how-it-works", label: "How it works" },
+      { href: "/about/clinical-excellence", label: "Clinical excellence" },
+      { href: "/about/innovation", label: "Innovation" },
+      { href: "/about/quality-and-safety", label: "Quality & Safety" },
+      { href: "/contact", label: "Newsroom" },
+      { href: "/contact", label: "Investors" },
+    ],
+  },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -129,20 +148,51 @@ export default function Header() {
             onClick={handleLogoClick}
             aria-label="Go to top"
           >
-            <span className={styles.logoMark}>◆</span>
-            <span className={styles.logoText}>OngoWeightLoss</span>
+            <span className={styles.logoMark}>
+              <Image
+                src="/images/ongo-weight-loss-logo.webp"
+                alt="Ongo Weight Loss"
+                width={220}
+                height={144}
+                priority
+              />
+            </span>
+            {/* <span className={styles.logoText}>OngoWeightLoss</span> */}
           </button>
 
           <nav className={styles.midNav} aria-label="Primary pages">
-            {PAGE_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={styles.midNavLink}
-              >
-                {link.label}
-              </a>
-            ))}
+            {PAGE_LINKS.map((link) =>
+              link.children ? (
+                <div key={link.href} className={styles.midNavItem}>
+                  <a href={link.href} className={styles.midNavLink}>
+                    {link.label}
+                    <span className={styles.midNavChevron} aria-hidden="true">
+                      ▾
+                    </span>
+                  </a>
+                  <div className={styles.midNavDropdown} role="menu">
+                    {link.children.map((child) => (
+                      <a
+                        key={child.label}
+                        href={child.href}
+                        className={styles.midNavDropdownLink}
+                        role="menuitem"
+                      >
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={styles.midNavLink}
+                >
+                  {link.label}
+                </a>
+              )
+            )}
           </nav>
 
           <div className={styles.headerActions}>
@@ -182,7 +232,14 @@ export default function Header() {
               onClick={handleLogoClick}
               aria-label="Go to top"
             >
-              <span className={styles.drawerLogoMark}>◆</span>
+              <span className={styles.drawerLogoMark}>
+                <Image
+                  src="/images/ongo-weight-loss-logo.webp"
+                  alt="Ongo Weight Loss"
+                  width={112}
+                  height={112}
+                />
+              </span>
               <span className={styles.drawerLogoText}>Ongo</span>
             </button>
 

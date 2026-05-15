@@ -71,8 +71,12 @@ body {
   color: var(--color-text);
   font-family:
     var(--font-teachers), "Teachers", "Helvetica Neue", Arial, sans-serif;
-    
-    overflow-x: hidden;
+  /* `overflow-x: hidden` on body turns it into a scroll container and
+     breaks `position: sticky` for descendants. `overflow-x: clip` prevents
+     horizontal scroll WITHOUT creating a scroll container. Older browsers
+     ignore `clip` and fall back to the previous `hidden` declaration. */
+  overflow-x: hidden;
+  overflow-x: clip;
 }
  
 * {

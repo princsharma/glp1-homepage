@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import DoctorsConstellation from "./DoctorsConstellation";
 import styles from "./About.module.css";
 
 export const metadata = {
@@ -77,6 +78,31 @@ const WHY_CHOOSE = [
     icon: "💚",
     title: "Ongoing support & monitoring",
     body: "We don't disappear after delivery. Your care team checks in, adjusts your plan, and is available 24/7 when questions come up.",
+  },
+  {
+    icon: "✅",
+    title: "FDA-approved GLP-1 options",
+    body: "When clinically appropriate, your provider can prescribe FDA-approved GLP-1 medications such as Ozempic, Wegovy, and Zepbound — sourced through licensed channels.",
+  },
+  {
+    icon: "🏥",
+    title: "Pharmacy-handled dispensing",
+    body: "Every prescription is filled by a licensed U.S. pharmacy that manages secure storage, cold-chain shipping, and refill coordination on your behalf.",
+  },
+  {
+    icon: "🔬",
+    title: "Weight-loss specialist evaluations",
+    body: "Your case is reviewed by clinicians with focused experience in obesity medicine and metabolic health — not a generalist running a questionnaire.",
+  },
+  {
+    icon: "🕒",
+    title: "24/7 messaging access",
+    body: "Side effect questions at 11pm? Dose adjustment between visits? Your Care Team is reachable around the clock through secure in-app messaging.",
+  },
+  {
+    icon: "💸",
+    title: "Transparent, flat pricing",
+    body: "One clear monthly cost. No hidden visit fees, no surprise add-ons, no upsells — you always know exactly what your care includes.",
   },
 ];
 
@@ -161,15 +187,6 @@ const DEEP_PAGES = [
   { href: "/contact", label: "Investors", external: true },
 ];
 
-// Arc positions for doctor avatars (% from top-left of the arc box)
-const ARC_POSITIONS = [
-  { left: "10%", top: "78%" },
-  { left: "25%", top: "32%" },
-  { left: "50%", top: "12%" },
-  { left: "75%", top: "32%" },
-  { left: "90%", top: "78%" },
-];
-
 export default function AboutPage() {
   return (
     <>
@@ -179,65 +196,59 @@ export default function AboutPage() {
             HERO — Hims-style massive title + sub-nav
             ============================================ */}
         <section className={styles.hero} id="about">
-          {/* Sub-navigation pill bar (Hims-style) */}
-          <div className={styles.subNavWrap}>
-            <nav className={styles.subNav} aria-label="About sections">
-              {SUB_NAV.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={`${styles.subNavLink} ${item.active ? styles.subNavActive : ""}`}
-                >
-                  {item.label}
-                </a>
-              ))}
-              <span className={styles.subNavDivider} aria-hidden="true" />
-              {SUB_NAV_SECONDARY.map((item) => (
-                <a key={item.label} href={item.href} className={styles.subNavLink}>
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-
           <div className={styles.heroInner}>
             <p className={styles.heroEyebrow}>EXPERIENCE THE POWER OF</p>
-            <h1 className={styles.heroHeading}>
-              <span className={styles.heroHeadingAccent}>Better health</span>
-              <br />
-              for a better you
-            </h1>
 
             <div className={styles.heroStage}>
-              <svg
-                className={styles.heroCurve}
-                viewBox="0 0 800 800"
-                aria-hidden="true"
-              >
-                <defs>
-                  <path
-                    id="aboutHeroArc"
-                    d="M 400, 400 m -340, 0 a 340,340 0 1,1 680,0 a 340,340 0 1,1 -680,0"
-                  />
-                </defs>
-                <text className={styles.heroCurveText}>
-                  <textPath href="#aboutHeroArc" startOffset="0">
-                    Better Health · Better Care · Better You · Better Health · Better Care · Better You ·
-                  </textPath>
-                </text>
-              </svg>
+              {/* Clip wrapper — only the top half of the rotating SVG circle
+                  is visible. The full circle rotates continuously underneath. */}
+              <div className={styles.heroCurveClip} aria-hidden="true">
+                <svg
+                  className={styles.heroCurve}
+                  viewBox="0 0 800 800"
+                >
+                  <defs>
+                    {/* Full circle path. Text wraps the whole circumference;
+                        rotating the SVG makes the text appear to scroll along
+                        the top arc seamlessly (no offset reset, no jump). */}
+                    <path
+                      id="aboutHeroArc"
+                      d="M 400,400 m -340,0 a 340,340 0 1,1 680,0 a 340,340 0 1,1 -680,0"
+                    />
+                  </defs>
+                  <text className={styles.heroCurveText}>
+                    <textPath href="#aboutHeroArc" startOffset="0">
+                      Better Health · Better Care · Better You · Better Health · Better Care · Better You · Better Health · Better Care · Better You ·
+                    </textPath>
+                  </text>
+                </svg>
+              </div>
 
               <div className={styles.heroPortraitWrap}>
                 <Image
-                  src="/images/Margaret.webp"
-                  alt="A patient who chose Ongo"
+                  src="/images/ORANGE GIRL.webp"
+                  alt="Smiling person enjoying a confident moment"
                   fill
-                  sizes="(max-width: 600px) 60vw, 580px"
+                  sizes="(max-width: 600px) 78vw, 360px"
                   priority
                   className={styles.heroPortrait}
                 />
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ============================================
+            INTRO — slides up over the sticky hero.
+            Holds the heading, subcopy, CTAs, and stat strip.
+            ============================================ */}
+        <section className={styles.introSection}>
+          <div className={styles.introInner}>
+            <h1 className={styles.heroHeading}>
+              <span className={styles.heroHeadingAccent}>Better health</span>
+              <br />
+              for a better you
+            </h1>
 
             <p className={styles.heroSubcopy}>
               Doctor-led GLP-1 weight loss programs — built around your body,
@@ -253,16 +264,15 @@ export default function AboutPage() {
                 Talk to our team
               </a>
             </div>
-          </div>
 
-          {/* Stats strip */}
-          <div className={styles.statStrip}>
-            {HERO_STATS.map((s) => (
-              <div key={s.label} className={styles.statItem}>
-                <span className={styles.statValue}>{s.value}</span>
-                <span className={styles.statLabel}>{s.label}</span>
-              </div>
-            ))}
+            <div className={styles.statStrip}>
+              {HERO_STATS.map((s) => (
+                <div key={s.label} className={styles.statItem}>
+                  <span className={styles.statValue}>{s.value}</span>
+                  <span className={styles.statLabel}>{s.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -405,36 +415,44 @@ export default function AboutPage() {
               <span className={styles.headingAccent}>sparked our idea</span>
             </h2>
 
-            <blockquote className={styles.quote}>
-              <span className={styles.quoteMark} aria-hidden="true">
-                “
-              </span>
-              <p>
-                For many years, there was a gap between healthcare services and
-                real patient needs. People waited long hours to see a doctor,
-                while others struggled just to get to the clinic.
-              </p>
-              <p>
-                Patients told us they avoided going out or socializing due to
-                low confidence, mobility issues, or fear of being judged — which
-                made it even harder to seek the care they truly needed.
-              </p>
-              <p>
-                We started Ongo to act as a bridge between patients and doctors,
-                offering a virtual platform where you can achieve your
-                weight-loss goals comfortably at home.
-              </p>
-            </blockquote>
-
-            <div className={styles.signature}>
-              <span className={styles.avatar} aria-hidden="true">
-                DS
-              </span>
-              <div>
-                <p className={styles.founderName}>Deep Chand Sharma</p>
-                <p className={styles.founderTitle}>
-                  Founder &amp; CEO, Ongo Weight Loss
+            <div className={styles.founderGrid}>
+              <blockquote className={styles.quote}>
+                <span className={styles.quoteMark} aria-hidden="true">
+                  “
+                </span>
+                <p>
+                  For many years, there was a gap between healthcare services
+                  and real patient needs. People waited long hours to see a
+                  doctor, while others struggled just to get to the clinic.
                 </p>
+                <p>
+                  Patients told us they avoided going out or socializing due to
+                  low confidence, mobility issues, or fear of being judged —
+                  which made it even harder to seek the care they truly needed.
+                </p>
+                <p>
+                  We started Ongo to act as a bridge between patients and
+                  doctors, offering a virtual platform where you can achieve
+                  your weight-loss goals comfortably at home.
+                </p>
+              </blockquote>
+
+              <div className={styles.founderImageCard}>
+                <div className={styles.founderImageWrap}>
+                  <Image
+                    src="/images/deep.webp"
+                    alt="Deep Chand Sharma, Founder & CEO of Ongo Weight Loss"
+                    fill
+                    sizes="(max-width: 768px) 90vw, 420px"
+                    className={styles.founderImage}
+                  />
+                </div>
+                <div className={styles.founderImageMeta}>
+                  <p className={styles.founderName}>Deep Chand Sharma</p>
+                  <p className={styles.founderTitle}>
+                    Founder &amp; CEO, Ongo Weight Loss
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -583,92 +601,7 @@ export default function AboutPage() {
               </p>
             </header>
 
-            {/* Doctor arc composition */}
-            <div className={styles.doctorArc} aria-hidden="true">
-              <svg
-                className={styles.doctorArcSvg}
-                viewBox="0 0 800 350"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M 60,290 Q 400,-30 740,290"
-                  fill="none"
-                  stroke="var(--color-primary-soft)"
-                  strokeWidth="2"
-                  strokeDasharray="6 8"
-                />
-              </svg>
-              {DOCTORS.slice(0, 4).map((d, i) => (
-                <span
-                  key={d.name}
-                  className={styles.doctorArcAvatar}
-                  style={{
-                    left: ARC_POSITIONS[i].left,
-                    top: ARC_POSITIONS[i].top,
-                  }}
-                >
-                  <Image
-                    src={d.image}
-                    alt=""
-                    width={110}
-                    height={110}
-                    sizes="110px"
-                  />
-                </span>
-              ))}
-              {/* Center extra avatar — use first doctor */}
-              <span
-                className={styles.doctorArcAvatar}
-                style={{
-                  left: ARC_POSITIONS[4].left,
-                  top: ARC_POSITIONS[4].top,
-                }}
-              >
-                <Image
-                  src={DOCTORS[0].image}
-                  alt=""
-                  width={110}
-                  height={110}
-                  sizes="110px"
-                />
-              </span>
-            </div>
-
-            <div className={styles.doctorsGrid}>
-              {DOCTORS.map((d) => (
-                <article key={d.name} className={styles.doctorCard}>
-                  <div className={styles.doctorPhotoWrap}>
-                    <Image
-                      src={d.image}
-                      alt={`Portrait of ${d.name}`}
-                      fill
-                      sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 280px"
-                      className={styles.doctorPhoto}
-                    />
-                  </div>
-                  <div className={styles.doctorHeader}>
-                    <h3 className={styles.doctorName}>{d.name}</h3>
-                    <p className={styles.doctorCredentials}>{d.credentials}</p>
-                  </div>
-                  <p className={styles.doctorBio}>{d.bio}</p>
-                  <a
-                    href={`https://npiregistry.cms.hhs.gov/provider-view/${d.npi}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.npiLink}
-                    aria-label={`Verify ${d.name} on the NPI registry (opens in new tab)`}
-                  >
-                    <span className={styles.npiBadge} aria-hidden="true">
-                      NPI
-                    </span>
-                    <span className={styles.npiNumber}>{d.npi}</span>
-                    <span className={styles.npiArrow} aria-hidden="true">
-                      ↗
-                    </span>
-                  </a>
-                </article>
-              ))}
-            </div>
+            <DoctorsConstellation doctors={DOCTORS} />
 
             <div className={styles.doctorsCta}>
               <a href="/weightloss-onboard" className={styles.primaryBtn}>

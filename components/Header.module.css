@@ -72,13 +72,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-  color: var(--color-surface);
-  font-size: 1rem;
-  font-weight: 700;
+  width: 220px;
+  height: 72px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logoMark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* ============================================
@@ -110,6 +114,74 @@
 .midNavLink:hover {
   color: var(--color-primary-dark);
   background-color: var(--color-primary-soft);
+}
+
+/* Hoverable item wrapper — holds an anchor + its dropdown. */
+.midNavItem {
+  position: relative;
+  display: inline-flex;
+}
+
+.midNavChevron {
+  font-size: 0.65rem;
+  margin-left: 0.3rem;
+  opacity: 0.65;
+  transition: transform 0.18s ease;
+}
+
+.midNavItem:hover .midNavChevron,
+.midNavItem:focus-within .midNavChevron {
+  transform: rotate(180deg);
+}
+
+/* Dropdown panel. Stays in DOM, fades in on hover/focus. */
+.midNavDropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  min-width: 220px;
+  margin-top: 6px;
+  padding: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+  z-index: 60;
+}
+
+.midNavItem:hover .midNavDropdown,
+.midNavItem:focus-within .midNavDropdown {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s;
+}
+
+.midNavDropdownLink {
+  display: block;
+  padding: 0.55rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.midNavDropdownLink:hover,
+.midNavDropdownLink:focus-visible {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }
 
 @media (min-width: 768px) {
@@ -281,13 +353,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
-  font-size: 1rem;
-  font-weight: 700;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.drawerLogoMark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .drawerLogoText {
@@ -744,8 +821,8 @@
   }
 
   .logoMark {
-    width: 32px;
-    height: 32px;
+    width: 56px;
+    height: 56px;
     font-size: 0.9rem;
   }
 
