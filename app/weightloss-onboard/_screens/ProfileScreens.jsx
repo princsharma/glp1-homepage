@@ -31,7 +31,10 @@ export function S19() {
         type="button"
         className="cta"
         disabled={form.s19.length === 0}
-        onClick={() => goTo("s21")}
+        // Profile (s21) is captured earlier in the flow now (right after the
+        // email/password screen), so after ethnicity we jump straight to s22
+        // (address).
+        onClick={() => goTo("s22")}
       >
         Continue
       </button>
@@ -49,8 +52,6 @@ export function S20Email() {
     captureError,
     captureErrorKind,
     isCapturing,
-    resetEmailSent,
-    requestPasswordReset,
   } = useOnboard();
 
   const passwordHint = passwordValidationMessage(form.password);
@@ -110,31 +111,21 @@ export function S20Email() {
       {captureError && (
         <div className="field-err" role="alert">
           {captureError}
-          {captureErrorKind === "EMAIL_REGISTERED_WRONG_PASSWORD" && (
+          {captureErrorKind === "EMAIL_ALREADY_REGISTERED" && (
             <>
               {" "}
-              <button
-                type="button"
-                onClick={requestPasswordReset}
+              <a
+                href="/login"
                 style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
                   color: "inherit",
                   textDecoration: "underline",
-                  cursor: "pointer",
-                  font: "inherit",
+                  fontWeight: 600,
                 }}
               >
-                Send reset email
-              </button>
+                Go to sign in →
+              </a>
             </>
           )}
-        </div>
-      )}
-      {resetEmailSent && (
-        <div className="field-err" role="status">
-          Reset email sent. Check your inbox, then return here and continue.
         </div>
       )}
       <button
@@ -143,7 +134,10 @@ export function S20Email() {
         disabled={!emailScreenIsValid || isCapturing}
         onClick={async () => {
           const ok = await submitMauticOnEmailCapture();
-          if (ok) goTo("s3");
+          // Profile (s21) now comes immediately after the email/password
+          // screen so we capture the user's name/DOB/phone while they're
+          // already in the form-fill mindset.
+          if (ok) goTo("s21");
         }}
       >
         {isCapturing ? "Saving..." : "Continue"}
@@ -272,7 +266,10 @@ export function S21() {
         type="button"
         className="cta"
         disabled={!profileScreenIsValid}
-        onClick={() => goTo("s22")}
+        // Profile screen now sits between email (s20) and the BMI screen
+        // (s3) — so after the user completes their contact info we hand off
+        // to the BMI flow that the rest of the form is built around.
+        onClick={() => goTo("s3")}
       >
         Continue
       </button>

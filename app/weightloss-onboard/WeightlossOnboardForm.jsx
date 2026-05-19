@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthUser } from "@/lib/auth/useAuthUser";
 import "./wlf.css";
 import {
   bmiCategory,
@@ -19,8 +21,7 @@ import {
 import { submitToMautic } from "./mautic";
 import {
   saveOnboardingProgress,
-  sendResetEmail,
-  signInOrSignUp,
+  signUpNewUser,
 } from "./firebaseClient";
 import { PLANS } from "./data";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
@@ -53,14 +54,17 @@ import { IConfirm, DHard, IThanks } from "./_screens/EndStateScreens";
 // Drives the header progress bar — order matters.
 // dHard / iThanks intentionally omitted (off-flow ends).
 const PROGRESS_ORDER = [
-  "s1", "s2", "s3", "iGood", "s20", "iRoad",
+  // Welcome → email/password → personal profile happens upfront so we
+  // capture contact info before the BMI / medical questions kick in.
+  "s1", "s2", "s20", "s21",
+  "s3", "iGood", "iRoad",
   "s4", "s5", "s6",
   "s7", "s7m", "s7b", "s7a", "s7c", "s7d", "s7e",
   "s9", "s9b",
   "s10", "s11",
   "s12", "s13", "s13a", "s14", "s14b", "s15",
   "s16", "s17", "s18",
-  "s19", "s21", "s22", "s22b", "s23",
+  "s19", "s22", "s22b", "s23",
   "sPlan", "sPay", "iConfirm",
 ];
 
@@ -106,7 +110,15 @@ const SCREEN_COMPONENTS = {
   iThanks: IThanks,
 };
 
+// Screens that represent a terminal state — we never want to "resume" a
+// returning user onto one of these; they've effectively finished one path
+// or another. iConfirm is handled separately (status: "onboarded" → dashboard).
+const TERMINAL_SCREENS = new Set(["iConfirm", "iThanks", "dHard"]);
+
 export default function WeightlossOnboardForm() {
+  const router = useRouter();
+  const { user, profile, loading: authLoading } = useAuthUser();
+  const [hydrated, setHydrated] = useState(false);
   const [screen, setScreen] = useState("s1");
   const [form, setForm] = useState(initialForm);
   const [uploadError, setUploadError] = useState("");
@@ -147,12 +159,82 @@ export default function WeightlossOnboardForm() {
   // reference it without hitting the temporal dead zone.
   const [authenticatedUid, setAuthenticatedUid] = useState(null);
   const [captureError, setCaptureError] = useState("");
-  // `captureErrorKind` mirrors the `err.kind` from signInOrSignUp so the
-  // UI can render the right recovery affordance (e.g. forgot-password link
-  // for EMAIL_REGISTERED_WRONG_PASSWORD).
+  // `captureErrorKind` mirrors `err.kind` from signUpNewUser so the email
+  // screen can render the right recovery affordance — e.g. a "Go to sign in"
+  // link for EMAIL_ALREADY_REGISTERED.
   const [captureErrorKind, setCaptureErrorKind] = useState("");
   const [isCapturing, setIsCapturing] = useState(false);
-  const [resetEmailSent, setResetEmailSent] = useState(false);
+
+  // ── Hydration on mount ────────────────────────────────────────────────
+  // Runs once when Firebase Auth has resolved:
+  //   - Signed out                 → fresh start at s1, no changes
+  //   - Signed in, status="onboarded" → redirect to /dashboard/patient
+  //                                     (they already finished; no point
+  //                                     re-entering the form)
+  //   - Signed in, mid-flow        → hydrate `form` from users/{uid} and
+  //                                     jump `screen` to their currentStep
+  //                                     so they resume exactly where they
+  //                                     left off, instead of restarting at s1
+  // Without this effect, a returning patient who clicks "Resume onboarding"
+  // on the dashboard would be sent back to screen s1 with empty fields,
+  // forcing them to click through everything they'd already filled.
+  useEffect(() => {
+    if (authLoading) return;
+    if (hydrated) return;
+
+    // Not signed in → fresh start, no hydration needed.
+    if (!user) {
+      setHydrated(true);
+      return;
+    }
+
+    // Signed in but profile doc isn't readable / doesn't exist yet — proceed
+    // as a fresh form but mark them authenticated so save-progress fires.
+    if (!profile) {
+      setAuthenticatedUid(user.uid);
+      setHydrated(true);
+      return;
+    }
+
+    // They already completed onboarding — send them to their dashboard
+    // instead of letting them restart.
+    if (profile.status === "onboarded") {
+      router.replace("/dashboard/patient");
+      return;
+    }
+
+    // Mid-flow user: restore form state from their saved Firestore doc.
+    const onb = profile.onboarding || {};
+    setForm((prev) => ({
+      ...prev,
+      ...onb,
+      email: profile.email ?? prev.email,
+      firstName: profile.firstName ?? prev.firstName,
+      lastName: profile.lastName ?? prev.lastName,
+      phone: profile.phone ?? prev.phone,
+      dob: profile.dob ?? prev.dob,
+      consentH:
+        profile.consentHIPAA !== undefined
+          ? !!profile.consentHIPAA
+          : prev.consentH,
+      consentT:
+        profile.consentTelehealth !== undefined
+          ? !!profile.consentTelehealth
+          : prev.consentT,
+      // Password is intentionally left as "" — we never store it, and the
+      // user is already authenticated so they won't need to re-enter it.
+    }));
+
+    setAuthenticatedUid(user.uid);
+
+    // Resume at the saved step, unless it's a terminal screen or unknown id.
+    const step = profile.currentStep;
+    if (step && SCREEN_COMPONENTS[step] && !TERMINAL_SCREENS.has(step)) {
+      setScreen(step);
+    }
+
+    setHydrated(true);
+  }, [authLoading, user, profile, hydrated, router]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
@@ -175,18 +257,18 @@ export default function WeightlossOnboardForm() {
 
   // Combined handler for the email screen Continue button:
   //   1. Fire-and-forget the existing Mautic marketing submit (unchanged)
-  //   2. Try sign-in with email+password, fall back to sign-up if no account
+  //   2. Strict sign-up via Firebase Auth. If the email already exists,
+  //      we hard-fail and the UI surfaces a "Go to sign in" link → /login
   //   3. After auth, save the form snapshot to Firestore
   // Returns true on success — the screen uses this to decide whether to goTo.
   const submitMauticOnEmailCapture = useCallback(async () => {
     setCaptureError("");
     setCaptureErrorKind("");
-    setResetEmailSent(false);
     setIsCapturing(true);
     // Existing Mautic marketing capture — fire and forget.
     submitToMautic(form, "s20");
     try {
-      const { uid } = await signInOrSignUp(
+      const { uid } = await signUpNewUser(
         form.email.trim().toLowerCase(),
         form.password,
       );
@@ -203,23 +285,6 @@ export default function WeightlossOnboardForm() {
       setIsCapturing(false);
     }
   }, [form]);
-
-  // Triggered by the "Forgot password?" link shown after a password mismatch
-  // on the email screen. Uses Firebase's built-in reset email template — no
-  // Mautic / custom email needed.
-  const requestPasswordReset = useCallback(async () => {
-    if (!isValidEmail(form.email)) return;
-    try {
-      await sendResetEmail(form.email.trim().toLowerCase());
-      setResetEmailSent(true);
-      setCaptureError("");
-      setCaptureErrorKind("");
-    } catch (err) {
-      setCaptureError(
-        err?.message || "Could not send the reset email. Please try again.",
-      );
-    }
-  }, [form.email]);
 
   const submitMauticOnComplete = useCallback(
     (overrides, step) =>
@@ -381,8 +446,6 @@ export default function WeightlossOnboardForm() {
       captureError,
       captureErrorKind,
       isCapturing,
-      resetEmailSent,
-      requestPasswordReset,
     }),
     [
       screen,
@@ -409,12 +472,36 @@ export default function WeightlossOnboardForm() {
       captureError,
       captureErrorKind,
       isCapturing,
-      resetEmailSent,
-      requestPasswordReset,
     ],
   );
 
   const ScreenComponent = SCREEN_COMPONENTS[screen];
+
+  // Avoid flashing s1 to a returning user while hydration is still resolving.
+  // For brand-new (signed-out) users this loading state typically lasts <100ms
+  // — long enough for Firebase Auth's onAuthStateChanged to fire and confirm
+  // "no session". After that the normal first-screen renders.
+  if (!hydrated) {
+    return (
+      <div className="wlf-root">
+        <div className="wlf-page">
+          <main
+            className="fw"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "50vh",
+              color: "var(--color-text-muted, #5c6b73)",
+              fontSize: 15,
+            }}
+          >
+            Loading your progress…
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <OnboardProvider value={onboardCtx}>

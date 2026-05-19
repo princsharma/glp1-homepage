@@ -24,7 +24,12 @@ export const SECTION_SCREENS = {
   medical:   ["s10", "s11"],
   safety:    ["s12", "s13", "s13a", "s14", "s14b", "s15"],
   lifestyle: ["s16", "s17", "s18"],
-  profile:   ["s19", "s21", "s22", "s22b", "s23"],
+  // s21 (profile: name/DOB/phone/address) used to live at the END of the
+  // form inside this "profile" / Wrap-up section. It now runs right after
+  // s20 (email/password), so it's intentionally NOT mapped to a section —
+  // the form falls back to the linear progress bar for that screen, like
+  // it does for s1, s2, s20. The Wrap-up stepper resumes at s19.
+  profile:   ["s19", "s22", "s22b", "s23"],
 };
 
 export const SCREEN_TO_SECTION = (() => {

@@ -15,14 +15,15 @@ import styles from "./dashboard.module.css";
 // imported to keep the dashboard bundle independent of the onboarding form
 // module. If the form ever gains/loses screens, refresh this list.
 const PROGRESS_ORDER = [
-  "s1", "s2", "s3", "iGood", "s20", "iRoad",
+  "s1", "s2", "s20", "s21",
+  "s3", "iGood", "iRoad",
   "s4", "s5", "s6",
   "s7", "s7m", "s7b", "s7a", "s7c", "s7d", "s7e",
   "s9", "s9b",
   "s10", "s11",
   "s12", "s13", "s13a", "s14", "s14b", "s15",
   "s16", "s17", "s18",
-  "s19", "s21", "s22", "s22b", "s23",
+  "s19", "s22", "s22b", "s23",
   "sPlan", "sPay", "iConfirm",
 ];
 
