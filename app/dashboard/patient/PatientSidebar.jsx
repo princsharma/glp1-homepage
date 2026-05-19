@@ -23,7 +23,9 @@ const NAV = [
   { href: "/dashboard/patient/profile", label: "My details", icon: UserIcon },
   { href: "/dashboard/patient/health", label: "Health profile", icon: HeartIcon },
   { href: "/dashboard/patient/appointments", label: "Appointments", icon: CalendarIcon },
+  { href: "/dashboard/patient/plan", label: "Plan & billing", icon: CardIcon },
   { href: "/dashboard/patient/documents", label: "Documents", icon: DocIcon },
+  { href: "/dashboard/patient/about", label: "About us", icon: InfoIcon },
 ];
 
 export default function PatientSidebar({ profile, user }) {
@@ -226,6 +228,26 @@ function CalendarIcon() {
     <svg {...iconProps()}>
       <rect x="3" y="5" width="18" height="16" rx="2" />
       <path d="M8 3v4M16 3v4M3 10h18" />
+    </svg>
+  );
+}
+
+function CardIcon() {
+  return (
+    <svg {...iconProps()}>
+      <rect x="3" y="6" width="18" height="13" rx="2" />
+      <line x1="3" y1="11" x2="21" y2="11" />
+      <line x1="7" y1="15" x2="11" y2="15" />
+    </svg>
+  );
+}
+
+function InfoIcon() {
+  return (
+    <svg {...iconProps()}>
+      <circle cx="12" cy="12" r="9" />
+      <line x1="12" y1="11" x2="12" y2="17" />
+      <circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none" />
     </svg>
   );
 }

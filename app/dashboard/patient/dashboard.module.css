@@ -787,6 +787,76 @@
   margin: 0 auto;
 }
 
+/* ---------- Credit card visual (Plan & billing page) ---------- */
+.creditCard {
+  position: relative;
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  color: white;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 60%,
+    var(--color-primary-light) 100%
+  );
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.creditCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.18) 0, transparent 35%),
+    radial-gradient(circle at 0% 100%, rgba(0, 0, 0, 0.18) 0, transparent 45%);
+  pointer-events: none;
+}
+
+.creditCardBrand {
+  position: relative;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.creditCardNumber {
+  position: relative;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 20px;
+  letter-spacing: 3px;
+  font-weight: 600;
+  margin: 14px 0 12px;
+}
+
+.creditCardMeta {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.creditCardLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.creditCardValue {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
 /* ---------- Tag list ---------- */
 .tagList {
   display: flex;

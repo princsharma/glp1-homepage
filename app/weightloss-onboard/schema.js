@@ -152,4 +152,13 @@ export const initialForm = {
   slot: "",
   plan: "1m",
   paid: false,
+  paidAt: null,
+  paymentIntentId: "",
+  paymentAmount: null,
+  paymentCurrency: "",
+  paymentBrand: "",
+  paymentLast4: "",
+  paymentExpMonth: null,
+  paymentExpYear: null,
+  paymentCardholder: "",
 };

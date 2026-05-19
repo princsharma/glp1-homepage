@@ -93,7 +93,26 @@ function PaymentForm({
     }
 
     if (paymentIntent?.status === "succeeded") {
-      onSuccess();
+      let details = null;
+      try {
+        const res = await fetch("/api/stripe/payment-details", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
+        });
+        const data = await res.json();
+        if (data?.success) details = data;
+      } catch {
+        // Non-fatal: payment succeeded, we just couldn't enrich the receipt.
+      }
+      onSuccess({
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        paidAt: Date.now(),
+        cardholderName: name.trim(),
+        ...(details || {}),
+      });
       return;
     }
 

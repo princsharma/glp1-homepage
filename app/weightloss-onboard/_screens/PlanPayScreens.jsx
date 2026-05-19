@@ -52,8 +52,17 @@ export function SPay() {
         zip={form.zip}
         plan={form.plan}
         planLabel={selectedPlan?.label ?? ""}
-        onSuccess={() => {
+        onSuccess={(receipt = {}) => {
           updateField("paid", true);
+          updateField("paidAt", receipt.paidAt || Date.now());
+          updateField("paymentIntentId", receipt.paymentIntentId || "");
+          updateField("paymentAmount", receipt.amount ?? null);
+          updateField("paymentCurrency", receipt.currency || "");
+          updateField("paymentBrand", receipt.brand || "");
+          updateField("paymentLast4", receipt.last4 || "");
+          updateField("paymentExpMonth", receipt.expMonth || null);
+          updateField("paymentExpYear", receipt.expYear || null);
+          updateField("paymentCardholder", receipt.cardholderName || "");
           submitMauticOnComplete({ paid: true }, "iConfirm");
           goTo("iConfirm");
         }}
