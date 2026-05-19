@@ -69,6 +69,10 @@ export async function POST(request) {
       ...(status ? { status } : {}),
       ...(form.consentH !== undefined ? { consentHIPAA: !!form.consentH } : {}),
       ...(form.consentT !== undefined ? { consentTelehealth: !!form.consentT } : {}),
+      // Mirror the email_verified claim from the verified ID token so the
+      // dashboard can react without a fresh Auth round-trip. The token is
+      // server-verified above, so this value is trustworthy.
+      emailVerified: !!decoded.email_verified,
     };
 
     // eslint-disable-next-line no-console

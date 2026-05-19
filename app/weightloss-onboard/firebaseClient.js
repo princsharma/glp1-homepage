@@ -25,6 +25,7 @@
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from "firebase/auth";
@@ -61,6 +62,13 @@ export async function signInOrSignUp(email, password) {
   // Step 2: Try sign-up.
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
+    // Fire-and-forget: send the verification email. If Firebase rate-limits
+    // this (too many sends from same IP), we swallow the error rather than
+    // failing the signup. The user can also trigger Resend from the dashboard.
+    sendEmailVerification(cred.user).catch((err) => {
+      // eslint-disable-next-line no-console
+      console.warn("[verification] initial send failed:", err);
+    });
     return { uid: cred.user.uid, isNew: true };
   } catch (err) {
     const code = err?.code || "";
@@ -80,6 +88,38 @@ export async function signInOrSignUp(email, password) {
     }
     throw err;
   }
+}
+
+/**
+ * Resend the verification email to the currently-signed-in user. Returns
+ * true if Firebase accepted the request; throws a friendly error otherwise.
+ * Common failure: `auth/too-many-requests` if the user has hit Firebase's
+ * rate limit (typically 5 sends in 5 minutes).
+ */
+export async function resendVerificationEmail() {
+  const user = auth.currentUser;
+  if (!user) throw new Error("Sign in first.");
+  if (user.emailVerified) return { alreadyVerified: true };
+  await sendEmailVerification(user);
+  return { alreadyVerified: false };
+}
+
+/**
+ * After the user clicks the link in their verification email (in a separate
+ * tab or device), our local Firebase Auth session still thinks
+ * emailVerified === false because the cached ID token is up to an hour old.
+ * Call this to force a token refresh and pull the latest verification state
+ * from Firebase.
+ */
+export async function refreshVerificationStatus() {
+  const user = auth.currentUser;
+  if (!user) return { verified: false, signedIn: false };
+  await user.reload();
+  // Force a token refresh so the next save-progress request carries the
+  // updated email_verified claim — which our save-progress route mirrors
+  // into Firestore so the dashboard banner disappears.
+  await user.getIdToken(true);
+  return { verified: user.emailVerified, signedIn: true };
 }
 
 /**

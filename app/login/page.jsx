@@ -21,6 +21,7 @@ import {
 import { auth } from "@/lib/firebase/auth";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
 import { isValidEmail } from "@/app/weightloss-onboard/utils";
+import PasswordField from "@/components/PasswordField";
 
 // useSearchParams must be inside a Suspense boundary for Next.js App Router
 // static analysis. The page splits its work between the boundary parent and
@@ -123,12 +124,11 @@ function LoginContent() {
 
         <label style={labelStyle}>
           <span style={labelTextStyle}>Password</span>
-          <input
-            type="password"
+          <PasswordField
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
+            inputStyle={inputStyle}
             required
           />
         </label>

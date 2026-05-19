@@ -9,6 +9,7 @@ import {
   isValidPhone,
   passwordValidationMessage,
 } from "../utils";
+import PasswordField from "@/components/PasswordField";
 import { useOnboard } from "./OnboardContext";
 import { MIN_AGE_YEARS } from "./constants";
 
@@ -74,9 +75,8 @@ export function S20Email() {
           Please enter a valid email address.
         </div>
       )}
-      <input
+      <PasswordField
         className="inp"
-        type="password"
         placeholder="Password"
         autoComplete="new-password"
         value={form.password}

@@ -12,6 +12,7 @@
 
 import { useRequireRole } from "@/lib/auth/useRequireRole";
 import PatientSidebar from "./PatientSidebar";
+import VerificationBanner from "./VerificationBanner";
 import styles from "./dashboard.module.css";
 
 export default function PatientLayout({ children }) {
@@ -26,7 +27,11 @@ export default function PatientLayout({ children }) {
   return (
     <div className={styles.shell}>
       <PatientSidebar profile={profile} user={user} />
-      <div className={styles.main}>{children}</div>
+      <div className={styles.main}>
+        {/* Renders only when the signed-in user's email isn't verified. */}
+        <VerificationBanner />
+        {children}
+      </div>
     </div>
   );
 }
