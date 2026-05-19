@@ -38,6 +38,9 @@ const USERS_COLLECTION = "users";
 const TOP_LEVEL_FIELDS = ["email", "firstName", "lastName", "phone", "dob"];
 const BLOCKLISTED_FIELDS = new Set(["password", "passwordConfirm"]);
 
+// Valid role values. Anything else is rejected at create time.
+const VALID_ROLES = new Set(["patient", "doctor", "admin"]);
+
 /**
  * Create or update users/{uid}. Existing fields not present in `fields`
  * are preserved.
@@ -73,19 +76,28 @@ export async function upsertUser(uid, fields = {}) {
 
   if (!snap.exists) {
     // First save for this UID — write a real nested object via .set().
-    // role defaults to "patient" here ONLY at creation. It is never re-set
-    // by subsequent updates (admins/doctors get promoted via a separate
-    // admin tool, not by the onboarding form).
+    // role is only honored at creation. Default is "patient" if no caller-
+    // supplied role is provided (or the value is unknown). Subsequent
+    // updates never change the role; promotions go through an admin tool.
+    const requestedRole = topLevel.role;
+    const role =
+      typeof requestedRole === "string" && VALID_ROLES.has(requestedRole)
+        ? requestedRole
+        : "patient";
+    const { role: _ignored, ...rest } = topLevel;
     await ref.set({
-      role: "patient",
+      role,
       status: "incomplete",
       createdAt: now,
       updatedAt: now,
-      ...topLevel,
+      ...rest,
       onboarding: onboardingMap,
     });
     return { created: true };
   }
+
+  // Existing doc: NEVER let an update flip the role. Strip it out defensively.
+  if ("role" in topLevel) delete topLevel.role;
 
   // Existing doc — merge top-level fields and individual onboarding sub-fields
   // via dot-pathed update, which Firestore interprets as nested writes.

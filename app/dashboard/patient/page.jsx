@@ -40,7 +40,9 @@ export default function PatientOverview() {
   const isComplete = profile?.status === "onboarded";
   const planLabel = PLAN_LABELS[onb.plan] || onb.plan || "—";
 
-  const [slotDate, slotTime] = (onb.slot || "").split("|");
+  // Prefer the new ISO-formatted fields (slotDate=YYYY-MM-DD, slotTime=HH:mm),
+  // fall back to the old "human|human" stored in `slot` for legacy patients.
+  const [slotDate, slotTime] = formatSlotDisplay(onb);
   const hasAppt = !!(slotDate || onb.doctor);
 
   // BMI + category for the gauge
@@ -322,6 +324,35 @@ function StatTile({ icon, tone, label, value, sub }) {
       </div>
     </div>
   );
+}
+
+// Returns [dateLabel, timeLabel] for whatever slot data is available on the
+// onboarding doc. The slot might be stored as ISO+24h (new flow), as
+// human-readable "Mon May 20|9:00 AM" (legacy flow), or only as parts.
+function formatSlotDisplay(onb) {
+  const isoDate = onb.slotDate;
+  const isoTime = onb.slotTime;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(isoDate) && /^\d{2}:\d{2}$/.test(isoTime)) {
+    const [y, m, d] = isoDate.split("-").map(Number);
+    const [h, mn] = isoTime.split(":").map(Number);
+    const dt = new Date(y, m - 1, d, h, mn);
+    const dateLabel = dt.toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+    const timeLabel = dt.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return [dateLabel, timeLabel];
+  }
+  // Legacy: `slot` was "Mon May 20|9:00 AM"
+  if (typeof onb.slot === "string" && onb.slot.includes("|")) {
+    const [d, t] = onb.slot.split("|");
+    return [d, t];
+  }
+  return ["", ""];
 }
 
 function diffText(current, goal) {

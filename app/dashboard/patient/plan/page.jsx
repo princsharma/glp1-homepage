@@ -8,8 +8,10 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
+import { auth } from "@/lib/firebase/auth";
 import styles from "../dashboard.module.css";
 
 const PLAN_LABELS = {
@@ -21,8 +23,9 @@ const PLAN_DURATION_DAYS = { "1m": 30, "3m": 90, "6m": 180 };
 const PLAN_MONTHS = { "1m": 1, "3m": 3, "6m": 6 };
 
 export default function PatientPlanPage() {
-  const { profile } = useAuthUser();
+  const { profile, user } = useAuthUser();
   const onb = profile?.onboarding || {};
+  const history = usePaymentHistory(user);
 
   const planKey = onb.plan || "";
   const planLabel = PLAN_LABELS[planKey] || null;
@@ -132,9 +135,23 @@ export default function PatientPlanPage() {
         <StatTile
           icon={<ReceiptIcon />}
           tone="coral"
-          label="Total paid"
-          value={amountStr || "—"}
-          sub={onb.paymentIntentId ? "1 payment on file" : "—"}
+          label="Total spending"
+          value={
+            history.loading
+              ? "…"
+              : history.totalCents != null
+                ? formatAmount(history.totalCents, history.currency)
+                : amountStr || "—"
+          }
+          sub={
+            history.loading
+              ? "Loading…"
+              : history.count != null
+                ? `${history.count} payment${history.count === 1 ? "" : "s"} on file`
+                : onb.paymentIntentId
+                  ? "1 payment on file"
+                  : "—"
+          }
         />
       </div>
 
@@ -257,49 +274,163 @@ export default function PatientPlanPage() {
         </section>
       </div>
 
-      {/* Receipt */}
-      {isPaid && (
-        <section className={styles.card} style={{ marginTop: 16 }}>
-          <div className={styles.cardEyebrow}>
-            <ReceiptIcon /> Receipt
-          </div>
-          <div className={styles.row}>
-            <span className={styles.rowLabel}>Date</span>
-            <span className={styles.rowValue}>
-              {paidAtMs ? formatDateTime(paidAtMs) : "—"}
-            </span>
-          </div>
-          <div className={styles.row}>
-            <span className={styles.rowLabel}>Plan</span>
-            <span className={styles.rowValue}>{planLabel || "—"}</span>
-          </div>
-          <div className={styles.row}>
-            <span className={styles.rowLabel}>Card</span>
-            <span className={styles.rowValue}>
-              {onb.paymentLast4
-                ? `${formatBrand(onb.paymentBrand)} •••• ${onb.paymentLast4}`
-                : "—"}
-            </span>
-          </div>
-          <div className={styles.row}>
-            <span className={styles.rowLabel}>Amount</span>
-            <span className={styles.rowValue}>{amountStr || "—"}</span>
-          </div>
-          {onb.paymentIntentId && (
-            <div className={styles.row}>
-              <span className={styles.rowLabel}>Reference</span>
-              <span
-                className={styles.rowValue}
-                style={{ fontFamily: "ui-monospace, Menlo, monospace", fontSize: 12 }}
-              >
-                {onb.paymentIntentId}
-              </span>
-            </div>
-          )}
-        </section>
-      )}
+      {/* Payment history */}
+      <PaymentHistorySection
+        history={history}
+        fallback={
+          isPaid
+            ? [
+                {
+                  id: onb.paymentIntentId || "current",
+                  amount: onb.paymentAmount,
+                  currency: onb.paymentCurrency,
+                  paidAt: paidAtMs,
+                  plan: planKey,
+                  brand: onb.paymentBrand,
+                  last4: onb.paymentLast4,
+                },
+              ]
+            : []
+        }
+      />
     </>
   );
+}
+
+function PaymentHistorySection({ history, fallback }) {
+  const rows = history.payments?.length ? history.payments : fallback;
+  const hasRows = rows.length > 0;
+  const summedFromRows = rows.reduce(
+    (sum, r) => sum + (typeof r.amount === "number" ? r.amount : 0),
+    0,
+  );
+  const totalCents =
+    typeof history.totalCents === "number" ? history.totalCents : summedFromRows;
+  const totalCurrency = history.currency || rows[0]?.currency || "";
+
+  return (
+    <section className={styles.card} style={{ marginTop: 16 }}>
+      <div className={styles.cardEyebrow}>
+        <ReceiptIcon /> Payment history
+      </div>
+      <h2 className={styles.cardTitle} style={{ marginBottom: 4 }}>
+        {history.loading
+          ? "Loading…"
+          : hasRows
+            ? `Total spending · ${formatAmount(totalCents, totalCurrency) || "—"}`
+            : "No payments yet"}
+      </h2>
+      <p
+        style={{
+          margin: "4px 0 14px",
+          color: "var(--color-text-muted)",
+          fontSize: 13.5,
+        }}
+      >
+        {history.loading
+          ? "Pulling your latest payments from Stripe…"
+          : history.error
+            ? "We couldn't reach Stripe — showing what we have on file."
+            : hasRows
+              ? `${rows.length} successful payment${rows.length === 1 ? "" : "s"} on file.`
+              : "Once you complete a payment, it'll appear here."}
+      </p>
+
+      {hasRows && (
+        <div className={styles.historyTable}>
+          <div className={`${styles.historyRow} ${styles.historyHead}`}>
+            <span>Date</span>
+            <span>Plan</span>
+            <span>Card</span>
+            <span style={{ textAlign: "right" }}>Amount</span>
+          </div>
+          {rows.map((p) => (
+            <div key={p.id} className={styles.historyRow}>
+              <span>{p.paidAt ? formatDate(p.paidAt) : "—"}</span>
+              <span>{PLAN_LABELS[p.plan] || p.plan || "—"}</span>
+              <span>
+                {p.last4
+                  ? `${formatBrand(p.brand)} •••• ${p.last4}`
+                  : "—"}
+              </span>
+              <span
+                style={{
+                  textAlign: "right",
+                  fontVariantNumeric: "tabular-nums",
+                  fontWeight: 600,
+                }}
+              >
+                {formatAmount(p.amount, p.currency) || "—"}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function usePaymentHistory(user) {
+  const [state, setState] = useState({
+    loading: true,
+    error: null,
+    totalCents: null,
+    currency: null,
+    count: null,
+    payments: [],
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) {
+      setState({
+        loading: false,
+        error: null,
+        totalCents: null,
+        currency: null,
+        count: null,
+        payments: [],
+      });
+      return;
+    }
+
+    (async () => {
+      try {
+        const idToken = await auth.currentUser?.getIdToken();
+        if (!idToken) throw new Error("not signed in");
+        const res = await fetch("/api/stripe/payment-history", {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        const data = await res.json();
+        if (cancelled) return;
+        if (!data?.success) {
+          setState((p) => ({ ...p, loading: false, error: data?.message || "fetch failed" }));
+          return;
+        }
+        setState({
+          loading: false,
+          error: null,
+          totalCents: data.totalCents ?? 0,
+          currency: data.currency || "usd",
+          count: data.count ?? 0,
+          payments: data.payments || [],
+        });
+      } catch (e) {
+        if (cancelled) return;
+        setState((p) => ({
+          ...p,
+          loading: false,
+          error: e instanceof Error ? e.message : "fetch failed",
+        }));
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  return state;
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────────── */

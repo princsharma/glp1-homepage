@@ -156,10 +156,30 @@ function LoginContent() {
             Start onboarding →
           </Link>
         </div>
+
+        <div style={clinicianRow}>
+          <span>Are you a clinician?</span>
+          <Link href="/doctor-onboard" style={linkStyle}>
+            Register as a doctor →
+          </Link>
+        </div>
       </form>
     </main>
   );
 }
+
+const clinicianRow = {
+  marginTop: 8,
+  paddingTop: 14,
+  borderTop: "1px solid #e5e0d8",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  fontSize: 13,
+  color: "#5c6b73",
+  gap: 12,
+  flexWrap: "wrap",
+};
 
 const layout = {
   minHeight: "100vh",

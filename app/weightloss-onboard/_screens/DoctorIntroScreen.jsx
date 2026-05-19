@@ -1,75 +1,136 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useOnboard } from "./OnboardContext";
 
-const DOCTOR = {
-  name: "Dr. Vanessa Niles",
-  creds: "MD · Board-Certified Internal Medicine",
-  photo: "/images/Dr-vanessa-niles.webp",
+// Fallback shown ONLY if the live doctor list can't be loaded — keeps the
+// flow unblocked rather than dead-ending the patient on a network blip.
+const FALLBACK_DOCTOR = {
+  uid: "",
+  fullName: "Dr. Vanessa Niles",
   bio:
-    "With over a decade of clinical experience, Dr. Niles has helped " +
-    "thousands of patients build sustainable, science-backed weight-loss " +
-    "plans. She takes a personalised approach — combining GLP-1 therapy " +
-    "with lifestyle guidance — so you feel supported at every step.",
-  tags: ["10+ yrs experience", "Metabolic health", "Telehealth"],
+    "Licensed physician specializing in metabolic health and GLP-1 therapy.",
+  licensedStates: [],
 };
 
 export default function S22bDoctor() {
   const { form, updateField, goTo } = useOnboard();
-  const isSelected = form.doctor === DOCTOR.name;
+  const [doctors, setDoctors] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/doctors/list");
+        const data = await res.json();
+        if (cancelled) return;
+        if (!data?.success) throw new Error(data?.message || "fetch failed");
+        setDoctors(Array.isArray(data.doctors) ? data.doctors : []);
+      } catch (e) {
+        if (!cancelled) {
+          setError(e?.message || "Couldn't load the clinician list.");
+          setDoctors([FALLBACK_DOCTOR]);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const select = (d) => {
+    const same = form.doctorUid === d.uid;
+    updateField("doctorUid", same ? "" : d.uid);
+    updateField("doctor", same ? "" : d.fullName);
+  };
 
   return (
     <div className="sc doc-sc">
       <div className="q doc-q">Meet your physician</div>
       <div className="qs doc-qs">
         Your consultation will be with a licensed, board-certified physician
-        who specialises in metabolic health and GLP-1 therapy. Tap the card
-        to confirm your match.
+        who specializes in metabolic health and GLP-1 therapy. Pick the
+        clinician you&apos;d like to see.
       </div>
 
-      <button
-        type="button"
-        className={`doc-card ${isSelected ? "sel" : ""}`}
-        aria-pressed={isSelected}
-        onClick={() =>
-          updateField("doctor", isSelected ? "" : DOCTOR.name)
-        }
-      >
-        <span className="doc-check" aria-hidden>✓</span>
+      {doctors === null && (
+        <div className="qs" style={{ marginTop: 14 }}>
+          Loading available clinicians…
+        </div>
+      )}
 
-        <span className="doc-header">
-          <span className="doc-photo">
-            <Image
-              src={DOCTOR.photo}
-              alt={DOCTOR.name}
-              fill
-              sizes="96px"
-              priority
-              className="doc-photo-img"
-            />
-          </span>
-          <span className="doc-info">
-            <span className="doc-name">{DOCTOR.name}</span>
-            <span className="doc-creds">{DOCTOR.creds}</span>
-          </span>
-        </span>
+      {doctors?.length === 0 && !error && (
+        <div className="qs" style={{ marginTop: 14 }}>
+          No clinicians available right now. Please check back shortly.
+        </div>
+      )}
 
-        <span className="doc-divider" aria-hidden />
+      {doctors?.map((d) => {
+        const isSelected = form.doctorUid === d.uid && d.uid !== "";
+        const states = (d.licensedStates || []).join(" · ");
+        return (
+          <button
+            key={d.uid || d.fullName}
+            type="button"
+            className={`doc-card ${isSelected ? "sel" : ""}`}
+            aria-pressed={isSelected}
+            onClick={() => select(d)}
+            style={{ marginBottom: 10 }}
+          >
+            <span className="doc-check" aria-hidden>✓</span>
 
-        <span className="doc-bio">{DOCTOR.bio}</span>
+            <span className="doc-header">
+              <span
+                className="doc-photo"
+                style={{
+                  background: d.photoURL
+                    ? "var(--color-surface-alt, #f8f9fa)"
+                    : "linear-gradient(135deg, var(--color-primary-light, #74c69d), var(--color-primary, #347e5d))",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  fontWeight: 800,
+                  fontSize: 28,
+                  letterSpacing: "-0.02em",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                {d.photoURL ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={d.photoURL}
+                    alt={d.fullName}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  (d.firstName?.[0] || d.fullName?.[0] || "D").toUpperCase()
+                )}
+              </span>
+              <span className="doc-info">
+                <span className="doc-name">Dr. {d.fullName}</span>
+                {states && (
+                  <span className="doc-creds">Licensed: {states}</span>
+                )}
+              </span>
+            </span>
 
-        <span className="doc-tags">
-          {DOCTOR.tags.map((tag) => (
-            <span key={tag} className="doc-tag">{tag}</span>
-          ))}
-        </span>
-      </button>
+            {d.bio && (
+              <>
+                <span className="doc-divider" aria-hidden />
+                <span className="doc-bio">{d.bio}</span>
+              </>
+            )}
+          </button>
+        );
+      })}
 
       <button
         type="button"
         className="cta"
-        disabled={!isSelected}
+        disabled={!form.doctorUid}
         onClick={() => goTo("s23")}
       >
         Continue
