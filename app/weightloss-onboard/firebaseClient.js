@@ -4,14 +4,14 @@
 //
 // Design — user types email + password on Screen S20:
 //
-//   1. Validate the email upfront via /api/email/validate (syntax + DNS MX +
-//      disposable blocklist). Reject obvious bad data before we touch
-//      Firebase Auth.
-//   2. Create a NEW Firebase Auth user. Strict separation — we never try
+//   1. Create a NEW Firebase Auth user. Strict separation — we never try
 //      sign-in here. If the email is already registered (regardless of
 //      password) we hard-fail with EMAIL_ALREADY_REGISTERED and direct the
 //      user to /login. Onboarding is for new patients only; returning
 //      patients sign in via the dedicated /login page.
+//   2. Fire-and-forget a Firebase email-verification email. The user can
+//      verify later from the dashboard banner — we don't block signup or
+//      the onboarding flow on it.
 //   3. Call our save-progress route to persist the form snapshot into
 //      users/{uid}.
 //
@@ -30,47 +30,20 @@ import {
 import { auth } from "@/lib/firebase/auth";
 
 /**
- * Run an upfront plausibility check on the email (syntax + DNS MX + disposable
- * blocklist) via the server route. Throws a code-style error on rejection so
- * the UI can render a precise message. Returns silently on success.
- *
- * If the network call itself fails (e.g. a flaky DNS resolver on the server),
- * we let the user through — better to over-allow than to lock out real users
- * over an infrastructure hiccup. Firebase Auth still validates email syntax
- * server-side as a final backstop.
- */
-async function validateEmailUpfront(email) {
-  let result;
-  try {
-    const res = await fetch("/api/email/validate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    result = await res.json().catch(() => null);
-  } catch {
-    return; // network blip — let the user through
-  }
-  if (!result || result.valid) return;
-  const e = new Error(result.message || "Please enter a valid email address.");
-  e.kind = `EMAIL_${(result.reason || "INVALID").toUpperCase()}`;
-  throw e;
-}
-
-/**
  * Strict-separation registration for the onboarding form's email screen.
  * Only creates new Firebase Auth accounts — never signs in. If the email is
  * already registered, the user is redirected to /login.
  *
+ * Email plausibility / ownership is NOT checked upfront here. Firebase Auth
+ * validates the syntax server-side; ownership is confirmed asynchronously
+ * via the verification email + dashboard banner.
+ *
  * Throws on:
- *   - 'EMAIL_SYNTAX' / 'EMAIL_DISPOSABLE' / 'EMAIL_NO_MX' → upfront validator
  *   - 'EMAIL_ALREADY_REGISTERED' → an account with this email already exists
  *   - 'WEAK_PASSWORD'            → Firebase rejected the password
  *   - any other unexpected error
  */
 export async function signUpNewUser(email, password) {
-  await validateEmailUpfront(email);
-
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     // Fire-and-forget verification email. The dashboard banner was removed,
