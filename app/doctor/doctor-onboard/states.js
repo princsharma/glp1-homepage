@@ -1,4 +1,4 @@
-// app/doctor-onboard/states.js
+// app/doctor/doctor-onboard/states.js
 //
 // US states (50 + DC + Puerto Rico) for the doctor licensure dropdown.
 // Two-letter codes match how state licensure boards identify themselves

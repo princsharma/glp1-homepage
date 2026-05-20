@@ -1,4 +1,4 @@
-// app/doctor-onboard/page.jsx
+// app/doctor/doctor-onboard/page.jsx
 //
 // Doctor registration. Single-page form covering everything the clinician
 // needs to start accepting patients:
@@ -322,7 +322,7 @@ export default function DoctorOnboardPage() {
               <em className={styles.brandEm}>Ongo</em> for Clinicians
             </span>
           </Link>
-          <Link href="/login" className={styles.haveAcct}>
+          <Link href="/doctor/doctor-login" className={styles.haveAcct}>
             Already have an account? <strong>Sign in</strong>
           </Link>
         </header>

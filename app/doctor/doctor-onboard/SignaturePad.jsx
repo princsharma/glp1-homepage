@@ -1,4 +1,4 @@
-// app/doctor-onboard/SignaturePad.jsx
+// app/doctor/doctor-onboard/SignaturePad.jsx
 //
 // Touch- and mouse-friendly canvas signature pad. The parent passes a `ref`
 // (created with useRef) that the pad attaches helpers to:

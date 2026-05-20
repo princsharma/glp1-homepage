@@ -65,7 +65,7 @@ export default function DoctorSidebar({ profile, user }) {
 
   const handleSignOut = async () => {
     await signOut(auth);
-    router.replace("/login");
+    router.replace("/doctor/doctor-login");
   };
 
   const sidebarMarkup = (

@@ -1,0 +1,438 @@
+/* doctor-login.module.css
+ * Clinician sign-in. Two-column layout — branded green panel on the left
+ * (matching the doctor-onboard hero), white sign-in card on the right.
+ * Collapses to a single column under 860px.
+ */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      var(--color-primary-soft) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(116, 198, 157, 0.18) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+  overflow: hidden;
+}
+
+.loadingFallback {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.heroOrb {
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  right: -180px;
+  top: -240px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--color-primary-light) 0%,
+    transparent 65%
+  );
+  opacity: 0.35;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+/* ───── Shell (two columns) ───── */
+.shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 980px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(27, 67, 50, 0.14);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  min-height: 560px;
+}
+
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+}
+
+/* ───── Brand panel (left) ───── */
+.brandPanel {
+  position: relative;
+  padding: 38px 38px 32px;
+  background: linear-gradient(
+    160deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 55%,
+    #2f7457 100%
+  );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow: hidden;
+}
+
+.brandPanel::before {
+  content: "";
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(216, 243, 220, 0.28) 0%,
+    transparent 70%
+  );
+  top: -120px;
+  left: -100px;
+  pointer-events: none;
+}
+
+.brandPanel::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(116, 198, 157, 0.35) 0%,
+    transparent 70%
+  );
+  bottom: -100px;
+  right: -80px;
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .brandPanel {
+    padding: 28px 24px 24px;
+    gap: 20px;
+  }
+}
+
+.brand {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+  font-weight: 700;
+  font-size: 1.02rem;
+  width: fit-content;
+}
+
+.brandMark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(4px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: white;
+}
+
+.brandEm {
+  font-style: italic;
+  font-weight: 800;
+}
+
+.brandBody {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+
+.brandTitle {
+  margin: 0 0 8px;
+  font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.brandSubtitle {
+  margin: 0 0 22px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 360px;
+}
+
+.features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.features li strong {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+}
+
+.features li em {
+  display: block;
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 12.5px;
+  margin-top: 1px;
+}
+
+.featureDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  box-shadow: 0 0 0 4px rgba(216, 243, 220, 0.18);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.brandFootnote {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.brandLink {
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.45);
+  padding-bottom: 1px;
+  transition: border-color 0.18s ease;
+}
+
+.brandLink:hover {
+  border-bottom-color: white;
+}
+
+/* ───── Card (right) ───── */
+.card {
+  padding: 44px 42px 36px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+}
+
+@media (max-width: 860px) {
+  .card {
+    padding: 32px 24px 28px;
+  }
+}
+
+.cardHead {
+  margin-bottom: 22px;
+}
+
+.cardKicker {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.cardTitle {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.cardSubtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.fieldLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.forgotBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.forgotBtn:hover {
+  text-decoration: underline;
+}
+
+.input {
+  font: inherit;
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  color: var(--color-text);
+  font-size: 14.5px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(52, 126, 93, 0.18);
+}
+
+.error {
+  background: #fdecea;
+  border: 1px solid #f5b7b1;
+  color: #922b21;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+
+.info {
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+
+.submit {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  box-shadow: 0 10px 24px rgba(52, 126, 93, 0.28);
+}
+
+.submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(52, 126, 93, 0.34);
+}
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.smallMeta {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.metaLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.metaLink:hover {
+  text-decoration: underline;
+}

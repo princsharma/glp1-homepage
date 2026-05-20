@@ -1,13 +1,13 @@
-// app/login/page.jsx
+// app/doctor/doctor-login/page.jsx
 //
-// Patient sign-in. Wraps Firebase Auth's signInWithEmailAndPassword. On
-// success, follows ?next= if present, otherwise lets /dashboard route by
-// role. Visual language mirrors the doctor portal (two-column branded
-// card) but with patient-facing copy — progress, medication, care team.
+// Clinician-only sign-in page, kept on its own URL so patients never see
+// any doctor-facing entry points. Same Firebase Auth flow as the patient
+// /login page, but the visual language matches the doctor onboarding page
+// (green brand palette, two-column hero card).
 //
-// Includes a "Forgot password?" link that triggers Firebase's built-in
-// reset email so the recovery story works without us hosting our own
-// reset UI yet.
+// On success, follows ?next= if present, otherwise lets /dashboard route
+// the user by role. If a patient account signs in here we still let them
+// through — /dashboard does the role-based redirect.
 
 "use client";
 
@@ -22,9 +22,9 @@ import { auth } from "@/lib/firebase/auth";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
 import { isValidEmail } from "@/app/weightloss-onboard/utils";
 import PasswordField from "@/components/PasswordField";
-import styles from "./login.module.css";
+import styles from "./doctor-login.module.css";
 
-export default function LoginPage() {
+export default function DoctorLoginPage() {
   return (
     <Suspense
       fallback={
@@ -33,15 +33,15 @@ export default function LoginPage() {
         </main>
       }
     >
-      <LoginContent />
+      <DoctorLoginContent />
     </Suspense>
   );
 }
 
-function LoginContent() {
+function DoctorLoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/dashboard";
+  const next = searchParams.get("next") || "/dashboard/doctor";
 
   const { user, loading } = useAuthUser();
 
@@ -113,38 +113,38 @@ function LoginContent() {
           <Link href="/" className={styles.brand}>
             <span className={styles.brandMark}>O</span>
             <span>
-              <em className={styles.brandEm}>Ongo</em> Weight Loss
+              <em className={styles.brandEm}>Ongo</em> for Clinicians
             </span>
           </Link>
 
           <div className={styles.brandBody}>
-            <span className={styles.kicker}>Patient portal</span>
+            <span className={styles.kicker}>Clinician portal</span>
             <h1 className={styles.brandTitle}>Welcome back.</h1>
             <p className={styles.brandSubtitle}>
-              Pick up your weight-loss plan, refills, and care messages right
-              where you left off.
+              Sign in to see today&apos;s consults, manage your availability,
+              and review payouts.
             </p>
 
             <ul className={styles.features}>
               <li>
                 <span className={styles.featureDot} />
                 <span>
-                  <strong>Your progress</strong>
-                  <em>Weekly check-ins and weight trends</em>
+                  <strong>Patients &amp; consults</strong>
+                  <em>Your dashboard, charts, and chart notes</em>
                 </span>
               </li>
               <li>
                 <span className={styles.featureDot} />
                 <span>
-                  <strong>Your medication</strong>
-                  <em>Refills, deliveries, and dosing schedule</em>
+                  <strong>Availability</strong>
+                  <em>Adjust weekly hours and block-out dates</em>
                 </span>
               </li>
               <li>
                 <span className={styles.featureDot} />
                 <span>
-                  <strong>Your care team</strong>
-                  <em>Message your doctor and review notes</em>
+                  <strong>Payouts</strong>
+                  <em>Track earnings and update banking</em>
                 </span>
               </li>
             </ul>
@@ -152,8 +152,8 @@ function LoginContent() {
 
           <div className={styles.brandFootnote}>
             New to Ongo?{" "}
-            <Link href="/weightloss-onboard" className={styles.brandLink}>
-              Start your journey →
+            <Link href="/doctor/doctor-onboard" className={styles.brandLink}>
+              Register as a doctor →
             </Link>
           </div>
         </aside>
@@ -161,23 +161,23 @@ function LoginContent() {
         {/* Sign-in card */}
         <section className={styles.card}>
           <header className={styles.cardHead}>
-            <span className={styles.cardKicker}>Patient sign in</span>
+            <span className={styles.cardKicker}>Doctor sign in</span>
             <h2 className={styles.cardTitle}>Sign in to your dashboard</h2>
             <p className={styles.cardSubtitle}>
-              Use the email you signed up with.
+              Use the work email you registered with.
             </p>
           </header>
 
           <form onSubmit={onSubmit} className={styles.form} noValidate>
             <label className={styles.field}>
-              <span className={styles.fieldLabel}>Email</span>
+              <span className={styles.fieldLabel}>Work email</span>
               <input
                 type="email"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
-                placeholder="you@example.com"
+                placeholder="vanessa@your-clinic.com"
                 required
               />
             </label>
@@ -220,13 +220,6 @@ function LoginContent() {
             >
               {submitting ? "Signing in…" : "Sign in"}
             </button>
-
-            <p className={styles.smallMeta}>
-              Don&apos;t have an account?{" "}
-              <Link href="/weightloss-onboard" className={styles.metaLink}>
-                Start your journey →
-              </Link>
-            </p>
           </form>
         </section>
       </div>

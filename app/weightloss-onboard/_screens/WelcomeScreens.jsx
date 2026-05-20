@@ -64,7 +64,7 @@ export function S1Welcome() {
           Continue
         </button>
         <div className="welcome-foot">
-          Already a member? <a href="#">Sign In</a>
+          Already a member? <a href="/login">Sign In</a>
         </div>
       </div>
     </div>
@@ -117,7 +117,7 @@ export function S2Inspiration() {
           Continue
         </button>
         <div className="welcome-foot">
-          Already a member? <a href="#">Sign In</a>
+          Already a member? <a href="/login">Sign In</a>
         </div>
       </div>
     </div>
