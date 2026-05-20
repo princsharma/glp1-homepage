@@ -1,8 +1,9 @@
-/* login.module.css
- * Patient sign-in. Mirrors the clinician portal layout (two-column card
- * with a branded green panel and a white sign-in card) so the brand reads
- * the same across the product. Copy and feature bullets are tuned for
- * patients — progress, medication, care team.
+/* components/auth/AuthShell.module.css
+ *
+ * Two-column branded auth card shared by every login/registration page.
+ * Layout (brand panel + sign-in card) is fixed; gradient + decorative-orb
+ * positions flip between portals via the `.clinician` variant modifier so
+ * patient and clinician sign-in keep their distinct visual signatures.
  */
 
 .page {
@@ -27,6 +28,21 @@
   overflow: hidden;
 }
 
+.page.clinician {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      var(--color-primary-soft) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(116, 198, 157, 0.18) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
 .loadingFallback {
   color: var(--color-text-muted);
   font-size: 14px;
@@ -49,7 +65,12 @@
   pointer-events: none;
 }
 
-/* ───── Shell (two columns) ───── */
+.page.clinician .heroOrb {
+  left: auto;
+  right: -180px;
+}
+
+/* ───── Shell ───── */
 .shell {
   position: relative;
   z-index: 1;
@@ -89,6 +110,15 @@
   overflow: hidden;
 }
 
+.page.clinician .brandPanel {
+  background: linear-gradient(
+    160deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 55%,
+    #2f7457 100%
+  );
+}
+
 .brandPanel::before {
   content: "";
   position: absolute;
@@ -105,6 +135,20 @@
   pointer-events: none;
 }
 
+.page.clinician .brandPanel::before {
+  bottom: auto;
+  left: auto;
+  top: -120px;
+  right: -100px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(
+    circle,
+    rgba(216, 243, 220, 0.28) 0%,
+    transparent 70%
+  );
+}
+
 .brandPanel::after {
   content: "";
   position: absolute;
@@ -119,6 +163,18 @@
   top: -90px;
   right: -70px;
   pointer-events: none;
+}
+
+.page.clinician .brandPanel::after {
+  top: auto;
+  right: auto;
+  bottom: -100px;
+  right: -80px;
+  background: radial-gradient(
+    circle,
+    rgba(116, 198, 157, 0.35) 0%,
+    transparent 70%
+  );
 }
 
 @media (max-width: 860px) {
@@ -311,6 +367,7 @@
   font-size: 14px;
 }
 
+/* ───── Form primitives (consumed by login pages) ───── */
 .form {
   display: flex;
   flex-direction: column;

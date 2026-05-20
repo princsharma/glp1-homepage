@@ -1,250 +1,149 @@
 // app/login/page.jsx
 //
-// Patient sign-in. Wraps Firebase Auth's signInWithEmailAndPassword. On
-// success, follows ?next= if present, otherwise lets /dashboard route by
-// role. Visual language mirrors the doctor portal (two-column branded
-// card) but with patient-facing copy — progress, medication, care team.
-//
-// Includes a "Forgot password?" link that triggers Firebase's built-in
-// reset email so the recovery story works without us hosting our own
-// reset UI yet.
+// Patient sign-in. All sign-in state lives in useEmailPasswordSignIn; this
+// page just supplies the patient-portal copy + features list to AuthShell
+// and renders the form children.
 
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase/auth";
-import { useAuthUser } from "@/lib/auth/useAuthUser";
-import { isValidEmail } from "@/app/weightloss-onboard/utils";
+import AuthShell, { authStyles } from "@/components/auth/AuthShell";
 import PasswordField from "@/components/PasswordField";
-import styles from "./login.module.css";
+import { useEmailPasswordSignIn } from "@/lib/auth/useEmailPasswordSignIn";
 
+const BRAND = {
+  href: "/",
+  em: "Ongo",
+  suffix: " Weight Loss",
+};
+
+const PANEL = {
+  kicker: "Patient portal",
+  title: "Welcome back.",
+  subtitle:
+    "Pick up your weight-loss plan, refills, and care messages right where you left off.",
+  features: [
+    {
+      title: "Your progress",
+      desc: "Weekly check-ins and weight trends",
+    },
+    {
+      title: "Your medication",
+      desc: "Refills, deliveries, and dosing schedule",
+    },
+    {
+      title: "Your care team",
+      desc: "Message your doctor and review notes",
+    },
+  ],
+  footnote: {
+    text: "New to Ongo?",
+    linkHref: "/weightloss-onboard",
+    linkLabel: "Start your journey →",
+  },
+};
+
+const CARD = {
+  kicker: "Patient sign in",
+  title: "Sign in to your dashboard",
+  subtitle: "Use the email you signed up with.",
+};
+
+// useSearchParams (used inside the sign-in hook) requires a Suspense
+// boundary above any component that calls it.
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <main className={styles.page}>
-          <div className={styles.loadingFallback}>Loading…</div>
-        </main>
-      }
-    >
+    <Suspense fallback={<LoginFallback />}>
       <LoginContent />
     </Suspense>
   );
 }
 
-function LoginContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/dashboard";
-
-  const { user, loading } = useAuthUser();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
-
-  useEffect(() => {
-    if (!loading && user) router.replace(next);
-  }, [loading, user, next, router]);
-
-  const canSubmit =
-    !submitting && isValidEmail(email) && password.length >= 1;
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!canSubmit) return;
-    setError("");
-    setResetSent(false);
-    setSubmitting(true);
-    try {
-      await signInWithEmailAndPassword(
-        auth,
-        email.trim().toLowerCase(),
-        password,
-      );
-    } catch (err) {
-      const code = err?.code || "";
-      if (
-        code === "auth/invalid-credential" ||
-        code === "auth/user-not-found" ||
-        code === "auth/wrong-password" ||
-        code === "auth/invalid-login-credentials"
-      ) {
-        setError("Wrong email or password.");
-      } else if (code === "auth/too-many-requests") {
-        setError("Too many attempts. Wait a minute and try again.");
-      } else {
-        setError(err?.message || "Could not sign in. Please try again.");
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const onForgot = async () => {
-    if (!isValidEmail(email)) {
-      setError("Enter your email above first.");
-      return;
-    }
-    setError("");
-    try {
-      await sendPasswordResetEmail(auth, email.trim().toLowerCase());
-      setResetSent(true);
-    } catch (err) {
-      setError(err?.message || "Could not send the reset email.");
-    }
-  };
-
+function LoginFallback() {
   return (
-    <main className={styles.page}>
-      <div className={styles.heroOrb} aria-hidden />
-
-      <div className={styles.shell}>
-        {/* Brand / value panel */}
-        <aside className={styles.brandPanel} aria-hidden>
-          <Link href="/" className={styles.brand}>
-            <span className={styles.brandMark}>O</span>
-            <span>
-              <em className={styles.brandEm}>Ongo</em> Weight Loss
-            </span>
-          </Link>
-
-          <div className={styles.brandBody}>
-            <span className={styles.kicker}>Patient portal</span>
-            <h1 className={styles.brandTitle}>Welcome back.</h1>
-            <p className={styles.brandSubtitle}>
-              Pick up your weight-loss plan, refills, and care messages right
-              where you left off.
-            </p>
-
-            <ul className={styles.features}>
-              <li>
-                <span className={styles.featureDot} />
-                <span>
-                  <strong>Your progress</strong>
-                  <em>Weekly check-ins and weight trends</em>
-                </span>
-              </li>
-              <li>
-                <span className={styles.featureDot} />
-                <span>
-                  <strong>Your medication</strong>
-                  <em>Refills, deliveries, and dosing schedule</em>
-                </span>
-              </li>
-              <li>
-                <span className={styles.featureDot} />
-                <span>
-                  <strong>Your care team</strong>
-                  <em>Message your doctor and review notes</em>
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div className={styles.brandFootnote}>
-            New to Ongo?{" "}
-            <Link href="/weightloss-onboard" className={styles.brandLink}>
-              Start your journey →
-            </Link>
-          </div>
-        </aside>
-
-        {/* Sign-in card */}
-        <section className={styles.card}>
-          <header className={styles.cardHead}>
-            <span className={styles.cardKicker}>Patient sign in</span>
-            <h2 className={styles.cardTitle}>Sign in to your dashboard</h2>
-            <p className={styles.cardSubtitle}>
-              Use the email you signed up with.
-            </p>
-          </header>
-
-          <form onSubmit={onSubmit} className={styles.form} noValidate>
-            <label className={styles.field}>
-              <span className={styles.fieldLabel}>Email</span>
-              <input
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
-                placeholder="you@example.com"
-                required
-              />
-            </label>
-
-            <label className={styles.field}>
-              <span className={styles.fieldLabelRow}>
-                <span className={styles.fieldLabel}>Password</span>
-                <button
-                  type="button"
-                  onClick={onForgot}
-                  className={styles.forgotBtn}
-                >
-                  Forgot?
-                </button>
-              </span>
-              <PasswordField
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                inputStyle={passwordInputStyle}
-                required
-              />
-            </label>
-
-            {error && (
-              <div className={styles.error} role="alert">
-                {error}
-              </div>
-            )}
-            {resetSent && (
-              <div className={styles.info} role="status">
-                Reset email sent. Check your inbox, then return here to sign in.
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className={styles.submit}
-            >
-              {submitting ? "Signing in…" : "Sign in"}
-            </button>
-
-            <p className={styles.smallMeta}>
-              Don&apos;t have an account?{" "}
-              <Link href="/weightloss-onboard" className={styles.metaLink}>
-                Start your journey →
-              </Link>
-            </p>
-          </form>
-        </section>
-      </div>
+    <main className={authStyles.page}>
+      <div className={authStyles.loadingFallback}>Loading…</div>
     </main>
   );
 }
 
-// PasswordField takes an inline style object, so we pass the same shape
-// the form's `.input` class uses. Keeping it here (rather than CSS) is the
-// simplest way to match the rest of the form without changing the shared
-// PasswordField component.
-const passwordInputStyle = {
-  width: "100%",
-  background: "var(--color-surface)",
-  border: "1px solid var(--color-border)",
-  borderRadius: 10,
-  padding: "11px 12px",
-  fontSize: "14.5px",
-  outline: "none",
-  color: "var(--color-text)",
-};
+function LoginContent() {
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    resetSent,
+    submitting,
+    canSubmit,
+    signIn,
+    sendResetEmail,
+  } = useEmailPasswordSignIn({ defaultNext: "/dashboard" });
+
+  return (
+    <AuthShell variant="patient" brand={BRAND} panel={PANEL} card={CARD}>
+      <form onSubmit={signIn} className={authStyles.form} noValidate>
+        <label className={authStyles.field}>
+          <span className={authStyles.fieldLabel}>Email</span>
+          <input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={authStyles.input}
+            placeholder="you@example.com"
+            required
+          />
+        </label>
+
+        <label className={authStyles.field}>
+          <span className={authStyles.fieldLabelRow}>
+            <span className={authStyles.fieldLabel}>Password</span>
+            <button
+              type="button"
+              onClick={sendResetEmail}
+              className={authStyles.forgotBtn}
+            >
+              Forgot?
+            </button>
+          </span>
+          <PasswordField
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={authStyles.input}
+            required
+          />
+        </label>
+
+        {error && (
+          <div className={authStyles.error} role="alert">
+            {error}
+          </div>
+        )}
+        {resetSent && (
+          <div className={authStyles.info} role="status">
+            Reset email sent. Check your inbox, then return here to sign in.
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          className={authStyles.submit}
+        >
+          {submitting ? "Signing in…" : "Sign in"}
+        </button>
+
+        <p className={authStyles.smallMeta}>
+          Don&apos;t have an account?{" "}
+          <Link href="/weightloss-onboard" className={authStyles.metaLink}>
+            Start your journey →
+          </Link>
+        </p>
+      </form>
+    </AuthShell>
+  );
+}
