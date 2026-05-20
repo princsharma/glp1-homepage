@@ -2,32 +2,13 @@
 //
 // GET: every appointment booked with the signed-in doctor.
 
-import { NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { listAppointmentsForDoctor } from "@/services/firebase/appointments";
+import { ok, withAuth } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-async function requireDoctor(request) {
-  const header = request.headers.get("authorization") || "";
-  const idToken = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  if (!idToken) return null;
-  try {
-    const decoded = await adminAuth.verifyIdToken(idToken);
-    const userSnap = await adminDb.collection("users").doc(decoded.uid).get();
-    if (!userSnap.exists || userSnap.data()?.role !== "doctor") return null;
-    return decoded;
-  } catch {
-    return null;
-  }
-}
-
-export async function GET(request) {
-  const decoded = await requireDoctor(request);
-  if (!decoded) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
-  const appointments = await listAppointmentsForDoctor(decoded.uid);
-  return NextResponse.json({ success: true, appointments });
-}
+export const GET = withAuth({ role: "doctor" }, async (_request, _ctx, { user }) => {
+  const appointments = await listAppointmentsForDoctor(user.uid);
+  return ok({ appointments });
+});

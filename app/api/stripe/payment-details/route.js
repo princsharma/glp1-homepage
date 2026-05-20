@@ -7,63 +7,45 @@
 // patient dashboard's plan & billing screen.
 
 import Stripe from "stripe";
-import { NextResponse } from "next/server";
+import { fail, ok, withErrorHandling } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(req) {
-  try {
-    const secret = process.env.STRIPE_SECRET_KEY;
-    if (!secret || secret === "sk_test_REPLACE_ME") {
-      return NextResponse.json(
-        { success: false, message: "Stripe secret key is not configured." },
-        { status: 500 },
-      );
-    }
-
-    const body = await req.json().catch(() => ({}));
-    const paymentIntentId =
-      typeof body.paymentIntentId === "string" ? body.paymentIntentId : "";
-    if (!paymentIntentId) {
-      return NextResponse.json(
-        { success: false, message: "Missing paymentIntentId." },
-        { status: 400 },
-      );
-    }
-
-    const stripe = new Stripe(secret);
-    const intent = await stripe.paymentIntents.retrieve(paymentIntentId, {
-      expand: ["payment_method"],
-    });
-
-    if (intent.status !== "succeeded") {
-      return NextResponse.json(
-        { success: false, message: `Payment status is ${intent.status}.` },
-        { status: 400 },
-      );
-    }
-
-    const pm = intent.payment_method;
-    const card = pm && typeof pm === "object" ? pm.card : null;
-    const billing =
-      pm && typeof pm === "object" ? pm.billing_details || {} : {};
-
-    return NextResponse.json({
-      success: true,
-      paymentIntentId: intent.id,
-      amount: intent.amount,
-      currency: intent.currency,
-      paidAt: intent.created * 1000,
-      plan: intent.metadata?.plan || "",
-      brand: card?.brand || "",
-      last4: card?.last4 || "",
-      expMonth: card?.exp_month || null,
-      expYear: card?.exp_year || null,
-      cardholderName: billing.name || "",
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ success: false, message }, { status: 500 });
+export const POST = withErrorHandling(async (req) => {
+  const secret = process.env.STRIPE_SECRET_KEY;
+  if (!secret || secret === "sk_test_REPLACE_ME") {
+    return fail("Stripe secret key is not configured.", 500);
   }
-}
+
+  const body = await req.json().catch(() => ({}));
+  const paymentIntentId =
+    typeof body.paymentIntentId === "string" ? body.paymentIntentId : "";
+  if (!paymentIntentId) return fail("Missing paymentIntentId.", 400);
+
+  const stripe = new Stripe(secret);
+  const intent = await stripe.paymentIntents.retrieve(paymentIntentId, {
+    expand: ["payment_method"],
+  });
+
+  if (intent.status !== "succeeded") {
+    return fail(`Payment status is ${intent.status}.`, 400);
+  }
+
+  const pm = intent.payment_method;
+  const card = pm && typeof pm === "object" ? pm.card : null;
+  const billing = pm && typeof pm === "object" ? pm.billing_details || {} : {};
+
+  return ok({
+    paymentIntentId: intent.id,
+    amount: intent.amount,
+    currency: intent.currency,
+    paidAt: intent.created * 1000,
+    plan: intent.metadata?.plan || "",
+    brand: card?.brand || "",
+    last4: card?.last4 || "",
+    expMonth: card?.exp_month || null,
+    expYear: card?.exp_year || null,
+    cardholderName: billing.name || "",
+  });
+});

@@ -18,37 +18,17 @@
 // Response:
 //   { success: true }
 
-import { NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase/admin";
 import {
   projectFormToUserFields,
   upsertUser,
 } from "@/services/firebase/users";
+import { fail, ok, withAuth } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-async function verifyAuth(request) {
-  const header = request.headers.get("authorization") || "";
-  const idToken = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  if (!idToken) return null;
+export const POST = withAuth(async (request, _ctx, { decoded }) => {
   try {
-    return await adminAuth.verifyIdToken(idToken);
-  } catch {
-    return null;
-  }
-}
-
-export async function POST(request) {
-  try {
-    const decoded = await verifyAuth(request);
-    if (!decoded?.uid) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 },
-      );
-    }
-
     const body = await request.json().catch(() => ({}));
     const form = body.form && typeof body.form === "object" ? body.form : {};
     const currentStep =
@@ -90,13 +70,12 @@ export async function POST(request) {
       `[save-progress] ${result.created ? "CREATED new" : "UPDATED existing"} users/${decoded.uid}\n`,
     );
 
-    return NextResponse.json({ success: true });
+    return ok();
   } catch (err) {
+    // Don't leak the underlying error to the client — onboarding sees a
+    // generic message and the actual cause is in server logs.
     // eslint-disable-next-line no-console
     console.error("[save-progress] error:", err);
-    return NextResponse.json(
-      { success: false, message: "Could not save your progress." },
-      { status: 500 },
-    );
+    return fail("Could not save your progress.", 500);
   }
-}
+});

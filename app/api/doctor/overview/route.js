@@ -12,25 +12,11 @@
 //     doctor, with amount + paidAt
 //   - totalRevenueCents: sum of paymentAmount across assigned paid patients
 
-import { NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminDb } from "@/lib/firebase/admin";
+import { ok, withAuth } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-async function requireDoctor(request) {
-  const header = request.headers.get("authorization") || "";
-  const idToken = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  if (!idToken) return null;
-  try {
-    const decoded = await adminAuth.verifyIdToken(idToken);
-    const userSnap = await adminDb.collection("users").doc(decoded.uid).get();
-    if (!userSnap.exists || userSnap.data()?.role !== "doctor") return null;
-    return decoded;
-  } catch {
-    return null;
-  }
-}
 
 function todayKey() {
   const d = new Date();
@@ -40,17 +26,19 @@ function todayKey() {
   return `${y}-${m}-${day}`;
 }
 
-export async function GET(request) {
-  const decoded = await requireDoctor(request);
-  if (!decoded) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
+function parseDateTime(date, time) {
+  if (!date || !time) return null;
+  const [y, mo, d] = date.split("-").map(Number);
+  const [h, m] = time.split(":").map(Number);
+  if ([y, mo, d, h, m].some((n) => !Number.isFinite(n))) return null;
+  return new Date(y, mo - 1, d, h, m, 0, 0).getTime();
+}
 
-  const doctorUid = decoded.uid;
+export const GET = withAuth({ role: "doctor" }, async (_request, _ctx, { user }) => {
+  const doctorUid = user.uid;
   const tKey = todayKey();
   const nowMs = Date.now();
 
-  // Run reads in parallel.
   const [assignedSnap, apptSnap] = await Promise.all([
     adminDb
       .collection("users")
@@ -126,8 +114,7 @@ export async function GET(request) {
   upcomingList.sort((a, b) => (a.dateTimeMs || 0) - (b.dateTimeMs || 0));
   const upcoming = upcomingList.slice(0, 5);
 
-  return NextResponse.json({
-    success: true,
+  return ok({
     assignedPatientsCount,
     upcomingCount,
     todayCount,
@@ -136,12 +123,4 @@ export async function GET(request) {
     recentPayments,
     totalRevenueCents,
   });
-}
-
-function parseDateTime(date, time) {
-  if (!date || !time) return null;
-  const [y, mo, d] = date.split("-").map(Number);
-  const [h, m] = time.split(":").map(Number);
-  if ([y, mo, d, h, m].some((n) => !Number.isFinite(n))) return null;
-  return new Date(y, mo - 1, d, h, m, 0, 0).getTime();
-}
+});

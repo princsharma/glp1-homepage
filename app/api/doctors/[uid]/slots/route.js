@@ -6,27 +6,23 @@
 // "Available" means: inside a weeklySchedule window, not on a blocked date,
 // not in the past, and not already booked by another patient.
 
-import { NextResponse } from "next/server";
 import {
   getOrDefaultAvailability,
   generateSlots,
 } from "@/services/firebase/availability";
 import { bookedSlotKeysForDoctor } from "@/services/firebase/appointments";
 import { getDoctor } from "@/services/firebase/doctors";
+import { fail, ok, withErrorHandling } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(_request, { params }) {
+export const GET = withErrorHandling(async (_request, { params }) => {
   const { uid } = params || {};
-  if (!uid) {
-    return NextResponse.json({ success: false, message: "Missing uid" }, { status: 400 });
-  }
+  if (!uid) return fail("Missing uid", 400);
 
   const doctor = await getDoctor(uid);
-  if (!doctor) {
-    return NextResponse.json({ success: false, message: "Doctor not found" }, { status: 404 });
-  }
+  if (!doctor) return fail("Doctor not found", 404);
 
   const [availability, booked] = await Promise.all([
     getOrDefaultAvailability(uid),
@@ -34,11 +30,10 @@ export async function GET(_request, { params }) {
   ]);
 
   const slots = generateSlots(availability, booked, 21);
-  return NextResponse.json({
-    success: true,
+  return ok({
     doctor,
     slotDurationMinutes: availability.slotDurationMinutes,
     timezone: availability.timezone,
     slots,
   });
-}
+});

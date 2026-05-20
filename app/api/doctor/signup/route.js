@@ -23,24 +23,12 @@
 // raw values because this is what the form captures; the safe thing to do
 // before going live is replace this with a token exchange.
 
-import { NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase/admin";
 import { upsertUser } from "@/services/firebase/users";
 import { setAvailability } from "@/services/firebase/availability";
+import { fail, ok, withAuth } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-async function verifyAuth(request) {
-  const header = request.headers.get("authorization") || "";
-  const idToken = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  if (!idToken) return null;
-  try {
-    return await adminAuth.verifyIdToken(idToken);
-  } catch {
-    return null;
-  }
-}
 
 function sanitizeLicenses(input) {
   if (!Array.isArray(input)) return [];
@@ -72,99 +60,67 @@ function sanitizeBanking(input) {
   };
 }
 
-export async function POST(request) {
-  try {
-    const decoded = await verifyAuth(request);
-    if (!decoded?.uid) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 },
-      );
-    }
+// withAuth (no role) — the user has a Firebase Auth account but no
+// Firestore user doc yet; this endpoint is what creates it with role=doctor.
+export const POST = withAuth(async (request, _ctx, { decoded }) => {
+  const body = await request.json().catch(() => ({}));
+  const firstName =
+    typeof body.firstName === "string" ? body.firstName.trim() : "";
+  const lastName =
+    typeof body.lastName === "string" ? body.lastName.trim() : "";
+  const phone = typeof body.phone === "string" ? body.phone.trim() : "";
+  const bio = typeof body.bio === "string" ? body.bio.trim() : "";
+  const licenses = sanitizeLicenses(body.licenses);
+  const photoURL =
+    typeof body.photoURL === "string" && body.photoURL.startsWith("http")
+      ? body.photoURL
+      : "";
+  const prescriptionTemplate =
+    typeof body.prescriptionTemplate === "string"
+      ? body.prescriptionTemplate.trim().slice(0, 4000)
+      : "";
+  const signatureDataUrl =
+    typeof body.signatureDataUrl === "string" &&
+    body.signatureDataUrl.startsWith("data:image/")
+      ? body.signatureDataUrl
+      : "";
+  const banking = sanitizeBanking(body.banking);
 
-    const body = await request.json().catch(() => ({}));
-    const firstName =
-      typeof body.firstName === "string" ? body.firstName.trim() : "";
-    const lastName =
-      typeof body.lastName === "string" ? body.lastName.trim() : "";
-    const phone = typeof body.phone === "string" ? body.phone.trim() : "";
-    const bio = typeof body.bio === "string" ? body.bio.trim() : "";
-    const licenses = sanitizeLicenses(body.licenses);
-    const photoURL =
-      typeof body.photoURL === "string" && body.photoURL.startsWith("http")
-        ? body.photoURL
-        : "";
-    const prescriptionTemplate =
-      typeof body.prescriptionTemplate === "string"
-        ? body.prescriptionTemplate.trim().slice(0, 4000)
-        : "";
-    const signatureDataUrl =
-      typeof body.signatureDataUrl === "string" &&
-      body.signatureDataUrl.startsWith("data:image/")
-        ? body.signatureDataUrl
-        : "";
-    const banking = sanitizeBanking(body.banking);
-
-    if (!firstName || !lastName) {
-      return NextResponse.json(
-        { success: false, message: "Name is required." },
-        { status: 400 },
-      );
-    }
-    if (licenses.length === 0) {
-      return NextResponse.json(
-        { success: false, message: "At least one license is required." },
-        { status: 400 },
-      );
-    }
-    if (!banking) {
-      return NextResponse.json(
-        { success: false, message: "Valid US banking details are required." },
-        { status: 400 },
-      );
-    }
-    if (prescriptionTemplate.length < 30) {
-      return NextResponse.json(
-        { success: false, message: "Prescription template is too short." },
-        { status: 400 },
-      );
-    }
-    // signatureDataUrl is optional — empty string is fine, we just won't
-    // store a signature image on the doctor profile.
-
-    await upsertUser(decoded.uid, {
-      role: "doctor",
-      status: "active",
-      email: decoded.email || "",
-      firstName,
-      lastName,
-      phone,
-      bio,
-      licenses,
-      photoURL,
-      doctorProfile: {
-        prescriptionTemplate,
-        signatureDataUrl,
-      },
-      banking,
-      emailVerified: !!decoded.email_verified,
-    });
-
-    // Seed availability/{uid} with whatever the doctor picked in the form.
-    if (body.availability && typeof body.availability === "object") {
-      try {
-        await setAvailability(decoded.uid, body.availability);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn("[doctor/signup] availability seed failed:", err);
-      }
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error("[doctor/signup] error:", err);
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ success: false, message }, { status: 500 });
+  if (!firstName || !lastName) return fail("Name is required.", 400);
+  if (licenses.length === 0) return fail("At least one license is required.", 400);
+  if (!banking) return fail("Valid US banking details are required.", 400);
+  if (prescriptionTemplate.length < 30) {
+    return fail("Prescription template is too short.", 400);
   }
-}
+
+  await upsertUser(decoded.uid, {
+    role: "doctor",
+    status: "active",
+    email: decoded.email || "",
+    firstName,
+    lastName,
+    phone,
+    bio,
+    licenses,
+    photoURL,
+    doctorProfile: {
+      prescriptionTemplate,
+      signatureDataUrl,
+    },
+    banking,
+    emailVerified: !!decoded.email_verified,
+  });
+
+  // Seed availability/{uid} with whatever the doctor picked in the form.
+  // Non-fatal — the dashboard can rebuild this from defaults if it fails.
+  if (body.availability && typeof body.availability === "object") {
+    try {
+      await setAvailability(decoded.uid, body.availability);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn("[doctor/signup] availability seed failed:", err);
+    }
+  }
+
+  return ok();
+});

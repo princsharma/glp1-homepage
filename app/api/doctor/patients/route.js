@@ -7,25 +7,11 @@
 // Returns a summary row per patient — enough to render the list view; the
 // detail endpoint expands one patient at a time.
 
-import { NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminDb } from "@/lib/firebase/admin";
+import { ok, withAuth } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-async function requireDoctor(request) {
-  const header = request.headers.get("authorization") || "";
-  const idToken = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  if (!idToken) return null;
-  try {
-    const decoded = await adminAuth.verifyIdToken(idToken);
-    const userSnap = await adminDb.collection("users").doc(decoded.uid).get();
-    if (!userSnap.exists || userSnap.data()?.role !== "doctor") return null;
-    return decoded;
-  } catch {
-    return null;
-  }
-}
 
 function computeAge(dob) {
   if (!dob) return null;
@@ -56,22 +42,25 @@ function computeBmi(onb) {
   return (pounds * 703) / (total * total);
 }
 
-export async function GET(request) {
-  const decoded = await requireDoctor(request);
-  if (!decoded) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
+function parseDateTime(date, time) {
+  if (!date || !time) return null;
+  const [y, mo, d] = String(date).split("-").map(Number);
+  const [h, m] = String(time).split(":").map(Number);
+  if ([y, mo, d, h, m].some((n) => !Number.isFinite(n))) return null;
+  return new Date(y, mo - 1, d, h, m, 0, 0).getTime();
+}
 
+export const GET = withAuth({ role: "doctor" }, async (_request, _ctx, { user }) => {
   const snap = await adminDb
     .collection("users")
     .where("role", "==", "patient")
-    .where("onboarding.doctorUid", "==", decoded.uid)
+    .where("onboarding.doctorUid", "==", user.uid)
     .get();
 
   // Fetch this doctor's appointments once so we can match next/last per patient.
   const apptSnap = await adminDb
     .collection("appointments")
-    .where("doctorUid", "==", decoded.uid)
+    .where("doctorUid", "==", user.uid)
     .get();
 
   const apptsByPatient = new Map();
@@ -152,13 +141,5 @@ export async function GET(request) {
 
   patients.sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
 
-  return NextResponse.json({ success: true, patients });
-}
-
-function parseDateTime(date, time) {
-  if (!date || !time) return null;
-  const [y, mo, d] = String(date).split("-").map(Number);
-  const [h, m] = String(time).split(":").map(Number);
-  if ([y, mo, d, h, m].some((n) => !Number.isFinite(n))) return null;
-  return new Date(y, mo - 1, d, h, m, 0, 0).getTime();
-}
+  return ok({ patients });
+});
