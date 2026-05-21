@@ -116,6 +116,56 @@ export async function bookedSlotKeysForDoctor(doctorUid) {
   return out;
 }
 
+/**
+ * Admin-only. Lists every appointment across the platform. Sorted with
+ * the most recent first.
+ */
+export async function listAllAppointmentsForAdmin() {
+  const snap = await adminDb.collection(COLLECTION).get();
+  return snap.docs
+    .map((d) => projectAppointment(d.id, d.data()))
+    .sort(compareByDateTimeDesc);
+}
+
+/**
+ * Admin-only. Hard-deletes an appointment doc.
+ */
+export async function adminDeleteAppointment(id) {
+  await adminDb.collection(COLLECTION).doc(id).delete();
+}
+
+/**
+ * Admin overview helper. Returns rolling counts for the last 30 days
+ * (booked appointments per day) and a revenue tally derived from how
+ * many appointments we have in each state.
+ */
+export async function appointmentStatsForAdmin() {
+  const snap = await adminDb.collection(COLLECTION).get();
+  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const out = {
+    total: 0,
+    scheduled: 0,
+    completed: 0,
+    cancelled: 0,
+    bookedByDay: {}, // YYYY-MM-DD -> count, last 30d (by createdAt)
+  };
+  for (const d of snap.docs) {
+    const data = d.data();
+    out.total += 1;
+    const st = data.status || "scheduled";
+    if (out[st] !== undefined) out[st] += 1;
+    const createdMs =
+      typeof data.createdAt?.toMillis === "function"
+        ? data.createdAt.toMillis()
+        : null;
+    if (createdMs && createdMs >= thirtyDaysAgo) {
+      const day = new Date(createdMs).toISOString().slice(0, 10);
+      out.bookedByDay[day] = (out.bookedByDay[day] || 0) + 1;
+    }
+  }
+  return out;
+}
+
 function projectAppointment(id, data) {
   return {
     id,

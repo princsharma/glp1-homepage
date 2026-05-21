@@ -95,7 +95,13 @@ export const POST = withAuth(async (request, _ctx, { decoded }) => {
 
   await upsertUser(decoded.uid, {
     role: "doctor",
-    status: "active",
+    // New doctors land in "pending" until an admin reviews them. The
+    // doctor dashboard layout blocks /dashboard/doctor/* for non-active
+    // status, and listActiveDoctors() filters on status==="active".
+    status: "pending",
+    // Default priority — admin tunes this from the dashboard to control
+    // which 3 doctors appear in the patient picker.
+    priority: 0,
     email: decoded.email || "",
     firstName,
     lastName,

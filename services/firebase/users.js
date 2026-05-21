@@ -110,6 +110,103 @@ export async function upsertUser(uid, fields = {}) {
 }
 
 /**
+ * Admin-only. Return every patient (role === "patient") as a list of
+ * plain DTOs for the admin patients table.
+ */
+export async function listAllPatientsForAdmin() {
+  const snap = await adminDb
+    .collection(USERS_COLLECTION)
+    .where("role", "==", "patient")
+    .get();
+
+  return snap.docs
+    .map((d) => {
+      const data = d.data();
+      return {
+        uid: d.id,
+        email: data.email || "",
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        fullName:
+          [data.firstName, data.lastName].filter(Boolean).join(" ") ||
+          data.email ||
+          "—",
+        phone: data.phone || "",
+        dob: data.dob || "",
+        status: data.status || "incomplete",
+        createdAtMs:
+          typeof data.createdAt?.toMillis === "function"
+            ? data.createdAt.toMillis()
+            : null,
+      };
+    })
+    .sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
+}
+
+/**
+ * Admin-only. Updates editable patient fields. Role is never mutated.
+ */
+export async function adminUpdatePatient(uid, fields = {}) {
+  const ref = adminDb.collection(USERS_COLLECTION).doc(uid);
+  const snap = await ref.get();
+  if (!snap.exists) throw new Error("Patient not found");
+  if (snap.data().role && snap.data().role !== "patient") {
+    throw new Error("Not a patient");
+  }
+
+  const updates = { updatedAt: FieldValue.serverTimestamp() };
+  if (typeof fields.firstName === "string") updates.firstName = fields.firstName.trim();
+  if (typeof fields.lastName === "string") updates.lastName = fields.lastName.trim();
+  if (typeof fields.phone === "string") updates.phone = fields.phone.trim();
+  if (typeof fields.status === "string") updates.status = fields.status;
+
+  await ref.update(updates);
+}
+
+/**
+ * Admin-only. Hard-deletes the patient's user doc.
+ */
+export async function adminDeleteUser(uid) {
+  await adminDb.collection(USERS_COLLECTION).doc(uid).delete();
+}
+
+/**
+ * Counts users grouped by role + status. Used by the admin overview.
+ * Returns { patients: { total }, doctors: { total, active, pending, rejected } }.
+ */
+export async function countUsersByRole() {
+  const snap = await adminDb.collection(USERS_COLLECTION).get();
+  const out = {
+    patients: { total: 0 },
+    doctors: { total: 0, active: 0, pending: 0, rejected: 0, deactivated: 0 },
+    admins: { total: 0 },
+    signupsByDay: {}, // YYYY-MM-DD -> count, last 30d
+  };
+  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  for (const d of snap.docs) {
+    const data = d.data();
+    const role = data.role || "patient";
+    if (role === "patient") out.patients.total += 1;
+    else if (role === "admin") out.admins.total += 1;
+    else if (role === "doctor") {
+      out.doctors.total += 1;
+      const st = data.status || "pending";
+      if (out.doctors[st] !== undefined) out.doctors[st] += 1;
+    }
+
+    const createdMs =
+      typeof data.createdAt?.toMillis === "function"
+        ? data.createdAt.toMillis()
+        : null;
+    if (createdMs && createdMs >= thirtyDaysAgo) {
+      const day = new Date(createdMs).toISOString().slice(0, 10);
+      out.signupsByDay[day] = (out.signupsByDay[day] || 0) + 1;
+    }
+  }
+  return out;
+}
+
+/**
  * Take the full client `form` object, promote known scalar fields to
  * top-level on users/{uid}, stash the rest under `onboarding`.
  * Blocklisted fields (password, etc.) are dropped here too.
